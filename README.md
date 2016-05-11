@@ -1,5 +1,7 @@
 # libstringintern
-A C++ library for [interning][string-interning] strings to save heap space. Smaller heaps generally mean faster applications due to cache locality and less swapping to disk.
+A C++ library for [interning][string-interning] strings to save heap space. Smaller heaps generally mean faster applications due to cache locality and less swapping to disk. The other upside is you can store more stuff in RAM.
+
+> libstringintern is a work-in-progress. Almost everything can change so don't believe a thing written here until Travis passes the units.
 
 ## Use case
 If you have an in-memory database with 100 million customer records with associated address details then you probably have 100 million state and country strings associated with those records. That will use a lot of memory. 
@@ -10,4 +12,16 @@ When strings are interned you only ever have one instance of the string plus a r
 * 100m * 'Mississippi\0' = **1144MB**
 * 1 * 'Mississippi\0' = 12B, 100m * 4B = **381MB**
 
+## How it works
+* Interned strings are stored in pages, grouped by string size, a bit like [tcmalloc][tcmalloc]
+* Pages are 2MB in size to take advantage of [THP][thp]
+* Each string is hashed using [XX64][xx64] with the low order bytes used as an index into the page
+* If the index refers to a location in the page that is free the string is committed to the page and the caller gets a reference to the string
+* If the index is already taken then we compare the new hashes and if they match we return a reference to the entry
+* If the hashes did not match then allocate a new page and add the string to that returning the reference
+* The host application turns the reference into a real pointer to use the string, a bit like `std::weak_ptr`
+
 [string-interning]: https://en.wikipedia.org/wiki/String_interning
+[tcmalloc]: http://goog-perftools.sourceforge.net/doc/tcmalloc.html
+[thp]: https://www.kernel.org/doc/Documentation/vm/transhuge.txt
+[xx64]: https://github.com/Cyan4973/xxHash
