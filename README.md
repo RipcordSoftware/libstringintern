@@ -22,6 +22,7 @@ This example is for a fairly short string, but the saving is still valuable. Lar
 * If the index is already taken then we compare the hashes and if they match we return a reference to the entry
 * If the hashes did not match then allocate a new page and add the string and hash returning the string reference
 * The host application turns the reference into a real pointer to use the string, a bit like `std::weak_ptr`
+* References are 32bit values made up from PAGE(16):INDEX(16). On 64bit systems these use half the storage space of a pointer.
 * Interned strings are immutable
 
 ## Made up code example
