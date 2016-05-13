@@ -4,17 +4,11 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <itemPath>string_intern.h</itemPath>
-      <itemPath>string_page.h</itemPath>
-      <itemPath>string_reference.h</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <itemPath>string_intern.cpp</itemPath>
-      <itemPath>string_page.cpp</itemPath>
-      <itemPath>string_reference.cpp</itemPath>
-      <itemPath>../../externals/xxHash/xxhash.c</itemPath>
+      <itemPath>main.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
@@ -30,7 +24,7 @@
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
-    <conf name="Debug" type="3">
+    <conf name="Debug" type="1">
       <toolsSet>
         <compilerSet>default</compilerSet>
         <dependencyChecking>true</dependencyChecking>
@@ -40,28 +34,30 @@
         <ccTool>
           <standard>8</standard>
           <incDir>
-            <pElem>../../externals/xxHash</pElem>
+            <pElem>../libstringintern</pElem>
           </incDir>
         </ccTool>
-        <archiverTool>
-        </archiverTool>
+        <linkerTool>
+          <linkerLibItems>
+            <linkerLibProjectItem>
+              <makeArtifact PL="../libstringintern"
+                            CT="3"
+                            CN="Debug"
+                            AC="true"
+                            BL="true"
+                            WD="../libstringintern"
+                            BC="${MAKE}  -f Makefile CONF=Debug"
+                            CC="${MAKE}  -f Makefile CONF=Debug clean"
+                            OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/liblibstringintern.a">
+              </makeArtifact>
+            </linkerLibProjectItem>
+          </linkerLibItems>
+        </linkerTool>
       </compileType>
-      <item path="../../externals/xxHash/xxhash.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="string_intern.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="string_intern.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="string_page.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="string_page.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="string_reference.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="string_reference.h" ex="false" tool="3" flavor2="0">
+      <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
-    <conf name="Release" type="3">
+    <conf name="Release" type="1">
       <toolsSet>
         <compilerSet>default</compilerSet>
         <dependencyChecking>true</dependencyChecking>
@@ -75,7 +71,7 @@
           <developmentMode>5</developmentMode>
           <standard>8</standard>
           <incDir>
-            <pElem>../../externals/xxHash</pElem>
+            <pElem>../libstringintern</pElem>
           </incDir>
         </ccTool>
         <fortranCompilerTool>
@@ -84,22 +80,24 @@
         <asmTool>
           <developmentMode>5</developmentMode>
         </asmTool>
-        <archiverTool>
-        </archiverTool>
+        <linkerTool>
+          <linkerLibItems>
+            <linkerLibProjectItem>
+              <makeArtifact PL="../libstringintern"
+                            CT="3"
+                            CN="Release"
+                            AC="false"
+                            BL="true"
+                            WD="../libstringintern"
+                            BC="${MAKE}  -f Makefile CONF=Release"
+                            CC="${MAKE}  -f Makefile CONF=Release clean"
+                            OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/liblibstringintern.a">
+              </makeArtifact>
+            </linkerLibProjectItem>
+          </linkerLibItems>
+        </linkerTool>
       </compileType>
-      <item path="../../externals/xxHash/xxhash.c" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="string_intern.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="string_intern.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="string_page.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="string_page.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="string_reference.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="string_reference.h" ex="false" tool="3" flavor2="0">
+      <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
   </confs>

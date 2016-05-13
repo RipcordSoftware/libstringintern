@@ -34,7 +34,11 @@ include Makefile
 OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
-OBJECTFILES=
+OBJECTFILES= \
+	${OBJECTDIR}/_ext/1406610357/xxhash.o \
+	${OBJECTDIR}/string_intern.o \
+	${OBJECTDIR}/string_page.o \
+	${OBJECTDIR}/string_reference.o
 
 
 # C Compiler Flags
@@ -62,6 +66,26 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/liblibstringintern.a: ${OBJECTFILES}
 	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/liblibstringintern.a
 	${AR} -rv ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/liblibstringintern.a ${OBJECTFILES} 
 	$(RANLIB) ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/liblibstringintern.a
+
+${OBJECTDIR}/_ext/1406610357/xxhash.o: ../../externals/xxHash/xxhash.c 
+	${MKDIR} -p ${OBJECTDIR}/_ext/1406610357
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1406610357/xxhash.o ../../externals/xxHash/xxhash.c
+
+${OBJECTDIR}/string_intern.o: string_intern.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -I../../externals/xxHash -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/string_intern.o string_intern.cpp
+
+${OBJECTDIR}/string_page.o: string_page.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -I../../externals/xxHash -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/string_page.o string_page.cpp
+
+${OBJECTDIR}/string_reference.o: string_reference.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -I../../externals/xxHash -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/string_reference.o string_reference.cpp
 
 # Subprojects
 .build-subprojects:
