@@ -2,14 +2,13 @@
 #define	RS_LIBSTRINGINTERN_STRING_INTERN_H
 
 #include "string_reference.h"
-#include "string_page.h"
-
-#include <vector>
+#include "string_pages.h"
 
 namespace rs {
 namespace stringintern {
 
 class StringIntern {
+
 public:
     StringIntern() {}
     StringIntern(const StringIntern&) = delete;
@@ -19,9 +18,7 @@ public:
     const char* ToString(const StringReference&) const;
     
 private:
-    
-    std::vector<StringPage> pages_;
-
+    StringPages pages_;
 };
 
 }}

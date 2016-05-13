@@ -38,6 +38,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/_ext/1406610357/xxhash.o \
 	${OBJECTDIR}/string_intern.o \
 	${OBJECTDIR}/string_page.o \
+	${OBJECTDIR}/string_pages.o \
 	${OBJECTDIR}/string_reference.o
 
 
@@ -81,6 +82,11 @@ ${OBJECTDIR}/string_page.o: string_page.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -I../../externals/xxHash -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/string_page.o string_page.cpp
+
+${OBJECTDIR}/string_pages.o: string_pages.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -I../../externals/xxHash -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/string_pages.o string_pages.cpp
 
 ${OBJECTDIR}/string_reference.o: string_reference.cpp 
 	${MKDIR} -p ${OBJECTDIR}

@@ -6,6 +6,7 @@
                    projectFiles="true">
       <itemPath>string_intern.h</itemPath>
       <itemPath>string_page.h</itemPath>
+      <itemPath>string_pages.h</itemPath>
       <itemPath>string_reference.h</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
@@ -13,6 +14,7 @@
                    projectFiles="true">
       <itemPath>string_intern.cpp</itemPath>
       <itemPath>string_page.cpp</itemPath>
+      <itemPath>string_pages.cpp</itemPath>
       <itemPath>string_reference.cpp</itemPath>
       <itemPath>../../externals/xxHash/xxhash.c</itemPath>
     </logicalFolder>
@@ -56,6 +58,10 @@
       </item>
       <item path="string_page.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="string_pages.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="string_pages.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="string_reference.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="string_reference.h" ex="false" tool="3" flavor2="0">
@@ -96,6 +102,10 @@
       <item path="string_page.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="string_page.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="string_pages.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="string_pages.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="string_reference.cpp" ex="false" tool="1" flavor2="0">
       </item>
