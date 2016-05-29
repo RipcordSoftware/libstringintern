@@ -48,7 +48,7 @@
                             WD="../libstringintern"
                             BC="${MAKE}  -f Makefile CONF=Debug"
                             CC="${MAKE}  -f Makefile CONF=Debug clean"
-                            OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/liblibstringintern.a">
+                            OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libstringintern.a">
               </makeArtifact>
             </linkerLibProjectItem>
             <linkerLibStdlibItem>PosixThreads</linkerLibStdlibItem>
@@ -93,7 +93,7 @@
                             WD="../libstringintern"
                             BC="${MAKE}  -f Makefile CONF=Release"
                             CC="${MAKE}  -f Makefile CONF=Release clean"
-                            OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/liblibstringintern.a">
+                            OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libstringintern.a">
               </makeArtifact>
             </linkerLibProjectItem>
             <linkerLibStdlibItem>PosixThreads</linkerLibStdlibItem>

@@ -52,13 +52,13 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=../libstringintern/dist/Release/GNU-Linux-x86/liblibstringintern.a -lpthread
+LDLIBSOPTIONS=../libstringintern/dist/Release/GNU-Linux-x86/libstringintern.a -lpthread
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
 	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/testlibstringintern
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/testlibstringintern: ../libstringintern/dist/Release/GNU-Linux-x86/liblibstringintern.a
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/testlibstringintern: ../libstringintern/dist/Release/GNU-Linux-x86/libstringintern.a
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/testlibstringintern: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
