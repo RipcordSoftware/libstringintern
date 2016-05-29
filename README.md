@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/RipcordSoftware/libstringintern.svg)](https://travis-ci.org/RipcordSoftware/libstringintern)
+[![Coverage Status](https://coveralls.io/repos/RipcordSoftware/libstringintern/badge.svg?branch=master&service=github)](https://coveralls.io/github/RipcordSoftware/libstringintern?branch=master)
+[![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
+
 # libstringintern
 A C++ library for [interning][string-interning] strings to save heap space. Smaller heaps generally mean faster applications due to cache locality and less swapping to disk. The other upside is you can store more stuff in RAM.
 
