@@ -56,6 +56,7 @@
           <commandLine>--coverage</commandLine>
         </ccTool>
         <archiverTool>
+          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libstringintern.a</output>
         </archiverTool>
       </compileType>
       <item path="../../externals/xxHash/xxhash.c" ex="false" tool="0" flavor2="0">
@@ -138,6 +139,7 @@
           <developmentMode>5</developmentMode>
         </asmTool>
         <archiverTool>
+          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libstringintern.a</output>
         </archiverTool>
       </compileType>
       <item path="../../externals/xxHash/xxhash.c" ex="false" tool="0" flavor2="0">

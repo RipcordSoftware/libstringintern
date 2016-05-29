@@ -67,13 +67,13 @@ LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/liblibstringintern.a
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libstringintern.a
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/liblibstringintern.a: ${OBJECTFILES}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libstringintern.a: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/liblibstringintern.a
-	${AR} -rv ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/liblibstringintern.a ${OBJECTFILES} 
-	$(RANLIB) ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/liblibstringintern.a
+	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libstringintern.a
+	${AR} -rv ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libstringintern.a ${OBJECTFILES} 
+	$(RANLIB) ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libstringintern.a
 
 ${OBJECTDIR}/_ext/1406610357/xxhash.o: ../../externals/xxHash/xxhash.c 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1406610357
@@ -211,7 +211,7 @@ ${OBJECTDIR}/string_reference_nomain.o: ${OBJECTDIR}/string_reference.o string_r
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/liblibstringintern.a
+	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libstringintern.a
 
 # Subprojects
 .clean-subprojects:

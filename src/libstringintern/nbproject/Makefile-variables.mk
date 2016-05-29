@@ -9,16 +9,16 @@ CND_DISTDIR=dist
 # Debug configuration
 CND_PLATFORM_Debug=GNU-Linux-x86
 CND_ARTIFACT_DIR_Debug=dist/Debug/GNU-Linux-x86
-CND_ARTIFACT_NAME_Debug=liblibstringintern.a
-CND_ARTIFACT_PATH_Debug=dist/Debug/GNU-Linux-x86/liblibstringintern.a
+CND_ARTIFACT_NAME_Debug=libstringintern.a
+CND_ARTIFACT_PATH_Debug=dist/Debug/GNU-Linux-x86/libstringintern.a
 CND_PACKAGE_DIR_Debug=dist/Debug/GNU-Linux-x86/package
 CND_PACKAGE_NAME_Debug=libstringintern.tar
 CND_PACKAGE_PATH_Debug=dist/Debug/GNU-Linux-x86/package/libstringintern.tar
 # Release configuration
 CND_PLATFORM_Release=GNU-Linux-x86
 CND_ARTIFACT_DIR_Release=dist/Release/GNU-Linux-x86
-CND_ARTIFACT_NAME_Release=liblibstringintern.a
-CND_ARTIFACT_PATH_Release=dist/Release/GNU-Linux-x86/liblibstringintern.a
+CND_ARTIFACT_NAME_Release=libstringintern.a
+CND_ARTIFACT_PATH_Release=dist/Release/GNU-Linux-x86/libstringintern.a
 CND_PACKAGE_DIR_Release=dist/Release/GNU-Linux-x86/package
 CND_PACKAGE_NAME_Release=libstringintern.tar
 CND_PACKAGE_PATH_Release=dist/Release/GNU-Linux-x86/package/libstringintern.tar

@@ -12,7 +12,7 @@ test: force_true .googletest
 	cd src/libstringintern && $(MAKE) $(MFLAGS) $(MAKEOVERRIDES) test
 
 clean: force_true
-	cd src/libscriptobject && $(MAKE) $(MFLAGS) $(MAKEOVERRIDES) clean
+	cd src/libstringintern && $(MAKE) $(MFLAGS) $(MAKEOVERRIDES) clean
 	cd src/testlibstringintern && $(MAKE) $(MFLAGS) $(MAKEOVERRIDES) clean
 
 .googletest: force_true
