@@ -52,8 +52,9 @@ rs::stringintern::StringPage::indexsize_t rs::stringintern::StringPage::Add(cons
     
     std::call_once(ptrFlag_, &StringPage::AllocPage, this);
     
-    auto index = hash & indexMask_;    
-    auto entry = reinterpret_cast<Entry*>(ptr_ + index);
+    auto index = hash & indexMask_;
+    auto offset = index * entrySize_;
+    auto entry = reinterpret_cast<Entry*>(ptr_ + offset);
     
     auto entryHash = entry->hash.load(std::memory_order_relaxed);
     std::atomic_thread_fence(std::memory_order_acquire);
