@@ -1,5 +1,9 @@
 #include "string_reference.h"
 
+rs::stringintern::StringReference::StringReference() : reference_(invalid_) {
+    
+}
+
 rs::stringintern::StringReference::StringReference(uint32_t reference) : reference_(reference) {    
 }
 

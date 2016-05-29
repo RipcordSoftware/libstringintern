@@ -2,11 +2,15 @@
 
 #include <cstring>
 
-#include "xxhash.h"
+#include "string_hash.h"
+
+rs::stringintern::StringIntern::StringIntern() {
+    
+}
 
 rs::stringintern::StringReference rs::stringintern::StringIntern::Add(const char* str) {
     auto len = std::strlen(str);
-    auto hash = XXH64(str, len, 42);
+    auto hash = StringHash::Get(str, len);
 }
 
 const char* rs::stringintern::StringIntern::ToString(const StringReference& ref) const {

@@ -27,10 +27,19 @@
 *.out
 *.app
 
-
 # ignore NetBeans related stuff
 /src/*/dist/
 /src/*/build/
 **/nbproject/private/
 .dep.inc
 
+# ignore gtest files
+externals/gtest**
+gtest-*.tar.xz
+
+# ignore externals/installed
+externals/installed
+
+# ignore the coverage output files
+*coverage.info
+coverage/*

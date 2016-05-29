@@ -1,0 +1,26 @@
+sudo: false
+
+language: cpp
+compiler: gcc
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - g++-4.9
+    - zlib1g-dev
+    - lcov
+    - ruby
+    - rubygems
+
+before_script:
+  - curl http://ftp.uk.debian.org/debian/pool/main/l/lcov/lcov_1.11.orig.tar.gz -O
+  - tar xfz lcov_1.11.orig.tar.gz
+  - mkdir -p lcov && make -C lcov-1.11/ install PREFIX=~/lcov
+  - export PATH=~/lcov/usr/bin:$PATH
+  - gem install coveralls-lcov
+  - pip install --user json_tools u-msgpack-python
+  - export PATH=~/.local/bin:$PATH
+
+script: make all CXX=g++-4.9 && make test CXX=g++-4.9 && ./coverage.sh gcov-4.9

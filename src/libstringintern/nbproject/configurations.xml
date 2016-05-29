@@ -4,7 +4,9 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <itemPath>string_hash.h</itemPath>
       <itemPath>string_intern.h</itemPath>
+      <itemPath>string_intern_exception.h</itemPath>
       <itemPath>string_page.h</itemPath>
       <itemPath>string_pages.h</itemPath>
       <itemPath>string_reference.h</itemPath>
@@ -12,6 +14,7 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <itemPath>string_hash.cpp</itemPath>
       <itemPath>string_intern.cpp</itemPath>
       <itemPath>string_page.cpp</itemPath>
       <itemPath>string_pages.cpp</itemPath>
@@ -22,6 +25,12 @@
                    displayName="Test Files"
                    projectFiles="false"
                    kind="TEST_LOGICAL_FOLDER">
+      <logicalFolder name="f1"
+                     displayName="StringPage Tests"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>tests/string_page_tests.cpp</itemPath>
+      </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -44,15 +53,51 @@
           <incDir>
             <pElem>../../externals/xxHash</pElem>
           </incDir>
+          <commandLine>--coverage</commandLine>
         </ccTool>
         <archiverTool>
         </archiverTool>
       </compileType>
       <item path="../../externals/xxHash/xxhash.c" ex="false" tool="0" flavor2="0">
       </item>
+      <folder path="TestFiles">
+        <ccTool>
+          <incDir>
+            <pElem>../../externals/installed/include</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <linkerLibItems>
+            <linkerLibFileItem>../../externals/installed/lib/libgtest.a</linkerLibFileItem>
+            <linkerLibFileItem>../../externals/installed/lib/libgtest_main.a</linkerLibFileItem>
+            <linkerLibStdlibItem>PosixThreads</linkerLibStdlibItem>
+          </linkerLibItems>
+        </linkerTool>
+      </folder>
+      <folder path="TestFiles/f1">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f1</output>
+        </linkerTool>
+      </folder>
+      <item path="string_hash.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="string_hash.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="string_intern.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="string_intern.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="string_intern_exception.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="string_page.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -65,6 +110,8 @@
       <item path="string_reference.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="string_reference.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/string_page_tests.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
     <conf name="Release" type="3">
@@ -95,9 +142,44 @@
       </compileType>
       <item path="../../externals/xxHash/xxhash.c" ex="false" tool="0" flavor2="0">
       </item>
+      <folder path="TestFiles">
+        <ccTool>
+          <incDir>
+            <pElem>../../externals/installed/include</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <linkerLibItems>
+            <linkerLibFileItem>../../externals/installed/lib/libgtest.a</linkerLibFileItem>
+            <linkerLibFileItem>../../externals/installed/lib/libgtest_main.a</linkerLibFileItem>
+            <linkerLibStdlibItem>PosixThreads</linkerLibStdlibItem>
+          </linkerLibItems>
+        </linkerTool>
+      </folder>
+      <folder path="TestFiles/f1">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f1</output>
+        </linkerTool>
+      </folder>
+      <item path="string_hash.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="string_hash.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="string_intern.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="string_intern.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="string_intern_exception.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="string_page.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -110,6 +192,8 @@
       <item path="string_reference.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="string_reference.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/string_page_tests.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
   </confs>

@@ -52,7 +52,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=../libstringintern/dist/Debug/GNU-Linux-x86/liblibstringintern.a
+LDLIBSOPTIONS=../libstringintern/dist/Debug/GNU-Linux-x86/liblibstringintern.a -lpthread
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -62,7 +62,7 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/testlibstringintern: ../libstringinte
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/testlibstringintern: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/testlibstringintern ${OBJECTFILES} ${LDLIBSOPTIONS}
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/testlibstringintern ${OBJECTFILES} ${LDLIBSOPTIONS} --coverage
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}

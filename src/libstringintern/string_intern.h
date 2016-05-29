@@ -10,7 +10,7 @@ namespace stringintern {
 class StringIntern {
 
 public:
-    StringIntern() {}
+    StringIntern();
     StringIntern(const StringIntern&) = delete;
     
     StringReference Add(const char*);
