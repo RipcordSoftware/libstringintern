@@ -51,7 +51,7 @@ rs::stringintern::StringPage::indexsize_t rs::stringintern::StringPage::Add(cons
     }
             
     auto index = hash & indexMask_;
-    auto entry = GetEntry(ptr_, entrySize_, index);
+    auto entry = GetEntry(index);
     
     auto entryHash = entry->hash.load(std::memory_order_relaxed);
     std::atomic_thread_fence(std::memory_order_acquire);
@@ -67,12 +67,8 @@ rs::stringintern::StringPage::indexsize_t rs::stringintern::StringPage::Add(cons
     return index;
 }
 
-rs::stringintern::StringPage::entrysize_t rs::stringintern::StringPage::CalculateEntrySize(std::size_t len) noexcept {
-    return overheadSize_ + len;    
-}
-
-rs::stringintern::StringPage::Entry* rs::stringintern::StringPage::GetEntry(void* pagePtr, entrysize_t entrySize, indexsize_t index) noexcept {
-    auto ptr = reinterpret_cast<std::uintptr_t>(pagePtr);
-    ptr += index * entrySize;
-    return reinterpret_cast<Entry*>(ptr);
+const char* rs::stringintern::StringPage::Get(StringHash::Hash hash) const noexcept {
+    auto index = hash & indexMask_;
+    auto entry = GetEntry(index);
+    return entry->str;
 }

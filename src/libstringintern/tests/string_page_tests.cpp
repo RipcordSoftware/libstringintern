@@ -25,8 +25,10 @@
 #include <gtest/gtest.h>
 
 #include <cstring>
+#include <string>
 
 #include "../string_page.h"
+#include "../string_intern_exception.h"
 
 class StringPageTests : public ::testing::Test {
 protected:
@@ -55,4 +57,49 @@ TEST_F(StringPageTests, test0) {
     ASSERT_EQ(1, page.Add(str, len, 1));
     ASSERT_EQ(1, page.Add(str, len, 1));
     ASSERT_EQ(rs::stringintern::StringPage::InvalidIndex, page.Add(str, len, 1 + pageEntries));
+}
+
+TEST_F(StringPageTests, test1) {    
+    ASSERT_THROW({
+        const auto pageSize = 2 * 1024 * 1024;
+        const auto pageEntrySize = 256;
+        std::vector<char> pageBuffer(pageSize);    
+
+        rs::stringintern::StringPage page(pageBuffer.data(), pageSize, pageEntrySize);
+
+        const char* str = "I am a placebo";
+        const auto len = 1024;
+        
+        page.Add(str, len, 1);
+    }, rs::stringintern::StringInternException);
+}
+
+TEST_F(StringPageTests, test2) {
+    const auto pageSize = 2 * 1024 * 1024;
+    std::vector<char> pageBuffer(pageSize);
+    const auto pageEntrySize = 256;
+    const auto pageEntries = pageSize / pageEntrySize;
+
+    rs::stringintern::StringPage page(pageBuffer.data(), pageSize, pageEntrySize);
+    
+    ASSERT_EQ(pageEntries, page.EntryCount());
+    ASSERT_EQ(pageEntrySize, page.EntrySize());
+    
+    for (auto i = 0; i < pageEntries; ++i) {
+        auto val = std::to_string(i);
+        ASSERT_EQ(i, page.Add(val.c_str(), val.length(), i));
+        ASSERT_EQ(val, page.Get(i));
+    }
+    
+    for (auto i = 0; i < pageEntries; ++i) {
+        auto val = std::to_string(i);
+        ASSERT_EQ(i, page.Add(val.c_str(), val.length(), i));
+        ASSERT_EQ(val, page.Get(i));
+    }
+    
+    for (auto i = 0; i < pageEntries; ++i) {
+        auto index = pageEntries - i - 1;
+        auto val = std::to_string(index);
+        ASSERT_EQ(val, page.Get(index));
+    }    
 }

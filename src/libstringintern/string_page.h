@@ -47,13 +47,12 @@ public:
     StringPage(void* ptr, pagesize_t pageSize, entrysize_t entrySize) noexcept;
     
     indexsize_t Add(const char*, std::size_t, StringHash::Hash);
+    const char* Get(StringHash::Hash) const noexcept;
     
     entrysize_t EntrySize() const noexcept;
-    countsize_t EntryCount() const noexcept;
-    
-    static entrysize_t CalculateEntrySize(std::size_t) noexcept;
+    countsize_t EntryCount() const noexcept;       
 
-private:    
+private:
     
 #pragma pack(push)
 #pragma pack(1)
@@ -65,10 +64,18 @@ private:
     };
 #pragma pack(pop)
     
+    inline entrysize_t CalculateEntrySize(std::size_t len) const noexcept { 
+        return overheadSize_ + len; 
+    }
+    
+    inline Entry* GetEntry(indexsize_t index) const noexcept {
+        auto ptr = reinterpret_cast<std::uintptr_t>(ptr_);
+        ptr += index * entrySize_;
+        return reinterpret_cast<Entry*>(ptr);
+    }   
+    
     void AllocPage();
     
-    static Entry* GetEntry(void* ptr, entrysize_t entrySize, indexsize_t index) noexcept;
-
     void* ptr_;
     const pagesize_t pageSize_;
     const entrysize_t entrySize_;
