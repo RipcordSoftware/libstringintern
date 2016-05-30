@@ -26,7 +26,6 @@
 #define	RS_LIBSTRINGINTERN_STRING_PAGE_H
 
 #include <memory>
-#include <mutex>
 #include <atomic>
 #include <cstddef>
 
@@ -35,7 +34,6 @@
 namespace rs {
 namespace stringintern {
 
-// TODO: alloc outside the class
 class StringPage {
     
 public:    
@@ -46,14 +44,14 @@ public:
     
     const static indexsize_t InvalidIndex;
     
-    StringPage(pagesize_t pageSize, entrysize_t entrySize);
+    StringPage(void* ptr, pagesize_t pageSize, entrysize_t entrySize) noexcept;
     
     indexsize_t Add(const char*, std::size_t, StringHash::Hash);
     
-    entrysize_t EntrySize() const;
-    countsize_t EntryCount() const;
+    entrysize_t EntrySize() const noexcept;
+    countsize_t EntryCount() const noexcept;
     
-    static entrysize_t CalculateEntrySize(std::size_t);
+    static entrysize_t CalculateEntrySize(std::size_t) noexcept;
 
 private:    
     
@@ -68,10 +66,10 @@ private:
 #pragma pack(pop)
     
     void AllocPage();
-        
-    std::once_flag ptrFlag_;
     
-    char* ptr_;
+    static Entry* GetEntry(void* ptr, entrysize_t entrySize, indexsize_t index) noexcept;
+
+    void* ptr_;
     const pagesize_t pageSize_;
     const entrysize_t entrySize_;
     const indexsize_t indexMask_;

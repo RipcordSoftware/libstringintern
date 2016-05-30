@@ -34,9 +34,10 @@ using namespace std;
 int main() {
     
     const auto pageSize = 2 * 1024 * 1024;
+    std::vector<char> pageBuffer(pageSize);
     const auto pageEntries = 256;
 
-    rs::stringintern::StringPage page(pageSize, pageEntries);
+    rs::stringintern::StringPage page(pageBuffer.data(), pageSize, pageEntries);
     
     const char* str = "Hello world";
     const auto len = std::strlen(str);

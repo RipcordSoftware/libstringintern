@@ -32,16 +32,16 @@
 
 const rs::stringintern::StringPage::indexsize_t rs::stringintern::StringPage::InvalidIndex = -1;
 
-rs::stringintern::StringPage::StringPage(pagesize_t pageSize, entrysize_t entrySize)
-    : ptr_(nullptr), pageSize_(pageSize), entrySize_(entrySize), indexMask_((pageSize / entrySize) - 1) {
+rs::stringintern::StringPage::StringPage(void* ptr, pagesize_t pageSize, entrysize_t entrySize) noexcept
+    : ptr_(ptr), pageSize_(pageSize), entrySize_(entrySize), indexMask_((pageSize / entrySize) - 1) {
     
 }
 
-rs::stringintern::StringPage::entrysize_t rs::stringintern::StringPage::EntrySize() const {
+rs::stringintern::StringPage::entrysize_t rs::stringintern::StringPage::EntrySize() const noexcept {
     return entrySize_;
 }
 
-rs::stringintern::StringPage::countsize_t rs::stringintern::StringPage::EntryCount() const {
+rs::stringintern::StringPage::countsize_t rs::stringintern::StringPage::EntryCount() const noexcept {
     return pageSize_ / entrySize_;
 }
 
@@ -49,12 +49,9 @@ rs::stringintern::StringPage::indexsize_t rs::stringintern::StringPage::Add(cons
     if (CalculateEntrySize(len) >= entrySize_) {
         throw StringInternException("Bad string size for page");
     }
-    
-    std::call_once(ptrFlag_, &StringPage::AllocPage, this);
-    
+            
     auto index = hash & indexMask_;
-    auto offset = index * entrySize_;
-    auto entry = reinterpret_cast<Entry*>(ptr_ + offset);
+    auto entry = GetEntry(ptr_, entrySize_, index);
     
     auto entryHash = entry->hash.load(std::memory_order_relaxed);
     std::atomic_thread_fence(std::memory_order_acquire);
@@ -70,10 +67,12 @@ rs::stringintern::StringPage::indexsize_t rs::stringintern::StringPage::Add(cons
     return index;
 }
 
-rs::stringintern::StringPage::entrysize_t rs::stringintern::StringPage::CalculateEntrySize(std::size_t len) {
+rs::stringintern::StringPage::entrysize_t rs::stringintern::StringPage::CalculateEntrySize(std::size_t len) noexcept {
     return overheadSize_ + len;    
 }
 
-void rs::stringintern::StringPage::AllocPage() {
-    ptr_ = new char[pageSize_];
+rs::stringintern::StringPage::Entry* rs::stringintern::StringPage::GetEntry(void* pagePtr, entrysize_t entrySize, indexsize_t index) noexcept {
+    auto ptr = reinterpret_cast<std::uintptr_t>(pagePtr);
+    ptr += index * entrySize;
+    return reinterpret_cast<Entry*>(ptr);
 }
