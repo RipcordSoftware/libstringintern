@@ -26,6 +26,7 @@
 #define	RS_LIBSTRINGINTERN_STRING_HASH_H
 
 #include <cstdint>
+#include <cstddef>
 
 namespace rs {
 namespace stringintern {
