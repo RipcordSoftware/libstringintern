@@ -47,8 +47,9 @@ TEST_F(StringPageTests, test0) {
     const auto pageEntrySize = 256;
     const auto pageEntries = pageSize / pageEntrySize;
 
-    rs::stringintern::StringPage page(pageBuffer.data(), pageSize, pageEntrySize);
+    rs::stringintern::StringPage page(42, pageBuffer.data(), pageEntries, pageEntrySize);
     
+    ASSERT_EQ(42, page.Number());
     ASSERT_EQ(pageEntries, page.EntryCount());
     ASSERT_EQ(pageEntrySize, page.EntrySize());
     
@@ -63,9 +64,10 @@ TEST_F(StringPageTests, test1) {
     ASSERT_THROW({
         const auto pageSize = 2 * 1024 * 1024;
         const auto pageEntrySize = 256;
+        const auto pageEntries = pageSize / pageEntrySize;
         std::vector<char> pageBuffer(pageSize);    
 
-        rs::stringintern::StringPage page(pageBuffer.data(), pageSize, pageEntrySize);
+        rs::stringintern::StringPage page(42, pageBuffer.data(), pageEntries, pageEntrySize);
 
         const char* str = "I am a placebo";
         const auto len = 1024;
@@ -80,8 +82,9 @@ TEST_F(StringPageTests, test2) {
     const auto pageEntrySize = 256;
     const auto pageEntries = pageSize / pageEntrySize;
 
-    rs::stringintern::StringPage page(pageBuffer.data(), pageSize, pageEntrySize);
+    rs::stringintern::StringPage page(42, pageBuffer.data(), pageEntries, pageEntrySize);
     
+    ASSERT_EQ(42, page.Number());
     ASSERT_EQ(pageEntries, page.EntryCount());
     ASSERT_EQ(pageEntrySize, page.EntrySize());
     

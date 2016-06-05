@@ -39,6 +39,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/string_hash.o \
 	${OBJECTDIR}/string_intern.o \
 	${OBJECTDIR}/string_page.o \
+	${OBJECTDIR}/string_page_sizes.o \
 	${OBJECTDIR}/string_pages.o \
 	${OBJECTDIR}/string_reference.o
 
@@ -48,7 +49,9 @@ TESTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tests
 # Test Files
 TESTFILES= \
 	${TESTDIR}/TestFiles/f2 \
-	${TESTDIR}/TestFiles/f1
+	${TESTDIR}/TestFiles/f1 \
+	${TESTDIR}/TestFiles/f3 \
+	${TESTDIR}/TestFiles/f4
 
 # C Compiler Flags
 CFLAGS=
@@ -96,6 +99,11 @@ ${OBJECTDIR}/string_page.o: string_page.cpp
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -I../../externals/xxHash -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/string_page.o string_page.cpp
 
+${OBJECTDIR}/string_page_sizes.o: string_page_sizes.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -I../../externals/xxHash -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/string_page_sizes.o string_page_sizes.cpp
+
 ${OBJECTDIR}/string_pages.o: string_pages.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
@@ -119,6 +127,14 @@ ${TESTDIR}/TestFiles/f1: ${TESTDIR}/tests/string_page_tests.o ${OBJECTFILES:%.o=
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.cc}   -o ${TESTDIR}/TestFiles/f1 $^ ${LDLIBSOPTIONS} ../../externals/installed/lib/libgtest.a ../../externals/installed/lib/libgtest_main.a -lpthread -latomic 
 
+${TESTDIR}/TestFiles/f3: ${TESTDIR}/tests/string_page_sizes_tests.o ${OBJECTFILES:%.o=%_nomain.o}
+	${MKDIR} -p ${TESTDIR}/TestFiles
+	${LINK.cc}   -o ${TESTDIR}/TestFiles/f3 $^ ${LDLIBSOPTIONS} ../../externals/installed/lib/libgtest.a ../../externals/installed/lib/libgtest_main.a -lpthread -latomic 
+
+${TESTDIR}/TestFiles/f4: ${TESTDIR}/tests/string_reference_tests.o ${OBJECTFILES:%.o=%_nomain.o}
+	${MKDIR} -p ${TESTDIR}/TestFiles
+	${LINK.cc}   -o ${TESTDIR}/TestFiles/f4 $^ ${LDLIBSOPTIONS} ../../externals/installed/lib/libgtest.a ../../externals/installed/lib/libgtest_main.a -lpthread -latomic 
+
 
 ${TESTDIR}/tests/string_hash_tests.o: tests/string_hash_tests.cpp 
 	${MKDIR} -p ${TESTDIR}/tests
@@ -130,6 +146,18 @@ ${TESTDIR}/tests/string_page_tests.o: tests/string_page_tests.cpp
 	${MKDIR} -p ${TESTDIR}/tests
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -I../../externals/xxHash -I../../externals/installed/include -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${TESTDIR}/tests/string_page_tests.o tests/string_page_tests.cpp
+
+
+${TESTDIR}/tests/string_page_sizes_tests.o: tests/string_page_sizes_tests.cpp 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -I../../externals/xxHash -I../../externals/installed/include -I. -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${TESTDIR}/tests/string_page_sizes_tests.o tests/string_page_sizes_tests.cpp
+
+
+${TESTDIR}/tests/string_reference_tests.o: tests/string_reference_tests.cpp 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -I../../externals/xxHash -I../../externals/installed/include -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${TESTDIR}/tests/string_reference_tests.o tests/string_reference_tests.cpp
 
 
 ${OBJECTDIR}/_ext/1406610357/xxhash_nomain.o: ${OBJECTDIR}/_ext/1406610357/xxhash.o ../../externals/xxHash/xxhash.c 
@@ -184,6 +212,19 @@ ${OBJECTDIR}/string_page_nomain.o: ${OBJECTDIR}/string_page.o string_page.cpp
 	    ${CP} ${OBJECTDIR}/string_page.o ${OBJECTDIR}/string_page_nomain.o;\
 	fi
 
+${OBJECTDIR}/string_page_sizes_nomain.o: ${OBJECTDIR}/string_page_sizes.o string_page_sizes.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/string_page_sizes.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -O2 -I../../externals/xxHash -std=c++11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/string_page_sizes_nomain.o string_page_sizes.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/string_page_sizes.o ${OBJECTDIR}/string_page_sizes_nomain.o;\
+	fi
+
 ${OBJECTDIR}/string_pages_nomain.o: ${OBJECTDIR}/string_pages.o string_pages.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/string_pages.o`; \
@@ -216,6 +257,8 @@ ${OBJECTDIR}/string_reference_nomain.o: ${OBJECTDIR}/string_reference.o string_r
 	then  \
 	    ${TESTDIR}/TestFiles/f2 || true; \
 	    ${TESTDIR}/TestFiles/f1 || true; \
+	    ${TESTDIR}/TestFiles/f3 || true; \
+	    ${TESTDIR}/TestFiles/f4 || true; \
 	else  \
 	    ./${TEST} || true; \
 	fi

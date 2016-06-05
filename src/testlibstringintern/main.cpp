@@ -22,26 +22,43 @@
  * THE SOFTWARE.
 **/
 
+#include <iostream>
+
 #include <cstdlib>
 #include <cstring>
+#include <vector>
 
 #include "string_intern.h"
 
 #include "string_page.h"
+#include "string_page_sizes.h"
+#include "string_pages.h"
 
 using namespace std;
 
 int main() {
     
-    const auto pageSize = 2 * 1024 * 1024;
+    /*const auto pageSize = 2 * 1024 * 1024;
     std::vector<char> pageBuffer(pageSize);
     const auto pageEntries = 256;
 
-    rs::stringintern::StringPage page(pageBuffer.data(), pageSize, pageEntries);
+    rs::stringintern::StringPage page(pageBuffer.data(), pageSize / pageEntries, pageEntries);
     
     const char* str = "Hello world";
     const auto len = std::strlen(str);
     page.Add(str, len, 11234);
     page.Add(str, len, 11234);
-    page.Add(str, len, 11234 + (pageSize / pageEntries));
+    page.Add(str, len, 11234 + (pageSize / pageEntries));*/
+    
+    /*std::cout << rs::stringintern::StringPageSizes::GetPageSizeIndex(0) << std::endl;
+    std::cout << rs::stringintern::StringPageSizes::GetPageSizeIndex(256) << std::endl;
+    std::cout << rs::stringintern::StringPageSizes::GetPageSizeIndex(456) << std::endl;
+    std::cout << rs::stringintern::StringPageSizes::GetPageSizeIndex(16365) << std::endl;
+    std::cout << rs::stringintern::StringPageSizes::GetPageSizeIndex(256 * 1024) << std::endl;
+    
+    std::cout << rs::stringintern::StringPageSizes::pageSizesMaxIndex << std::endl;*/
+    
+    rs::stringintern::StringPages pages;
+    pages.Add("hello world");
+    pages.Add("hello world");
 }

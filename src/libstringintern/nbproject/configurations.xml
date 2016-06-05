@@ -8,6 +8,7 @@
       <itemPath>string_intern.h</itemPath>
       <itemPath>string_intern_exception.h</itemPath>
       <itemPath>string_page.h</itemPath>
+      <itemPath>string_page_sizes.h</itemPath>
       <itemPath>string_pages.h</itemPath>
       <itemPath>string_reference.h</itemPath>
     </logicalFolder>
@@ -17,6 +18,7 @@
       <itemPath>string_hash.cpp</itemPath>
       <itemPath>string_intern.cpp</itemPath>
       <itemPath>string_page.cpp</itemPath>
+      <itemPath>string_page_sizes.cpp</itemPath>
       <itemPath>string_pages.cpp</itemPath>
       <itemPath>string_reference.cpp</itemPath>
       <itemPath>../../externals/xxHash/xxhash.c</itemPath>
@@ -36,6 +38,18 @@
                      projectFiles="true"
                      kind="TEST">
         <itemPath>tests/string_page_tests.cpp</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f3"
+                     displayName="StringPageSizes Tests"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>tests/string_page_sizes_tests.cpp</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f4"
+                     displayName="StringReference Tests"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>tests/string_reference_tests.cpp</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
@@ -112,6 +126,38 @@
           <output>${TESTDIR}/TestFiles/f2</output>
         </linkerTool>
       </folder>
+      <folder path="TestFiles/f3">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f3</output>
+        </linkerTool>
+      </folder>
+      <folder path="TestFiles/f4">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f4</output>
+        </linkerTool>
+      </folder>
       <item path="string_hash.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="string_hash.h" ex="false" tool="3" flavor2="0">
@@ -126,6 +172,10 @@
       </item>
       <item path="string_page.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="string_page_sizes.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="string_page_sizes.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="string_pages.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="string_pages.h" ex="false" tool="3" flavor2="0">
@@ -136,7 +186,11 @@
       </item>
       <item path="tests/string_hash_tests.cpp" ex="false" tool="1" flavor2="0">
       </item>
+      <item path="tests/string_page_sizes_tests.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="tests/string_page_tests.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/string_reference_tests.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
     <conf name="Release" type="3">
@@ -213,6 +267,38 @@
           <output>${TESTDIR}/TestFiles/f2</output>
         </linkerTool>
       </folder>
+      <folder path="TestFiles/f3">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f3</output>
+        </linkerTool>
+      </folder>
+      <folder path="TestFiles/f4">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f4</output>
+        </linkerTool>
+      </folder>
       <item path="string_hash.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="string_hash.h" ex="false" tool="3" flavor2="0">
@@ -227,6 +313,10 @@
       </item>
       <item path="string_page.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="string_page_sizes.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="string_page_sizes.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="string_pages.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="string_pages.h" ex="false" tool="3" flavor2="0">
@@ -237,7 +327,11 @@
       </item>
       <item path="tests/string_hash_tests.cpp" ex="false" tool="1" flavor2="0">
       </item>
+      <item path="tests/string_page_sizes_tests.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="tests/string_page_tests.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/string_reference_tests.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
   </confs>

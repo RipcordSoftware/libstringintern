@@ -31,21 +31,31 @@ namespace rs {
 namespace stringintern {
 
 class StringReference {
-public:
-    StringReference();
-    StringReference(uint32_t);
-    StringReference(const StringReference&);
+public:        
+    using pagenumber_t = std::uint16_t;
+    using pageindex_t = std::uint32_t;
+    using reference_t = std::uint32_t;
     
-    bool operator!() { return reference_ != invalid_; }
+    StringReference() noexcept;
+    StringReference(pagenumber_t, pageindex_t);
+    StringReference(const StringReference&) noexcept;
     
-    uint16_t Page() const;
-    uint16_t Index() const;
+    bool operator!() const noexcept { return reference_ == invalid_; }
+    
+    StringReference& operator=(const StringReference& other) noexcept { reference_ = other.reference_; }
+    bool operator==(const StringReference& other) noexcept { return reference_ == other.reference_; }
+    bool operator!=(const StringReference& other) noexcept { return reference_ != other.reference_; }
+
+    pagenumber_t Page() const noexcept;
+    pageindex_t Index() const noexcept;
 
 private:
+    const std::uint16_t indexBits_ = 18;
+    reference_t indexMask_ = ((1 << indexBits_) - 1);
     
-    const uint32_t invalid_ = -1;
+    reference_t invalid_ = -1;
     
-    uint32_t reference_;
+    reference_t reference_;
 
 };
 

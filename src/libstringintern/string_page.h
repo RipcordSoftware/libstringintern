@@ -25,7 +25,6 @@
 #ifndef RS_LIBSTRINGINTERN_STRING_PAGE_H
 #define	RS_LIBSTRINGINTERN_STRING_PAGE_H
 
-#include <memory>
 #include <atomic>
 #include <cstddef>
 
@@ -36,21 +35,23 @@ namespace stringintern {
 
 class StringPage {
     
-public:    
-    using pagesize_t = std::uint32_t;
+public:
     using entrysize_t = std::uint32_t;
     using countsize_t = std::uint32_t;
     using indexsize_t = std::uint32_t;
+    using pagenumber_t = std::uint16_t;
     
     const static indexsize_t InvalidIndex;
     
-    StringPage(void* ptr, pagesize_t pageSize, entrysize_t entrySize) noexcept;
+    StringPage(pagenumber_t number, void* ptr, countsize_t entryCount, entrysize_t entrySize) noexcept;
     
     indexsize_t Add(const char*, std::size_t, StringHash::Hash);
     const char* Get(StringHash::Hash) const noexcept;
     
     entrysize_t EntrySize() const noexcept;
-    countsize_t EntryCount() const noexcept;       
+    countsize_t EntryCount() const noexcept;
+    
+    pagenumber_t Number() const noexcept;
 
 private:
     
@@ -74,16 +75,13 @@ private:
         return reinterpret_cast<Entry*>(ptr);
     }   
     
-    void AllocPage();
-    
-    void* ptr_;
-    const pagesize_t pageSize_;
+    const pagenumber_t number_;
+    const void* ptr_;
+    const countsize_t entryCount_;
     const entrysize_t entrySize_;
     const indexsize_t indexMask_;
-    static const entrysize_t overheadSize_ = offsetof(Entry, str) + 1;
+    const entrysize_t overheadSize_ = offsetof(Entry, str) + 1;
 };
-
-using string_page_ptr = std::shared_ptr<StringPage>;
 
 }}
 

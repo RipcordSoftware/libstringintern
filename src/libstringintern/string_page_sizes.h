@@ -22,43 +22,45 @@
  * THE SOFTWARE.
 **/
 
-#ifndef RS_LIBSTRINGINTERN_STRING_PAGES_H
-#define	RS_LIBSTRINGINTERN_STRING_PAGES_H
+#ifndef RS_LIBSTRINGINTERN_STRING_PAGE_SIZES_H
+#define RS_LIBSTRINGINTERN_STRING_PAGE_SIZES_H
 
 #include "string_page.h"
-#include "string_reference.h"
 
-#include <array>
-#include <atomic>
-#include <memory>
-#include <cstddef>
+#include <limits>
 
 namespace rs {
 namespace stringintern {
 
-class StringPages {
-    
+class StringPageSizes {
 public:
-    StringPages();
+    class Index {
+    public:
+        Index() : index_(std::numeric_limits<StringPage::countsize_t>::max()) {}
+        Index(StringPage::countsize_t index) : index_(index) {}
+        
+        operator StringPage::countsize_t() const noexcept { return index_; }
+        
+        bool operator!() const noexcept { return index_ == std::numeric_limits<StringPage::countsize_t>::max(); }
+        
+    private:
+        const StringPage::countsize_t index_;
+    };
     
-    StringReference Add(const char*);
-    StringReference Add(const char*, std::size_t, StringHash::Hash);
+    StringPageSizes() = delete;
+    StringPageSizes(const StringPageSizes&) = delete;
+    
+    static Index GetPageSizeIndex(std::size_t len);
+    static StringPage::entrysize_t GetPageEntrySize(const Index&);
+    
+    const static StringPage::countsize_t pageSizes[];
+    const static StringPage::countsize_t pageSizesMaxIndex;
     
 private:
-    
-    StringPage* AllocatePage(std::uint32_t nurseryIndex, StringPage::entrysize_t);
-    
-    static const std::uint32_t nurseryRowSize_ = 8;
-    static const std::uint32_t stringPageSizeBytes_ = 4 * 1024 * 1024;
-    
-    std::atomic<StringPage::pagenumber_t> pageCount_ = ATOMIC_VAR_INIT(0);
-
-    std::array<std::atomic<std::uint32_t>, nurseryRowSize_> nurseryCounters_;
-    std::unique_ptr<std::atomic<StringPage*>[]> nursery_;
 
 };
 
 }}
 
-#endif	/* RS_LIBSTRINGINTERN_STRING_PAGES_H */
+#endif	/* RS_LIBSTRINGINTERN_STRING_PAGE_SIZES_H */
 
