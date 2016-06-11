@@ -41,7 +41,7 @@ protected:
 public:
     
     // linear search for the right entry in the page size array
-    static rs::stringintern::StringPageSizes::Index GetPageSizeIndex(rs::stringintern::StringPage::countsize_t len) {
+    static rs::stringintern::StringPageSizes::Index GetPageSizeIndex(rs::stringintern::StringPage::entrycount_t len) {
         for (auto i = 0; i < rs::stringintern::StringPageSizes::pageSizesMaxIndex; ++i) {
             if (len <= rs::stringintern::StringPageSizes::pageSizes[i]) {
                 return i;

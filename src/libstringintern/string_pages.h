@@ -25,8 +25,9 @@
 #ifndef RS_LIBSTRINGINTERN_STRING_PAGES_H
 #define	RS_LIBSTRINGINTERN_STRING_PAGES_H
 
-#include "string_page.h"
 #include "string_reference.h"
+#include "string_page_nursery.h"
+#include "string_page_catalog.h"
 
 #include <array>
 #include <atomic>
@@ -45,17 +46,13 @@ public:
     StringReference Add(const char*, std::size_t, StringHash::Hash);
     
 private:
-    
-    StringPage* AllocatePage(std::uint32_t nurseryIndex, StringPage::entrysize_t);
-    
-    static const std::uint32_t nurseryRowSize_ = 8;
-    static const std::uint32_t stringPageSizeBytes_ = 4 * 1024 * 1024;
-    
-    std::atomic<StringPage::pagenumber_t> pageCount_ = ATOMIC_VAR_INIT(0);
+       
+    static const StringPageNursery::colcount_t nurseryCols_ = 8;
+    static const StringPageNursery::pagesize_t stringPageSizeBytes_ = 4 * 1024 * 1024;
+    static const StringPageNursery::colcount_t catalogCols_ = 4096;
 
-    std::array<std::atomic<std::uint32_t>, nurseryRowSize_> nurseryCounters_;
-    std::unique_ptr<std::atomic<StringPage*>[]> nursery_;
-
+    StringPageNursery nursery_;
+    StringPageCatalog catalog_;
 };
 
 }}

@@ -26,9 +26,11 @@
 #define	RS_LIBSTRINGINTERN_STRING_PAGE_H
 
 #include <atomic>
+#include <vector>
 #include <cstddef>
 
 #include "string_hash.h"
+#include "string_reference.h"
 
 namespace rs {
 namespace stringintern {
@@ -37,50 +39,43 @@ class StringPage {
     
 public:
     using entrysize_t = std::uint32_t;
-    using countsize_t = std::uint32_t;
+    using entrycount_t = std::uint32_t;
     using indexsize_t = std::uint32_t;
     using pagenumber_t = std::uint16_t;
     
     const static indexsize_t InvalidIndex;
     
-    StringPage(pagenumber_t number, void* ptr, countsize_t entryCount, entrysize_t entrySize) noexcept;
+    StringPage(pagenumber_t number, char* ptr, entrycount_t entryCount, entrysize_t entrySize) noexcept;
+    StringPage(const StringPage&) = delete;
+    StringPage(const StringPage&&) = delete;
+    void operator=(const StringPage&) = delete;
     
     indexsize_t Add(const char*, std::size_t, StringHash::Hash);
-    const char* Get(StringHash::Hash) const noexcept;
+    const char* GetString(StringHash::Hash) const noexcept;
+    StringReference GetReference(StringHash::Hash) const noexcept;
     
     entrysize_t EntrySize() const noexcept;
-    countsize_t EntryCount() const noexcept;
+    entrycount_t EntryCount() const noexcept;
     
     pagenumber_t Number() const noexcept;
 
 private:
     
-#pragma pack(push)
-#pragma pack(1)
     struct Entry {
     public:
+        Entry() : hash(0), length(0) {
+        }
+        
         std::atomic<StringHash::Hash> hash;
         entrysize_t length;
-        char str[0]{};
     };
-#pragma pack(pop)
-    
-    inline entrysize_t CalculateEntrySize(std::size_t len) const noexcept { 
-        return overheadSize_ + len; 
-    }
-    
-    inline Entry* GetEntry(indexsize_t index) const noexcept {
-        auto ptr = reinterpret_cast<std::uintptr_t>(ptr_);
-        ptr += index * entrySize_;
-        return reinterpret_cast<Entry*>(ptr);
-    }   
     
     const pagenumber_t number_;
-    const void* ptr_;
-    const countsize_t entryCount_;
+    char* const ptr_;
     const entrysize_t entrySize_;
     const indexsize_t indexMask_;
-    const entrysize_t overheadSize_ = offsetof(Entry, str) + 1;
+    
+    std::vector<Entry> entries_;
 };
 
 }}

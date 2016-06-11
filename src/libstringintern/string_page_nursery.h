@@ -22,45 +22,53 @@
  * THE SOFTWARE.
 **/
 
-#ifndef RS_LIBSTRINGINTERN_STRING_PAGE_SIZES_H
-#define RS_LIBSTRINGINTERN_STRING_PAGE_SIZES_H
+#ifndef RS_LIBSTRINGINTERN_STRING_PAGE_NURSERY_H
+#define	RS_LIBSTRINGINTERN_STRING_PAGE_NURSERY_H
+
+#include <atomic>
+#include <memory>
+#include <cstddef>
 
 #include "string_page.h"
-
-#include <limits>
 
 namespace rs {
 namespace stringintern {
 
-class StringPageSizes {
+class StringPageNursery {
 public:
-    class Index {
-    public:
-        Index() : index_(std::numeric_limits<StringPage::entrycount_t>::max()) {}
-        Index(StringPage::entrycount_t index) : index_(index) {}
-        
-        operator StringPage::entrycount_t() const noexcept { return index_; }
-        
-        bool operator!() const noexcept { return index_ == std::numeric_limits<StringPage::entrycount_t>::max(); }
-        
-    private:
-        const StringPage::entrycount_t index_;
-    };
     
-    StringPageSizes() = delete;
-    StringPageSizes(const StringPageSizes&) = delete;
+    using pagesize_t = std::uint32_t;
+    using rowcount_t = std::uint32_t;
+    using colcount_t = std::uint32_t;
     
-    static Index GetPageSizeIndex(std::size_t len);
-    static StringPage::entrysize_t GetPageEntrySize(const Index&);
+    StringPageNursery(colcount_t, rowcount_t, pagesize_t);
+    StringPageNursery(const StringPageNursery&) = delete;
+    void operator=(const StringPageNursery&) = delete;
     
-    const static StringPage::entrycount_t pageSizes[];
-    const static StringPage::entrycount_t pageSizesMaxIndex;
+    StringPage* Next(rowcount_t);
+    StringPage* Current(rowcount_t);
+    StringPage* New(rowcount_t, StringPage*, bool matchPage = false);
+    StringPage* New(rowcount_t, colcount_t, StringPage*, bool matchPage = false);
+    
+    inline rowcount_t Rows() const noexcept { return rows_; }
+    inline colcount_t Cols() const noexcept { return cols_; }
     
 private:
+    
+    StringPage* Get(colcount_t, rowcount_t);
+    
+    std::atomic<StringPage::pagenumber_t> pageCount_;
+    
+    std::unique_ptr<std::atomic<rowcount_t>[]> counters_;
+    std::unique_ptr<std::atomic<StringPage*>[]> data_;
+    
+    const colcount_t cols_;
+    const rowcount_t rows_;
+    const pagesize_t pageSize_;
 
 };
 
 }}
 
-#endif	/* RS_LIBSTRINGINTERN_STRING_PAGE_SIZES_H */
+#endif	/* RS_LIBSTRINGINTERN_STRING_PAGE_NURSERY_H */
 

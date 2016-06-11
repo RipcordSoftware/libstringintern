@@ -39,6 +39,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/string_hash.o \
 	${OBJECTDIR}/string_intern.o \
 	${OBJECTDIR}/string_page.o \
+	${OBJECTDIR}/string_page_catalog.o \
+	${OBJECTDIR}/string_page_nursery.o \
 	${OBJECTDIR}/string_page_sizes.o \
 	${OBJECTDIR}/string_pages.o \
 	${OBJECTDIR}/string_reference.o
@@ -50,6 +52,7 @@ TESTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tests
 TESTFILES= \
 	${TESTDIR}/TestFiles/f2 \
 	${TESTDIR}/TestFiles/f1 \
+	${TESTDIR}/TestFiles/f5 \
 	${TESTDIR}/TestFiles/f3 \
 	${TESTDIR}/TestFiles/f4
 
@@ -99,6 +102,16 @@ ${OBJECTDIR}/string_page.o: string_page.cpp
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -I../../externals/xxHash -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/string_page.o string_page.cpp
 
+${OBJECTDIR}/string_page_catalog.o: string_page_catalog.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -I../../externals/xxHash -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/string_page_catalog.o string_page_catalog.cpp
+
+${OBJECTDIR}/string_page_nursery.o: string_page_nursery.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -I../../externals/xxHash -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/string_page_nursery.o string_page_nursery.cpp
+
 ${OBJECTDIR}/string_page_sizes.o: string_page_sizes.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
@@ -127,6 +140,10 @@ ${TESTDIR}/TestFiles/f1: ${TESTDIR}/tests/string_page_tests.o ${OBJECTFILES:%.o=
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.cc}   -o ${TESTDIR}/TestFiles/f1 $^ ${LDLIBSOPTIONS} ../../externals/installed/lib/libgtest.a ../../externals/installed/lib/libgtest_main.a -lpthread -latomic 
 
+${TESTDIR}/TestFiles/f5: ${TESTDIR}/tests/string_page_catalog_tests.o ${OBJECTFILES:%.o=%_nomain.o}
+	${MKDIR} -p ${TESTDIR}/TestFiles
+	${LINK.cc}   -o ${TESTDIR}/TestFiles/f5 $^ ${LDLIBSOPTIONS} ../../externals/installed/lib/libgtest.a ../../externals/installed/lib/libgtest_main.a -lpthread -latomic 
+
 ${TESTDIR}/TestFiles/f3: ${TESTDIR}/tests/string_page_sizes_tests.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.cc}   -o ${TESTDIR}/TestFiles/f3 $^ ${LDLIBSOPTIONS} ../../externals/installed/lib/libgtest.a ../../externals/installed/lib/libgtest_main.a -lpthread -latomic 
@@ -146,6 +163,12 @@ ${TESTDIR}/tests/string_page_tests.o: tests/string_page_tests.cpp
 	${MKDIR} -p ${TESTDIR}/tests
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -I../../externals/xxHash -I../../externals/installed/include -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${TESTDIR}/tests/string_page_tests.o tests/string_page_tests.cpp
+
+
+${TESTDIR}/tests/string_page_catalog_tests.o: tests/string_page_catalog_tests.cpp 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -I../../externals/xxHash -I../../externals/installed/include -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${TESTDIR}/tests/string_page_catalog_tests.o tests/string_page_catalog_tests.cpp
 
 
 ${TESTDIR}/tests/string_page_sizes_tests.o: tests/string_page_sizes_tests.cpp 
@@ -212,6 +235,32 @@ ${OBJECTDIR}/string_page_nomain.o: ${OBJECTDIR}/string_page.o string_page.cpp
 	    ${CP} ${OBJECTDIR}/string_page.o ${OBJECTDIR}/string_page_nomain.o;\
 	fi
 
+${OBJECTDIR}/string_page_catalog_nomain.o: ${OBJECTDIR}/string_page_catalog.o string_page_catalog.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/string_page_catalog.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -g -I../../externals/xxHash -std=c++11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/string_page_catalog_nomain.o string_page_catalog.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/string_page_catalog.o ${OBJECTDIR}/string_page_catalog_nomain.o;\
+	fi
+
+${OBJECTDIR}/string_page_nursery_nomain.o: ${OBJECTDIR}/string_page_nursery.o string_page_nursery.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/string_page_nursery.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -g -I../../externals/xxHash -std=c++11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/string_page_nursery_nomain.o string_page_nursery.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/string_page_nursery.o ${OBJECTDIR}/string_page_nursery_nomain.o;\
+	fi
+
 ${OBJECTDIR}/string_page_sizes_nomain.o: ${OBJECTDIR}/string_page_sizes.o string_page_sizes.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/string_page_sizes.o`; \
@@ -257,6 +306,7 @@ ${OBJECTDIR}/string_reference_nomain.o: ${OBJECTDIR}/string_reference.o string_r
 	then  \
 	    ${TESTDIR}/TestFiles/f2 || true; \
 	    ${TESTDIR}/TestFiles/f1 || true; \
+	    ${TESTDIR}/TestFiles/f5 || true; \
 	    ${TESTDIR}/TestFiles/f3 || true; \
 	    ${TESTDIR}/TestFiles/f4 || true; \
 	else  \

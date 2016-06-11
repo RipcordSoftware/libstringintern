@@ -8,6 +8,8 @@
       <itemPath>string_intern.h</itemPath>
       <itemPath>string_intern_exception.h</itemPath>
       <itemPath>string_page.h</itemPath>
+      <itemPath>string_page_catalog.h</itemPath>
+      <itemPath>string_page_nursery.h</itemPath>
       <itemPath>string_page_sizes.h</itemPath>
       <itemPath>string_pages.h</itemPath>
       <itemPath>string_reference.h</itemPath>
@@ -18,6 +20,8 @@
       <itemPath>string_hash.cpp</itemPath>
       <itemPath>string_intern.cpp</itemPath>
       <itemPath>string_page.cpp</itemPath>
+      <itemPath>string_page_catalog.cpp</itemPath>
+      <itemPath>string_page_nursery.cpp</itemPath>
       <itemPath>string_page_sizes.cpp</itemPath>
       <itemPath>string_pages.cpp</itemPath>
       <itemPath>string_reference.cpp</itemPath>
@@ -38,6 +42,12 @@
                      projectFiles="true"
                      kind="TEST">
         <itemPath>tests/string_page_tests.cpp</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f5"
+                     displayName="StringPageCatalog Tests"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>tests/string_page_catalog_tests.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f3"
                      displayName="StringPageSizes Tests"
@@ -158,6 +168,21 @@
           <output>${TESTDIR}/TestFiles/f4</output>
         </linkerTool>
       </folder>
+      <folder path="TestFiles/f5">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f5</output>
+        </linkerTool>
+      </folder>
       <item path="string_hash.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="string_hash.h" ex="false" tool="3" flavor2="0">
@@ -172,6 +197,14 @@
       </item>
       <item path="string_page.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="string_page_catalog.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="string_page_catalog.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="string_page_nursery.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="string_page_nursery.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="string_page_sizes.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="string_page_sizes.h" ex="false" tool="3" flavor2="0">
@@ -185,6 +218,11 @@
       <item path="string_reference.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="tests/string_hash_tests.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/string_page_catalog_tests.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
       </item>
       <item path="tests/string_page_sizes_tests.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -299,6 +337,21 @@
           <output>${TESTDIR}/TestFiles/f4</output>
         </linkerTool>
       </folder>
+      <folder path="TestFiles/f5">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f5</output>
+        </linkerTool>
+      </folder>
       <item path="string_hash.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="string_hash.h" ex="false" tool="3" flavor2="0">
@@ -313,6 +366,14 @@
       </item>
       <item path="string_page.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="string_page_catalog.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="string_page_catalog.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="string_page_nursery.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="string_page_nursery.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="string_page_sizes.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="string_page_sizes.h" ex="false" tool="3" flavor2="0">
@@ -326,6 +387,11 @@
       <item path="string_reference.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="tests/string_hash_tests.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/string_page_catalog_tests.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
       </item>
       <item path="tests/string_page_sizes_tests.cpp" ex="false" tool="1" flavor2="0">
       </item>

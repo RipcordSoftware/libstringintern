@@ -91,18 +91,18 @@ TEST_F(StringPageTests, test2) {
     for (auto i = 0; i < pageEntries; ++i) {
         auto val = std::to_string(i);
         ASSERT_EQ(i, page.Add(val.c_str(), val.length(), i));
-        ASSERT_EQ(val, page.Get(i));
+        ASSERT_EQ(val, page.GetString(i));
     }
     
     for (auto i = 0; i < pageEntries; ++i) {
         auto val = std::to_string(i);
         ASSERT_EQ(i, page.Add(val.c_str(), val.length(), i));
-        ASSERT_EQ(val, page.Get(i));
+        ASSERT_EQ(val, page.GetString(i));
     }
     
     for (auto i = 0; i < pageEntries; ++i) {
         auto index = pageEntries - i - 1;
         auto val = std::to_string(index);
-        ASSERT_EQ(val, page.Get(index));
+        ASSERT_EQ(val, page.GetString(index));
     }    
 }

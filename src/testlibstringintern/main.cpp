@@ -59,6 +59,11 @@ int main() {
     std::cout << rs::stringintern::StringPageSizes::pageSizesMaxIndex << std::endl;*/
     
     rs::stringintern::StringPages pages;
-    pages.Add("hello world");
-    pages.Add("hello world");
+    auto ref1 = pages.Add("hello world");
+    auto ref2 = pages.Add("hello world");
+    auto ref3 = pages.Add("hello world!!");
+    
+    std::cout << ref1.Page() << ", " << ref1.Index() << std::endl;
+    std::cout << ref2.Page() << ", " << ref2.Index() << std::endl;
+    std::cout << ref3.Page() << ", " << ref3.Index() << std::endl;
 }

@@ -31,8 +31,8 @@
 #include <algorithm>
 
 rs::stringintern::StringPages::StringPages() :
-    nursery_(new std::atomic<StringPage*>[nurseryRowSize_ * StringPageSizes::pageSizesMaxIndex]) {
-    std::fill(nurseryCounters_.begin(), nurseryCounters_.end(), 0);
+    nursery_(nurseryCols_, StringPageSizes::pageSizesMaxIndex, stringPageSizeBytes_),
+    catalog_(catalogCols_, StringPageSizes::pageSizesMaxIndex) {   
 }
 
 rs::stringintern::StringReference rs::stringintern::StringPages::Add(const char* str) {
@@ -48,51 +48,49 @@ rs::stringintern::StringReference rs::stringintern::StringPages::Add(const char*
 }
 
 rs::stringintern::StringReference rs::stringintern::StringPages::Add(const char* str, std::size_t len, StringHash::Hash hash) {
-    StringReference stringRef;
+    StringReference ref;
     
     if (!!str && len > 0) {
-        auto pageSizeIndex = StringPageSizes::GetPageSizeIndex(len);
-        if (!!pageSizeIndex) {
-            auto start = nurseryCounters_[pageSizeIndex].load(std::memory_order_relaxed);
+        auto row = StringPageSizes::GetPageSizeIndex(len);
+        if (!!row) {
+            ref = catalog_.Find(row, hash);
             
-            StringPage* page = nullptr;
-            auto pageIndex = StringPage::InvalidIndex;
-            for (auto i = start; (i < start + nurseryRowSize_) && pageIndex == StringPage::InvalidIndex; ++i) {
-                auto nurseryIndex = (pageSizeIndex * nurseryRowSize_) + (i % nurseryRowSize_);
-                page = nursery_[nurseryIndex].load(std::memory_order_relaxed);
+            if (!ref) {
+                auto firstPage = nursery_.Current(row);
 
-                if (page == nullptr) {
-                    auto entrySize = StringPageSizes::GetPageEntrySize(pageSizeIndex);                
-                    page = AllocatePage(nurseryIndex, entrySize);
+                auto index = StringPage::InvalidIndex;
+                auto page = firstPage;
+                auto cols = nursery_.Cols();
+
+                // search for a suitable page
+                while (cols > 0 && index == StringPage::InvalidIndex) {
+                    index = page->Add(str, len, hash);
+                    if (index == StringPage::InvalidIndex) {
+                        page = nursery_.Next(row);
+                        --cols;
+                    }
                 }
 
-                pageIndex = page->Add(str, len, hash);
+                // if we didn't find a page then replace the first page and search again
+                if (index == StringPage::InvalidIndex) {
+                    page = nursery_.New(row, firstPage, true);
+
+                    if (page == nullptr) {
+                        page = nursery_.Current(row);
+                    } else {
+                        catalog_.Add(row, firstPage);
+                    }
+
+                    index = page->Add(str, len, hash);
+                }
+
+                // did we find anything?
+                if (index != StringPage::InvalidIndex) {
+                    ref = StringReference(page->Number(), index);
+                }
             }
-            
-            if (pageIndex == StringPage::InvalidIndex) {
-                // TODO: push the page to the archive and create a new one
-            }
-            
-            stringRef = StringReference(page->Number(), pageIndex);
         }        
     }
     
-    return stringRef;
-}
-
-// TODO: store the page in the index table
-rs::stringintern::StringPage* rs::stringintern::StringPages::AllocatePage(std::uint32_t nurseryIndex, StringPage::entrysize_t entrySize) {
-    auto number = pageCount_.fetch_add(1, std::memory_order_relaxed);
-    auto buffer = new char[stringPageSizeBytes_];
-    auto entryCount = stringPageSizeBytes_ / entrySize;
-    auto newPage = new StringPage(number, buffer, entryCount, entrySize);
-                
-    StringPage* page = nullptr;
-    if (nursery_[nurseryIndex].compare_exchange_strong(page, newPage)) {                    
-        page = newPage;
-    } else {                
-        delete[] newPage;
-    }
-    
-    return page;
+    return ref;
 }
