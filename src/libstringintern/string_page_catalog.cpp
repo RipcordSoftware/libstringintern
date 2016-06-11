@@ -24,12 +24,11 @@
 
 #include "string_page_catalog.h"
 
+#include <algorithm>
+
 rs::stringintern::StringPageCatalog::StringPageCatalog(colcount_t cols, rowcount_t rows) :
-    rows_(rows), cols_(cols), totalPages_(0),
-    counters_(new std::atomic<rowcount_t>[rows]),
-    data_(new StringPage*[rows * cols]) {
-    std::fill(&counters_[0], &counters_[rows], 0);
-    std::fill(&data_[0], &data_[rows * cols], nullptr);
+    rows_(rows), cols_(cols), totalPages_(0), counters_(rows), data_(rows * cols) {
+    std::for_each(counters_.begin(), counters_.end(), [&](decltype(counters_[0])& c) { c.store(0, std::memory_order_relaxed); });
 }
 
 bool rs::stringintern::StringPageCatalog::Add(rowcount_t row, StringPage* page) {
@@ -39,7 +38,7 @@ bool rs::stringintern::StringPageCatalog::Add(rowcount_t row, StringPage* page) 
         auto col = counters_[row].fetch_add(1, std::memory_order_relaxed);
         std::atomic_thread_fence(std::memory_order_acquire);
         if (col < cols_) {
-            data_[(rows_ * row) + col] = page;
+            data_[(cols_ * row) + col] = page;
             std::atomic_thread_fence(std::memory_order_release);
             totalPages_.fetch_add(1, std::memory_order_relaxed);
             added = true;
@@ -58,7 +57,7 @@ rs::stringintern::StringReference rs::stringintern::StringPageCatalog::Find(rowc
 
         decltype(cols) i = 0;
         for (; !ref && i < cols; ++i) {
-            auto page = data_[(rows_ * row) + i];
+            auto page = data_[(cols_ * row) + i];
             ref = page->GetReference(hash);
         }
 
@@ -67,7 +66,7 @@ rs::stringintern::StringReference rs::stringintern::StringPageCatalog::Find(rowc
             if (i < cols) {
                 std::atomic_thread_fence(std::memory_order_acquire);
                 for (; !ref && i < cols; ++i) {
-                    auto page = data_[(rows_ * row) + i];
+                    auto page = data_[(cols_ * row) + i];
                     ref = page->GetReference(hash);
                 }
             }

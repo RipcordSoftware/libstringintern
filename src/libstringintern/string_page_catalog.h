@@ -26,7 +26,7 @@
 #define	RS_LIBSTRINGINTERN_STRING_PAGE_CATALOG_H
 
 #include <atomic>
-#include <memory>
+#include <vector>
 
 #include "string_page.h"
 #include "string_hash.h"
@@ -58,8 +58,8 @@ public:
         
 private:
     
-    std::unique_ptr<std::atomic<rowcount_t>[]> counters_;
-    std::unique_ptr<StringPage*[]> data_;
+    std::vector<std::atomic<rowcount_t>> counters_;
+    std::vector<StringPage*> data_;
 
     const colcount_t cols_;
     const rowcount_t rows_;

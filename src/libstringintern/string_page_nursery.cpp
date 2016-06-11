@@ -29,12 +29,10 @@
 
 rs::stringintern::StringPageNursery::StringPageNursery(colcount_t cols, rowcount_t rows, pagesize_t pageSize) :
     rows_(rows), cols_(cols), pageSize_(pageSize), pageCount_(0),
-    counters_(new std::atomic<rowcount_t>[rows]),
-    data_(new std::atomic<StringPage*>[rows * cols]) {
+    counters_(rows), data_(rows * cols) {
     
-    // TODO: replace this with std::atomic_init
-    std::fill(&counters_[0], &counters_[rows], 0);
-    std::fill(&data_[0], &data_[rows * cols], nullptr);
+    std::for_each(counters_.begin(), counters_.end(), [&](decltype(counters_[0])& c) { c.store(0, std::memory_order_relaxed); });
+    std::for_each(data_.begin(), data_.end(), [&](decltype(data_[0])& d) { d.store(nullptr, std::memory_order_relaxed); });
 }
 
 rs::stringintern::StringPage* rs::stringintern::StringPageNursery::Next(rowcount_t row) {
