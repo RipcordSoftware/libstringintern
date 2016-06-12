@@ -75,3 +75,14 @@ rs::stringintern::StringReference rs::stringintern::StringPageCatalog::Find(rowc
     
     return ref;
 }
+
+std::vector<rs::stringintern::StringPage*> rs::stringintern::StringPageCatalog::GetPages(rowcount_t row) const {
+    std::vector<StringPage*> rowPages;
+    rowPages.reserve(cols_);
+    
+    if (row < rows_) {
+        rowPages.insert(rowPages.end(), &data_[cols_ * row], &data_[cols_ * (row + 1)]);
+    }
+    
+    return rowPages;    
+}

@@ -29,6 +29,9 @@
 #include <limits>
 #include <memory>
 #include <algorithm>
+#include <thread>
+#include <atomic>
+#include <mutex>
 
 #include "../string_page_catalog.h"
 
@@ -222,5 +225,64 @@ TEST_F(StringPageCatalogTests, test6) {
         ASSERT_FALSE(catalog.Add(row, page));
         
         pages.emplace_back(page);
+    }
+}
+
+TEST_F(StringPageCatalogTests, test7) {
+    const auto maxThreads = 8;
+    rs::stringintern::StringPageCatalog::rowcount_t testRows = 1;
+    rs::stringintern::StringPageCatalog::colcount_t testCols = 65536;
+    const auto testPages = testRows * testCols;
+    
+    rs::stringintern::StringPageCatalog catalog{testCols, testRows};
+    
+    std::vector<std::shared_ptr<rs::stringintern::StringPage>> pages;
+    pages.reserve(testPages);
+    
+    std::atomic<rs::stringintern::StringPage::pagenumber_t> pageIndex{0};
+    for (auto row = 0; row < catalog.Rows(); ++row) {
+        for (auto col = 0; col < catalog.Cols(); ++col, ++pageIndex) {
+            auto page = new rs::stringintern::StringPage{pageIndex, nullptr, pageEntryCount_, pageEntrySize_};            
+            pages.emplace_back(page);
+        }
+    }
+    
+    pageIndex = 0;
+    std::atomic<bool> thread_wait{true};
+    
+    auto func = [&]() {       
+        while (thread_wait) {
+            std::this_thread::yield();
+        }
+        
+        for (auto row = 0; row < catalog.Rows(); ++row) {
+            auto added = true;
+            for (auto col = 0; added && col < catalog.Cols(); ++col) {
+                auto index = pageIndex.fetch_add(1, std::memory_order_relaxed);
+                auto& page = pages[index];
+                added = catalog.Add(row, page.get());
+            }
+        }
+    };
+    
+    std::vector<std::thread> threads;
+    for (auto i = 0; i < maxThreads; ++i) {
+        threads.emplace_back(func);
+    }    
+    
+    thread_wait = false;        
+    std::for_each(threads.begin(), threads.end(), [](std::thread& t) { t.join(); });
+    
+    ASSERT_EQ(testPages, catalog.Pages());
+    
+    std::vector<bool> pagesFound(catalog.Cols());
+    for (auto row = 0; row < catalog.Rows(); ++row) {
+        auto rowPages = catalog.GetPages(row);
+        
+        ASSERT_EQ(catalog.Cols(), rowPages.size());
+        
+        std::for_each(rowPages.begin(), rowPages.end(), [&](rs::stringintern::StringPage* p) { pagesFound[p->Number()] = true; });
+        
+        ASSERT_EQ(catalog.Cols(), std::count(pagesFound.begin(), pagesFound.end(), true));
     }
 }

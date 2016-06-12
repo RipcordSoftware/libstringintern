@@ -55,6 +55,8 @@ public:
     inline colcount_t Cols() const noexcept { return cols_; }
     
     inline pagecount_t Pages() const noexcept { return totalPages_.load(std::memory_order_relaxed); }
+    
+    std::vector<StringPage*> GetPages(rowcount_t) const;
         
 private:
     
