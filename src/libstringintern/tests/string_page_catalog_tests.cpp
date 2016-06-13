@@ -231,7 +231,7 @@ TEST_F(StringPageCatalogTests, test6) {
 TEST_F(StringPageCatalogTests, test7) {
     const auto maxThreads = 8;
     rs::stringintern::StringPageCatalog::rowcount_t testRows = 1;
-    rs::stringintern::StringPageCatalog::colcount_t testCols = 65536;
+    rs::stringintern::StringPageCatalog::colcount_t testCols = 32768;
     const auto testPages = testRows * testCols;
     
     rs::stringintern::StringPageCatalog catalog{testCols, testRows};
@@ -259,8 +259,12 @@ TEST_F(StringPageCatalogTests, test7) {
             auto added = true;
             for (auto col = 0; added && col < catalog.Cols(); ++col) {
                 auto index = pageIndex.fetch_add(1, std::memory_order_relaxed);
-                auto& page = pages[index];
-                added = catalog.Add(row, page.get());
+                if (index < testPages) {
+                    auto& page = pages[index];
+                    added = catalog.Add(row, page.get());
+                } else {
+                    added = false;
+                }
             }
         }
     };
@@ -278,7 +282,7 @@ TEST_F(StringPageCatalogTests, test7) {
     std::vector<bool> pagesFound(catalog.Cols());
     for (auto row = 0; row < catalog.Rows(); ++row) {
         auto rowPages = catalog.GetPages(row);
-        
+
         ASSERT_EQ(catalog.Cols(), rowPages.size());
         
         std::for_each(rowPages.begin(), rowPages.end(), [&](rs::stringintern::StringPage* p) { pagesFound[p->Number()] = true; });
