@@ -61,7 +61,7 @@ public:
 private:
     
     std::vector<std::atomic<rowcount_t>> counters_;
-    std::vector<StringPage*> data_;
+    std::vector<std::atomic<StringPage*>> data_;
 
     const colcount_t cols_;
     const rowcount_t rows_;
