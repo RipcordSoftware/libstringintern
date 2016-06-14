@@ -52,7 +52,7 @@ rs::stringintern::StringPage* rs::stringintern::StringPageNursery::New(rowcount_
     auto buffer = new char[pageSize_];
     auto entrySize = StringPageSizes::GetEntrySize(row);
     auto entryCount = pageSize_ / entrySize;
-    auto newPage = new StringPage(pageNumber, buffer, entryCount, entrySize);
+    auto newPage = StringPage::New(pageNumber, buffer, entryCount, entrySize);
     
     if (!data_[dataIndex].compare_exchange_strong(oldPage, newPage, std::memory_order_relaxed)) {
         delete newPage;

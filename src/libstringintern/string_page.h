@@ -45,12 +45,13 @@ public:
     
     const static indexsize_t InvalidIndex;
     
-    StringPage(pagenumber_t number, char* ptr, entrycount_t entryCount, entrysize_t entrySize) noexcept;
+    static StringPage* New(pagenumber_t number, char* ptr, entrycount_t entryCount, entrysize_t entrySize);
+
     StringPage(const StringPage&) = delete;
     StringPage(const StringPage&&) = delete;
     void operator=(const StringPage&) = delete;
     
-    indexsize_t Add(const char*, std::size_t, StringHash::Hash);
+    indexsize_t Add(const char*, entrysize_t, StringHash::Hash);
     const char* GetString(StringHash::Hash) const noexcept;
     StringReference GetReference(StringHash::Hash) const noexcept;
     
@@ -58,6 +59,9 @@ public:
     entrycount_t EntryCount() const noexcept;
     
     pagenumber_t Number() const noexcept;
+    
+protected:    
+    StringPage(pagenumber_t number, char* ptr, entrycount_t entryCount, entrysize_t entrySize) noexcept;
 
 private:
     

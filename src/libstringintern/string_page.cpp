@@ -32,6 +32,10 @@
 
 const rs::stringintern::StringPage::indexsize_t rs::stringintern::StringPage::InvalidIndex = -1;
 
+rs::stringintern::StringPage* rs::stringintern::StringPage::New(pagenumber_t number, char* ptr, entrycount_t entryCount, entrysize_t entrySize) {
+    return new StringPage(number, ptr, entryCount, entrySize);
+}
+
 rs::stringintern::StringPage::StringPage(pagenumber_t number, char* ptr, entrycount_t entryCount, entrysize_t entrySize) noexcept
     : number_(number), ptr_(ptr), entrySize_(entrySize), indexMask_(entryCount - 1), entries_(entryCount) {
     
@@ -49,7 +53,7 @@ rs::stringintern::StringPage::pagenumber_t rs::stringintern::StringPage::Number(
     return number_;
 }
 
-rs::stringintern::StringPage::indexsize_t rs::stringintern::StringPage::Add(const char* str, std::size_t len, StringHash::Hash hash) {
+rs::stringintern::StringPage::indexsize_t rs::stringintern::StringPage::Add(const char* str, entrysize_t len, StringHash::Hash hash) {
     if (len >= entrySize_) {
         throw StringInternException("Bad string size for page");
     }

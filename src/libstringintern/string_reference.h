@@ -33,8 +33,7 @@ namespace stringintern {
 class StringReference {
 public:        
     using pagenumber_t = std::uint16_t;
-    using pageindex_t = std::uint32_t;
-    using reference_t = std::uint32_t;
+    using pageindex_t = std::uint32_t;    
     
     StringReference() noexcept;
     StringReference(pagenumber_t, pageindex_t);
@@ -50,6 +49,8 @@ public:
     pageindex_t Index() const noexcept;
 
 private:
+    using reference_t = std::uint32_t;
+    
     const std::uint16_t indexBits_ = 18;
     reference_t indexMask_ = ((1 << indexBits_) - 1);
     
