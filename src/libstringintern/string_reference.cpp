@@ -29,7 +29,7 @@ rs::stringintern::StringReference::StringReference() noexcept : reference_(inval
     
 }
 
-rs::stringintern::StringReference::StringReference(pagenumber_t number, pageindex_t index) {
+rs::stringintern::StringReference::StringReference(reference_t number, reference_t index) {
     if (index > indexMask_) {
         throw StringInternException("StringReference index out of range");
     }
@@ -43,10 +43,10 @@ rs::stringintern::StringReference::StringReference(const StringReference& rhs) n
 
 }
 
-rs::stringintern::StringReference::pagenumber_t rs::stringintern::StringReference::Page() const noexcept {
+rs::stringintern::StringReference::reference_t rs::stringintern::StringReference::Number() const noexcept {
     return reference_ >> indexBits_;
 }
 
-rs::stringintern::StringReference::pageindex_t rs::stringintern::StringReference::Index() const noexcept {
+rs::stringintern::StringReference::reference_t rs::stringintern::StringReference::Index() const noexcept {
     return reference_ & indexMask_;
 }

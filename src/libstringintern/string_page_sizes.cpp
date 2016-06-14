@@ -25,7 +25,7 @@
 #include "string_page_sizes.h"
 
 // TODO: fill out sizes above 32k
-const rs::stringintern::StringPage::entrycount_t rs::stringintern::StringPageSizes::pageSizes[] = {
+const rs::stringintern::StringPage::entrysize_t rs::stringintern::StringPageSizes::pageSizes[] = {
     32, 48, 64, 80, 96, 112, 128, 144, 160, 192, 224, 
     256, 288, 320, 352, 384, 416, 448, 480, 
     512, 576, 640, 704, 768, 832, 896, 960, 
@@ -38,7 +38,7 @@ const rs::stringintern::StringPage::entrycount_t rs::stringintern::StringPageSiz
 
 const rs::stringintern::StringPage::entrycount_t rs::stringintern::StringPageSizes::pageSizesMaxIndex = sizeof(pageSizes) / sizeof(pageSizes[0]);
 
-rs::stringintern::StringPageSizes::Index rs::stringintern::StringPageSizes::GetIndex(std::size_t len) {
+rs::stringintern::StringPageSizes::Index rs::stringintern::StringPageSizes::GetIndex(StringPage::entrysize_t len) {
     auto start = 0;
     auto end = pageSizesMaxIndex;    
     

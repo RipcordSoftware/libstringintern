@@ -31,12 +31,11 @@ namespace rs {
 namespace stringintern {
 
 class StringReference {
-public:        
-    using pagenumber_t = std::uint16_t;
-    using pageindex_t = std::uint32_t;    
+public:            
+    using reference_t = std::uint32_t;
     
     StringReference() noexcept;
-    StringReference(pagenumber_t, pageindex_t);
+    StringReference(reference_t, reference_t);
     StringReference(const StringReference&) noexcept;
     
     bool operator!() const noexcept { return reference_ == invalid_; }
@@ -45,16 +44,27 @@ public:
     bool operator==(const StringReference& other) noexcept { return reference_ == other.reference_; }
     bool operator!=(const StringReference& other) noexcept { return reference_ != other.reference_; }
 
-    pagenumber_t Page() const noexcept;
-    pageindex_t Index() const noexcept;
+    reference_t Number() const noexcept;
+    reference_t Index() const noexcept;
+
+    constexpr static reference_t MaxNumber() { return maxNumber_; }
+    constexpr static reference_t MaxIndex() { return maxIndex_; }
 
 private:
-    using reference_t = std::uint32_t;
     
-    const std::uint16_t indexBits_ = 18;
-    reference_t indexMask_ = ((1 << indexBits_) - 1);
+    using pagenumber_t = std::uint16_t;
+    using pageindex_t = std::uint32_t;
+
+    constexpr static reference_t referenceBits_ = sizeof(reference_t) * 8;
+    constexpr static reference_t indexBits_ = 18;
+    constexpr static reference_t numberBits_ = referenceBits_ - indexBits_;
     
-    reference_t invalid_ = -1;
+    constexpr static reference_t maxNumber_ = 1 << numberBits_;
+    constexpr static reference_t maxIndex_ = 1 << indexBits_;
+
+    constexpr static reference_t indexMask_ = ((1 << indexBits_) - 1);
+
+    constexpr static reference_t invalid_ = -1;
     
     reference_t reference_;
 

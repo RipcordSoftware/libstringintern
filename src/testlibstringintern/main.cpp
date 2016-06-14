@@ -63,7 +63,7 @@ int main() {
     auto ref2 = pages.Add("hello world");
     auto ref3 = pages.Add("hello world!!");
     
-    std::cout << ref1.Page() << ", " << ref1.Index() << std::endl;
-    std::cout << ref2.Page() << ", " << ref2.Index() << std::endl;
-    std::cout << ref3.Page() << ", " << ref3.Index() << std::endl;
+    std::cout << ref1.Number() << ", " << ref1.Index() << std::endl;
+    std::cout << ref2.Number() << ", " << ref2.Index() << std::endl;
+    std::cout << ref3.Number() << ", " << ref3.Index() << std::endl;
 }

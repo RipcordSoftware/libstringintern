@@ -45,7 +45,7 @@ public:
     
     const static indexsize_t InvalidIndex;
     
-    static StringPage* New(pagenumber_t number, char* ptr, entrycount_t entryCount, entrysize_t entrySize);
+    static StringPage* New(std::size_t number, char* ptr, entrycount_t entryCount, entrysize_t entrySize);
 
     StringPage(const StringPage&) = delete;
     StringPage(const StringPage&&) = delete;

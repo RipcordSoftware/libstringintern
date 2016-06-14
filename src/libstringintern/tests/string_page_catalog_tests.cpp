@@ -47,7 +47,7 @@ protected:
     
 public:
     std::shared_ptr<rs::stringintern::StringPage> NewPagePtr(
-        rs::stringintern::StringPage::pagenumber_t number, 
+        std::size_t number, 
         char* ptr, 
         rs::stringintern::StringPage::entrycount_t entryCount, 
         rs::stringintern::StringPage::entrysize_t entrySize) {
@@ -145,12 +145,12 @@ TEST_F(StringPageCatalogTests, test4) {
     auto ref1 = catalog.Find(0, 0);
     ASSERT_TRUE(!!ref1);
     ASSERT_EQ(0, ref1.Index());
-    ASSERT_EQ(0, ref1.Page());
+    ASSERT_EQ(0, ref1.Number());
     
     auto ref2 = catalog.Find(0, 1);
     ASSERT_TRUE(!!ref2);
     ASSERT_EQ(1, ref2.Index());
-    ASSERT_EQ(1, ref2.Page());
+    ASSERT_EQ(1, ref2.Number());
     
     ASSERT_FALSE(!!catalog.Find(0, 2));
     
@@ -181,12 +181,12 @@ TEST_F(StringPageCatalogTests, test5) {
     auto ref1 = catalog.Find(1, 0);
     ASSERT_TRUE(!!ref1);
     ASSERT_EQ(0, ref1.Index());
-    ASSERT_EQ(0, ref1.Page());
+    ASSERT_EQ(0, ref1.Number());
     
     auto ref2 = catalog.Find(1, 1);
     ASSERT_TRUE(!!ref2);
     ASSERT_EQ(1, ref2.Index());
-    ASSERT_EQ(1, ref2.Page());
+    ASSERT_EQ(1, ref2.Number());
     
     ASSERT_FALSE(!!catalog.Find(0, 0));
     ASSERT_FALSE(!!catalog.Find(0, 2));
@@ -267,7 +267,7 @@ TEST_F(StringPageCatalogTests, test6) {
 TEST_F(StringPageCatalogTests, test7) {
     const auto maxThreads = 8;
     const rs::stringintern::StringPageCatalog::rowcount_t testRows = 1;
-    const rs::stringintern::StringPageCatalog::colcount_t testCols = 32768;
+    const rs::stringintern::StringPageCatalog::colcount_t testCols = rs::stringintern::StringReference::MaxNumber();
     const auto testPages = testRows * testCols;
     
     rs::stringintern::StringPageCatalog catalog{testCols, testRows};
@@ -331,7 +331,7 @@ TEST_F(StringPageCatalogTests, test7) {
 TEST_F(StringPageCatalogTests, test8) {
     const auto maxThreads = 8;
     rs::stringintern::StringPageCatalog::rowcount_t testRows = maxThreads;
-    rs::stringintern::StringPageCatalog::colcount_t testCols = 32768 / maxThreads;
+    rs::stringintern::StringPageCatalog::colcount_t testCols = rs::stringintern::StringReference::MaxNumber() / maxThreads;
     rs::stringintern::StringPage::pagenumber_t testPages = testRows * testCols;
     
     rs::stringintern::StringPageCatalog catalog{testCols, testRows};

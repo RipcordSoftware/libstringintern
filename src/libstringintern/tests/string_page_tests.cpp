@@ -27,6 +27,7 @@
 #include <cstring>
 #include <string>
 #include <memory>
+#include <limits>
 
 #include "../string_page.h"
 #include "../string_intern_exception.h"
@@ -43,7 +44,7 @@ protected:
     
 public:
     std::shared_ptr<rs::stringintern::StringPage> NewPagePtr(
-        rs::stringintern::StringPage::pagenumber_t number,
+        std::size_t number,
         char* ptr, 
         rs::stringintern::StringPage::entrycount_t entryCount,
         rs::stringintern::StringPage::entrysize_t entrySize) {
@@ -115,4 +116,17 @@ TEST_F(StringPageTests, test2) {
         auto val = std::to_string(index);
         ASSERT_EQ(val, page->GetString(index));
     }    
+}
+
+TEST_F(StringPageTests, test3) {
+    const auto pageSize = 2 * 1024 * 1024;
+    std::vector<char> pageBuffer(pageSize);
+    const auto pageEntrySize = 256;
+    const auto pageEntries = pageSize / pageEntrySize;
+    
+    auto page1 = NewPagePtr(std::numeric_limits<std::uint16_t>::max(), pageBuffer.data(), pageEntries, pageEntrySize);
+    ASSERT_EQ(nullptr, page1.get());
+    
+    auto page2 = NewPagePtr(std::numeric_limits<std::uint32_t>::max(), pageBuffer.data(), pageEntries, pageEntrySize);
+    ASSERT_EQ(nullptr, page2.get());
 }

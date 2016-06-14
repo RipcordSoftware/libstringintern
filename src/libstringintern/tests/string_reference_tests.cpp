@@ -52,7 +52,7 @@ TEST_F(StringReferenceTests, test1) {
     rs::stringintern::StringReference ref{1, 42};
     ASSERT_TRUE(!!ref);
     ASSERT_FALSE(!ref);
-    ASSERT_EQ(1, ref.Page());
+    ASSERT_EQ(1, ref.Number());
     ASSERT_EQ(42, ref.Index());
 }
 
@@ -61,11 +61,11 @@ TEST_F(StringReferenceTests, test2) {
     rs::stringintern::StringReference ref2{ref1};
     ASSERT_TRUE(!!ref1);
     ASSERT_FALSE(!ref1);
-    ASSERT_EQ(1, ref1.Page());
+    ASSERT_EQ(1, ref1.Number());
     ASSERT_EQ(42, ref1.Index());
     ASSERT_TRUE(!!ref2);
     ASSERT_FALSE(!ref2);
-    ASSERT_EQ(1, ref2.Page());
+    ASSERT_EQ(1, ref2.Number());
     ASSERT_EQ(42, ref2.Index());
     ASSERT_TRUE(ref1 == ref2);
 }
@@ -82,8 +82,7 @@ TEST_F(StringReferenceTests, test3) {
 
 TEST_F(StringReferenceTests, test4) {
     ASSERT_THROW({
-        rs::stringintern::StringReference ref(0, 
-            std::numeric_limits<rs::stringintern::StringReference::pageindex_t>::max());
+        rs::stringintern::StringReference ref(0, rs::stringintern::StringReference::MaxIndex());
     }, rs::stringintern::StringInternException);
 }
 
