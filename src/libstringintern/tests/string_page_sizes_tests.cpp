@@ -42,8 +42,8 @@ public:
     
     // linear search for the right entry in the page size array
     static rs::stringintern::StringPageSizes::Index GetPageSizeIndex(rs::stringintern::StringPage::entrycount_t len) {
-        for (auto i = 0; i < rs::stringintern::StringPageSizes::pageSizesMaxIndex; ++i) {
-            if (len <= rs::stringintern::StringPageSizes::pageSizes[i]) {
+        for (auto i = 0; i < rs::stringintern::StringPageSizes::GetMaxIndex(); ++i) {
+            if (len <= rs::stringintern::StringPageSizes::GetEntrySize(i)) {
                 return i;
             }
         }
@@ -54,49 +54,49 @@ public:
 
 TEST_F(StringPageSizesTests, test0) {
     auto val = 0;
-    auto result = rs::stringintern::StringPageSizes::GetPageSizeIndex(val);
+    auto result = rs::stringintern::StringPageSizes::GetIndex(val);
     ASSERT_TRUE(!!result);
     ASSERT_EQ(GetPageSizeIndex(val), result);    
 }
 
 TEST_F(StringPageSizesTests, test1) {
     auto val = 15;
-    auto result = rs::stringintern::StringPageSizes::GetPageSizeIndex(val);
+    auto result = rs::stringintern::StringPageSizes::GetIndex(val);
     ASSERT_TRUE(!!result);
     ASSERT_EQ(GetPageSizeIndex(val), result);    
 }
 
 TEST_F(StringPageSizesTests, test2) {
     auto val = 115;
-    auto result = rs::stringintern::StringPageSizes::GetPageSizeIndex(val);
+    auto result = rs::stringintern::StringPageSizes::GetIndex(val);
     ASSERT_TRUE(!!result);
     ASSERT_EQ(GetPageSizeIndex(val), result);    
 }
 
 TEST_F(StringPageSizesTests, test3) {
     auto val = 2115;
-    auto result = rs::stringintern::StringPageSizes::GetPageSizeIndex(val);
+    auto result = rs::stringintern::StringPageSizes::GetIndex(val);
     ASSERT_TRUE(!!result);
     ASSERT_EQ(GetPageSizeIndex(val), result);
 }
 
 TEST_F(StringPageSizesTests, test4) {
     auto val = 12115;
-    auto result = rs::stringintern::StringPageSizes::GetPageSizeIndex(val);
+    auto result = rs::stringintern::StringPageSizes::GetIndex(val);
     ASSERT_TRUE(!!result);
     ASSERT_EQ(GetPageSizeIndex(val), result);
 }
 
 TEST_F(StringPageSizesTests, test5) {
     auto val = 32115;
-    auto result = rs::stringintern::StringPageSizes::GetPageSizeIndex(val);
+    auto result = rs::stringintern::StringPageSizes::GetIndex(val);
     ASSERT_TRUE(!!result);
     ASSERT_EQ(GetPageSizeIndex(val), result);
 }
 
 TEST_F(StringPageSizesTests, test6) {
     auto val = -1;
-    auto result = rs::stringintern::StringPageSizes::GetPageSizeIndex(val);
+    auto result = rs::stringintern::StringPageSizes::GetIndex(val);
     ASSERT_TRUE(!result);
     ASSERT_TRUE(!GetPageSizeIndex(val));
 }

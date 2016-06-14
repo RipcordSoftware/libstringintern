@@ -50,7 +50,7 @@ rs::stringintern::StringPage* rs::stringintern::StringPageNursery::New(rowcount_
     
     auto pageNumber = pageCount_.fetch_add(1, std::memory_order_relaxed);
     auto buffer = new char[pageSize_];
-    auto entrySize = StringPageSizes::pageSizes[row];
+    auto entrySize = StringPageSizes::GetEntrySize(row);
     auto entryCount = pageSize_ / entrySize;
     auto newPage = new StringPage(pageNumber, buffer, entryCount, entrySize);
     

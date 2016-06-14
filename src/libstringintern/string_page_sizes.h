@@ -49,14 +49,16 @@ public:
     
     StringPageSizes() = delete;
     StringPageSizes(const StringPageSizes&) = delete;
+    StringPageSizes(const StringPageSizes&&) = delete;
+    void operator =(const StringPageSizes&) = delete;
     
-    static Index GetPageSizeIndex(std::size_t len);
-    static StringPage::entrysize_t GetPageEntrySize(const Index&);
-    
+    static Index GetIndex(std::size_t len);
+    static Index GetMaxIndex();
+    static StringPage::entrysize_t GetEntrySize(const Index&);
+
+private:    
     const static StringPage::entrycount_t pageSizes[];
     const static StringPage::entrycount_t pageSizesMaxIndex;
-    
-private:
 
 };
 

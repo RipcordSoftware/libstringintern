@@ -38,7 +38,7 @@ const rs::stringintern::StringPage::entrycount_t rs::stringintern::StringPageSiz
 
 const rs::stringintern::StringPage::entrycount_t rs::stringintern::StringPageSizes::pageSizesMaxIndex = sizeof(pageSizes) / sizeof(pageSizes[0]);
 
-rs::stringintern::StringPageSizes::Index rs::stringintern::StringPageSizes::GetPageSizeIndex(std::size_t len) {
+rs::stringintern::StringPageSizes::Index rs::stringintern::StringPageSizes::GetIndex(std::size_t len) {
     auto start = 0;
     auto end = pageSizesMaxIndex;    
     
@@ -59,6 +59,10 @@ rs::stringintern::StringPageSizes::Index rs::stringintern::StringPageSizes::GetP
     }
 }
 
-rs::stringintern::StringPage::entrysize_t rs::stringintern::StringPageSizes::GetPageEntrySize(const Index& index) {
-    return StringPageSizes::pageSizes[index];
+rs::stringintern::StringPage::entrysize_t rs::stringintern::StringPageSizes::GetEntrySize(const Index& index) {
+    return pageSizes[index];
+}
+
+rs::stringintern::StringPageSizes::Index rs::stringintern::StringPageSizes::GetMaxIndex() {
+    return sizeof(pageSizes) / sizeof(pageSizes[0]);
 }
