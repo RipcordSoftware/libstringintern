@@ -78,7 +78,7 @@ TEST_F(StringPageCatalogTests, test1) {
     ASSERT_EQ(1, catalog.Rows());
     ASSERT_EQ(1, catalog.Cols());
     
-    ASSERT_TRUE(catalog.Add(0, page.get()));        
+    ASSERT_TRUE(catalog.Add(0, page.get()));
     ASSERT_EQ(1, catalog.Pages());
     
     ASSERT_FALSE(!!catalog.Find(0, 0));

@@ -51,7 +51,7 @@ public:
     StringPage(const StringPage&&) = delete;
     void operator=(const StringPage&) = delete;
     
-    indexsize_t Add(const char*, entrysize_t, StringHash::Hash);
+    indexsize_t Add(const char*, std::size_t, StringHash::Hash);
     const char* GetString(StringHash::Hash) const noexcept;
     StringReference GetReference(StringHash::Hash) const noexcept;
     
@@ -71,15 +71,17 @@ private:
         }
         
         std::atomic<StringHash::Hash> hash;
-        entrysize_t length;
+        std::atomic<entrysize_t> length;
     };
     
     const pagenumber_t number_;
-    char* const ptr_;
-    const entrysize_t entrySize_;
-    const indexsize_t indexMask_;
     
+    const entrysize_t entrySize_;
+    const entrycount_t entryCount_;
+
     std::vector<Entry> entries_;
+    char* const ptr_;
+    std::atomic<bool> hasZeroHash_;
 };
 
 }}

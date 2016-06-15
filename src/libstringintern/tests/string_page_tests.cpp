@@ -81,13 +81,29 @@ TEST_F(StringPageTests, test1) {
         auto page = NewPagePtr(42, pageBuffer.data(), pageEntries, pageEntrySize);
 
         const char* str = "I am a placebo";
+        const auto len = 0;
+        
+        page->Add(str, len, 1);
+    }, rs::stringintern::StringInternException);
+}
+
+TEST_F(StringPageTests, test2) {    
+    ASSERT_THROW({
+        const auto pageSize = 2 * 1024 * 1024;
+        const auto pageEntrySize = 256;
+        const auto pageEntries = pageSize / pageEntrySize;
+        std::vector<char> pageBuffer(pageSize);    
+
+        auto page = NewPagePtr(42, pageBuffer.data(), pageEntries, pageEntrySize);
+
+        const char* str = "I am a placebo";
         const auto len = 1024;
         
         page->Add(str, len, 1);
     }, rs::stringintern::StringInternException);
 }
 
-TEST_F(StringPageTests, test2) {
+TEST_F(StringPageTests, test3) {
     const auto pageSize = 2 * 1024 * 1024;
     std::vector<char> pageBuffer(pageSize);
     const auto pageEntrySize = 256;
@@ -118,7 +134,7 @@ TEST_F(StringPageTests, test2) {
     }    
 }
 
-TEST_F(StringPageTests, test3) {
+TEST_F(StringPageTests, test4) {
     const auto pageSize = 2 * 1024 * 1024;
     std::vector<char> pageBuffer(pageSize);
     const auto pageEntrySize = 256;
@@ -129,4 +145,36 @@ TEST_F(StringPageTests, test3) {
     
     auto page2 = NewPagePtr(std::numeric_limits<std::uint32_t>::max(), pageBuffer.data(), pageEntries, pageEntrySize);
     ASSERT_EQ(nullptr, page2.get());
+}
+
+TEST_F(StringPageTests, test5a) {
+    const auto pageSize = 2 * 1024 * 1024;
+    std::vector<char> pageBuffer(pageSize);
+    const auto pageEntrySize = 256;
+    const auto pageEntries = pageSize / pageEntrySize;
+
+    auto page = NewPagePtr(0, pageBuffer.data(), pageEntries, pageEntrySize);
+    
+    const char* str = "I am a placebo";
+    auto len = std::strlen(str);
+
+    ASSERT_EQ(0, page->Add(str, len, pageEntries));
+    ASSERT_NE(nullptr, page->GetString(pageEntries));
+    ASSERT_EQ(nullptr, page->GetString(0));
+}
+
+TEST_F(StringPageTests, test5b) {
+    const auto pageSize = 2 * 1024 * 1024;
+    std::vector<char> pageBuffer(pageSize);
+    const auto pageEntrySize = 256;
+    const auto pageEntries = pageSize / pageEntrySize;
+
+    auto page = NewPagePtr(0, pageBuffer.data(), pageEntries, pageEntrySize);
+    
+    const char* str = "I am a placebo";
+    auto len = std::strlen(str);
+
+    ASSERT_EQ(0, page->Add(str, len, 0));
+    ASSERT_NE(nullptr, page->GetString(0));
+    ASSERT_EQ(nullptr, page->GetString(pageEntries));
 }
