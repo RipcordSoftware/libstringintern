@@ -28,6 +28,7 @@
 #include <string>
 #include <memory>
 #include <limits>
+#include <thread>
 
 #include "../string_page.h"
 #include "../string_intern_exception.h"
@@ -121,6 +122,15 @@ TEST_F(StringPageTests, test3) {
         ASSERT_EQ(val, page->GetString(i));
     }
     
+    ASSERT_EQ(pageEntries, page->Count());
+    
+    for (auto i = pageEntries; i < pageEntries * 2; ++i) {
+        auto val = std::to_string(i);
+        ASSERT_EQ(rs::stringintern::StringPage::InvalidIndex, page->Add(val.c_str(), val.length(), i));
+    }
+    
+    ASSERT_EQ(pageEntries, page->Count());
+    
     for (auto i = 0; i < pageEntries; ++i) {
         auto val = std::to_string(i);
         ASSERT_EQ(i, page->Add(val.c_str(), val.length(), i));
@@ -172,9 +182,168 @@ TEST_F(StringPageTests, test5b) {
     auto page = NewPagePtr(0, pageBuffer.data(), pageEntries, pageEntrySize);
     
     const char* str = "I am a placebo";
-    auto len = std::strlen(str);
+    const auto len = std::strlen(str);
 
     ASSERT_EQ(0, page->Add(str, len, 0));
+    ASSERT_EQ(1, page->Count());
     ASSERT_NE(nullptr, page->GetString(0));
     ASSERT_EQ(nullptr, page->GetString(pageEntries));
+    
+    ASSERT_EQ(rs::stringintern::StringPage::InvalidIndex, page->Add(str, len, pageEntries));
+    ASSERT_EQ(1, page->Count());
+    
+    ASSERT_EQ(0, page->Add(str, len, 0));
+    ASSERT_EQ(1, page->Count());
+}
+
+TEST_F(StringPageTests, test6a) {    
+    const auto pageSize = 2 * 1024 * 1024;
+    const auto pageEntrySize = 32;
+    const auto pageEntries = pageSize / pageEntrySize;
+    std::vector<char> pageBuffer(pageSize);
+    
+    std::vector<std::string> strings;
+    strings.reserve(pageEntries);
+    for (auto i = 0; i < pageEntries; ++i) {
+        strings.emplace_back(std::move(std::to_string(i)));
+    }
+
+    auto page = NewPagePtr(0, pageBuffer.data(), pageEntries, pageEntrySize);
+    ASSERT_EQ(pageEntries, page->EntryCount());
+    ASSERT_EQ(pageEntrySize, page->EntrySize());
+
+    std::atomic<rs::stringintern::StringPage::entrycount_t> pageIndex{0};
+    
+    auto func = [&]() {
+        for (auto i = 0; i < pageEntries; i = pageIndex.fetch_add(1, std::memory_order_relaxed) + 1) {
+            page->Add(strings[i].c_str(), strings[i].size(), i);
+        }
+    };
+    
+    std::thread t1{func};
+    std::thread t2{func};
+    
+    t1.join();
+    t2.join();
+    
+    ASSERT_EQ(pageEntries, page->Count());
+    
+    for (auto i = 0; i < pageEntries; ++i) {
+        ASSERT_EQ(strings[i], page->GetString(i));
+    }
+}
+
+TEST_F(StringPageTests, test6b) {    
+    const auto pageSize = 4 * 1024 * 1024;
+    const auto pageEntrySize = 8;
+    const auto pageEntries = pageSize / pageEntrySize;
+    std::vector<char> pageBuffer(pageSize);
+    
+    std::vector<std::string> strings;
+    strings.reserve(pageEntries);
+    for (auto i = 0; i < pageEntries; ++i) {
+        strings.emplace_back(std::move(std::to_string(i)));
+    }
+
+    auto page = NewPagePtr(0, pageBuffer.data(), pageEntries, pageEntrySize);
+    ASSERT_EQ(pageEntries, page->EntryCount());
+    ASSERT_EQ(pageEntrySize, page->EntrySize());
+
+    std::atomic<rs::stringintern::StringPage::entrycount_t> pageIndex{0};
+    
+    auto func = [&]() {
+        for (auto i = 0; i < pageEntries; i = pageIndex.fetch_add(1, std::memory_order_relaxed) + 1) {
+            page->Add(strings[i].c_str(), strings[i].size(), i);
+        }
+    };
+    
+    std::thread t1{func};
+    std::thread t2{func};
+    std::thread t3{func};
+    std::thread t4{func};
+    
+    t1.join();
+    t2.join();
+    t3.join();
+    t4.join();
+    
+    ASSERT_EQ(pageEntries, page->Count());
+    
+    for (auto i = 0; i < pageEntries; ++i) {
+        ASSERT_EQ(strings[i], page->GetString(i));
+    }
+}
+
+TEST_F(StringPageTests, test6c) {    
+    const auto pageSize = 2 * 1024 * 1024;
+    const auto pageEntrySize = 32;
+    const auto pageEntries = pageSize / pageEntrySize;
+    std::vector<char> pageBuffer(pageSize);
+    
+    std::vector<std::string> strings;
+    strings.reserve(pageEntries);
+    for (auto i = 0; i < pageEntries; ++i) {
+        strings.emplace_back(std::move(std::to_string(i)));
+    }
+
+    auto page = NewPagePtr(0, pageBuffer.data(), pageEntries, pageEntrySize);
+    ASSERT_EQ(pageEntries, page->EntryCount());
+    ASSERT_EQ(pageEntrySize, page->EntrySize());
+    
+    auto func = [&]() {
+        for (auto i = 0; i < pageEntries; ++i) {
+            page->Add(strings[i].c_str(), strings[i].size(), i);
+        }
+    };
+    
+    std::thread t1{func};
+    std::thread t2{func};
+    
+    t1.join();
+    t2.join();
+    
+    ASSERT_EQ(pageEntries, page->Count());
+    
+    for (auto i = 0; i < pageEntries; ++i) {
+        ASSERT_EQ(strings[i], page->GetString(i));
+    }
+}
+
+TEST_F(StringPageTests, test6d) {    
+    const auto pageSize = 4 * 1024 * 1024;
+    const auto pageEntrySize = 8;
+    const auto pageEntries = pageSize / pageEntrySize;
+    std::vector<char> pageBuffer(pageSize);
+    
+    std::vector<std::string> strings;
+    strings.reserve(pageEntries);
+    for (auto i = 0; i < pageEntries; ++i) {
+        strings.emplace_back(std::move(std::to_string(i)));
+    }
+
+    auto page = NewPagePtr(0, pageBuffer.data(), pageEntries, pageEntrySize);
+    ASSERT_EQ(pageEntries, page->EntryCount());
+    ASSERT_EQ(pageEntrySize, page->EntrySize());
+    
+    auto func = [&]() {
+        for (auto i = 0; i < pageEntries; ++i) {
+            page->Add(strings[i].c_str(), strings[i].size(), i);
+        }
+    };
+    
+    std::thread t1{func};
+    std::thread t2{func};
+    std::thread t3{func};
+    std::thread t4{func};
+    
+    t1.join();
+    t2.join();
+    t3.join();
+    t4.join();
+    
+    ASSERT_EQ(pageEntries, page->Count());
+    
+    for (auto i = 0; i < pageEntries; ++i) {
+        ASSERT_EQ(strings[i], page->GetString(i));
+    }
 }

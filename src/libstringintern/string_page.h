@@ -59,6 +59,7 @@ public:
     entrycount_t EntryCount() const noexcept;
     
     pagenumber_t Number() const noexcept;
+    entrycount_t Count() const noexcept;
     
 protected:    
     StringPage(pagenumber_t number, char* ptr, entrycount_t entryCount, entrysize_t entrySize) noexcept;
@@ -81,7 +82,23 @@ private:
 
     std::vector<Entry> entries_;
     char* const ptr_;
-    std::atomic<bool> hasZeroHash_;
+    std::atomic<entrycount_t> count_;
+
+    // track the number of times we see a zero hash (see below)
+    std::atomic<std::uint32_t> zeroHashCount_;
+    
+    /**************************************************************************/
+    // Note on zero hashes:
+    // A zero value hash is a special thing, it can't be easily tracked since
+    // an unitialized hash of 0 == an initialized hash of 0.
+    // The problem is solved by tracking the number of times we see the zero
+    // hash. There is a race handling the first zero hash and another zero hash 
+    // appearing, so we only ever count the first zero hash in the page entry
+    // count and tolerate the extra copy we might see (the string data is the
+    // same anyway). Outside the race window we have special handling for zero
+    // hashes where we know we already have one in the page.
+    // Outside unit testing this case is highly unlikely to ever happen.
+
 };
 
 }}
