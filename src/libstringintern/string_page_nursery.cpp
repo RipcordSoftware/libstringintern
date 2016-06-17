@@ -49,10 +49,9 @@ rs::stringintern::StringPage* rs::stringintern::StringPageNursery::New(rowcount_
     auto dataIndex = (rows_ * row) + (col % cols_);
     
     auto pageNumber = pageCount_.fetch_add(1, std::memory_order_relaxed);
-    auto buffer = new char[pageSize_];
     auto entrySize = StringPageSizes::GetEntrySize(row);
     auto entryCount = pageSize_ / entrySize;
-    auto newPage = StringPage::New(pageNumber, buffer, entryCount, entrySize);
+    auto newPage = StringPage::New(pageNumber, entryCount, entrySize);
     
     if (!data_[dataIndex].compare_exchange_strong(oldPage, newPage, std::memory_order_relaxed)) {
         delete newPage;

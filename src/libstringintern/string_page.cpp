@@ -33,11 +33,16 @@
 
 const rs::stringintern::StringPage::indexsize_t rs::stringintern::StringPage::InvalidIndex = -1;
 
-rs::stringintern::StringPage* rs::stringintern::StringPage::New(std::size_t number, char* ptr, entrycount_t entryCount, entrysize_t entrySize) {
+rs::stringintern::StringPage* rs::stringintern::StringPage::New(std::size_t number, entrycount_t entryCount, entrysize_t entrySize) {
     StringPage* page = nullptr;
 
     if (number < StringReference::MaxNumber()) {
-        page = new StringPage(number, ptr, entryCount, entrySize);
+        std::uint64_t pageSize = entryCount * entrySize;
+        auto ptr = new char[pageSize];
+
+        if (ptr != nullptr) {
+            page = new StringPage(number, ptr, entryCount, entrySize);
+        }
     }
 
     return page;
@@ -83,7 +88,7 @@ rs::stringintern::StringPage::indexsize_t rs::stringintern::StringPage::Add(cons
         auto& entry = entries_[index];
         auto entryHash = entry.hash.load(std::memory_order_relaxed);
         if (entryHash == 0 && entry.hash.compare_exchange_strong(entryHash, hash, std::memory_order_relaxed)) {
-            auto ptr = ptr_ + (entrySize_ * index);
+            auto ptr = ptr_.get() + (entrySize_ * index);
             std::memcpy(ptr, str, len + 1);
             std::atomic_thread_fence(std::memory_order_release);
             entry.length.store(len, std::memory_order_relaxed);
@@ -108,7 +113,7 @@ const char* rs::stringintern::StringPage::GetString(StringHash::Hash hash) const
                 std::this_thread::yield();
             }
             std::atomic_thread_fence(std::memory_order_acquire);
-            str = ptr_;
+            str = ptr_.get();
         }
     } else {
         auto index = hash % entryCount_;
@@ -118,7 +123,7 @@ const char* rs::stringintern::StringPage::GetString(StringHash::Hash hash) const
                 std::this_thread::yield();
             }
             std::atomic_thread_fence(std::memory_order_acquire);
-            str = ptr_ + (entrySize_ * index);
+            str = ptr_.get() + (entrySize_ * index);
         }
     }
 

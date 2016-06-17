@@ -39,6 +39,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/string_hash.o \
 	${OBJECTDIR}/string_intern.o \
 	${OBJECTDIR}/string_page.o \
+	${OBJECTDIR}/string_page_archive.o \
 	${OBJECTDIR}/string_page_catalog.o \
 	${OBJECTDIR}/string_page_nursery.o \
 	${OBJECTDIR}/string_page_sizes.o \
@@ -52,6 +53,7 @@ TESTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tests
 TESTFILES= \
 	${TESTDIR}/TestFiles/f2 \
 	${TESTDIR}/TestFiles/f1 \
+	${TESTDIR}/TestFiles/f6 \
 	${TESTDIR}/TestFiles/f5 \
 	${TESTDIR}/TestFiles/f3 \
 	${TESTDIR}/TestFiles/f4
@@ -102,6 +104,11 @@ ${OBJECTDIR}/string_page.o: string_page.cpp
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -I../../externals/xxHash -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/string_page.o string_page.cpp
 
+${OBJECTDIR}/string_page_archive.o: string_page_archive.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -I../../externals/xxHash -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/string_page_archive.o string_page_archive.cpp
+
 ${OBJECTDIR}/string_page_catalog.o: string_page_catalog.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
@@ -140,6 +147,10 @@ ${TESTDIR}/TestFiles/f1: ${TESTDIR}/tests/string_page_tests.o ${OBJECTFILES:%.o=
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.cc}   -o ${TESTDIR}/TestFiles/f1 $^ ${LDLIBSOPTIONS} ../../externals/installed/lib/libgtest.a ../../externals/installed/lib/libgtest_main.a -lpthread -latomic 
 
+${TESTDIR}/TestFiles/f6: ${TESTDIR}/tests/string_page_archive_tests.o ${OBJECTFILES:%.o=%_nomain.o}
+	${MKDIR} -p ${TESTDIR}/TestFiles
+	${LINK.cc}   -o ${TESTDIR}/TestFiles/f6 $^ ${LDLIBSOPTIONS} ../../externals/installed/lib/libgtest.a ../../externals/installed/lib/libgtest_main.a -lpthread -latomic 
+
 ${TESTDIR}/TestFiles/f5: ${TESTDIR}/tests/string_page_catalog_tests.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.cc}   -o ${TESTDIR}/TestFiles/f5 $^ ${LDLIBSOPTIONS} ../../externals/installed/lib/libgtest.a ../../externals/installed/lib/libgtest_main.a -lpthread -latomic 
@@ -163,6 +174,12 @@ ${TESTDIR}/tests/string_page_tests.o: tests/string_page_tests.cpp
 	${MKDIR} -p ${TESTDIR}/tests
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -I../../externals/xxHash -I../../externals/installed/include -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${TESTDIR}/tests/string_page_tests.o tests/string_page_tests.cpp
+
+
+${TESTDIR}/tests/string_page_archive_tests.o: tests/string_page_archive_tests.cpp 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -I../../externals/xxHash -I../../externals/installed/include -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${TESTDIR}/tests/string_page_archive_tests.o tests/string_page_archive_tests.cpp
 
 
 ${TESTDIR}/tests/string_page_catalog_tests.o: tests/string_page_catalog_tests.cpp 
@@ -233,6 +250,19 @@ ${OBJECTDIR}/string_page_nomain.o: ${OBJECTDIR}/string_page.o string_page.cpp
 	    $(COMPILE.cc) -g -I../../externals/xxHash -std=c++11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/string_page_nomain.o string_page.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/string_page.o ${OBJECTDIR}/string_page_nomain.o;\
+	fi
+
+${OBJECTDIR}/string_page_archive_nomain.o: ${OBJECTDIR}/string_page_archive.o string_page_archive.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/string_page_archive.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} "$@.d";\
+	    $(COMPILE.cc) -g -I../../externals/xxHash -std=c++11 -Dmain=__nomain -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/string_page_archive_nomain.o string_page_archive.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/string_page_archive.o ${OBJECTDIR}/string_page_archive_nomain.o;\
 	fi
 
 ${OBJECTDIR}/string_page_catalog_nomain.o: ${OBJECTDIR}/string_page_catalog.o string_page_catalog.cpp 
@@ -306,6 +336,7 @@ ${OBJECTDIR}/string_reference_nomain.o: ${OBJECTDIR}/string_reference.o string_r
 	then  \
 	    ${TESTDIR}/TestFiles/f2 || true; \
 	    ${TESTDIR}/TestFiles/f1 || true; \
+	    ${TESTDIR}/TestFiles/f6 || true; \
 	    ${TESTDIR}/TestFiles/f5 || true; \
 	    ${TESTDIR}/TestFiles/f3 || true; \
 	    ${TESTDIR}/TestFiles/f4 || true; \

@@ -48,15 +48,13 @@ protected:
 public:
     std::shared_ptr<rs::stringintern::StringPage> NewPagePtr(
         std::size_t number, 
-        char* ptr, 
         rs::stringintern::StringPage::entrycount_t entryCount, 
         rs::stringintern::StringPage::entrysize_t entrySize) {
-        return std::shared_ptr<rs::stringintern::StringPage>(rs::stringintern::StringPage::New(number, ptr, entryCount, entrySize));
+        return std::shared_ptr<rs::stringintern::StringPage>(rs::stringintern::StringPage::New(number, entryCount, entrySize));
     }
     
     const rs::stringintern::StringPage::entrycount_t pageEntryCount_ = 32;
     const rs::stringintern::StringPage::entrysize_t pageEntrySize_ = 32;
-    const std::vector<char>::size_type pageSize_ = pageEntryCount_ * pageEntrySize_;
 };
 
 using StringPagePtr = std::unique_ptr<rs::stringintern::StringPage>;
@@ -71,8 +69,7 @@ TEST_F(StringPageCatalogTests, test0) {
 }
 
 TEST_F(StringPageCatalogTests, test1) {
-    std::vector<char> pageBuffer(pageSize_);
-    auto page = NewPagePtr(0, pageBuffer.data(), pageEntryCount_, pageEntrySize_);
+    auto page = NewPagePtr(0, pageEntryCount_, pageEntrySize_);
     
     rs::stringintern::StringPageCatalog catalog{1, 1};
     ASSERT_EQ(1, catalog.Rows());
@@ -85,8 +82,7 @@ TEST_F(StringPageCatalogTests, test1) {
 }
 
 TEST_F(StringPageCatalogTests, test2) {
-    std::vector<char> pageBuffer(pageSize_);
-    auto page = NewPagePtr(42, pageBuffer.data(), pageEntryCount_, pageEntrySize_);
+    auto page = NewPagePtr(42, pageEntryCount_, pageEntrySize_);
     
     rs::stringintern::StringPageCatalog catalog{1, 1};
     ASSERT_EQ(1, catalog.Rows());
@@ -108,8 +104,7 @@ TEST_F(StringPageCatalogTests, test2) {
 }
 
 TEST_F(StringPageCatalogTests, test3) {
-    std::vector<char> pageBuffer(pageSize_);
-    auto page = NewPagePtr(42, pageBuffer.data(), pageEntryCount_, pageEntrySize_);
+    auto page = NewPagePtr(42, pageEntryCount_, pageEntrySize_);
     ASSERT_NE(rs::stringintern::StringPage::InvalidIndex, page->Add("hello world", 11, 0));
     
     rs::stringintern::StringPageCatalog catalog{1, 1};
@@ -125,12 +120,10 @@ TEST_F(StringPageCatalogTests, test3) {
 }
 
 TEST_F(StringPageCatalogTests, test4) {
-    std::vector<char> pageBuffer1(pageSize_);
-    auto page1 = NewPagePtr(0, pageBuffer1.data(), pageEntryCount_, pageEntrySize_);
+    auto page1 = NewPagePtr(0, pageEntryCount_, pageEntrySize_);
     ASSERT_NE(rs::stringintern::StringPage::InvalidIndex, page1->Add("hello world", 11, 0));
     
-    std::vector<char> pageBuffer2(pageSize_);
-    auto page2 = NewPagePtr(1, pageBuffer2.data(), pageEntryCount_, pageEntrySize_);
+    auto page2 = NewPagePtr(1, pageEntryCount_, pageEntrySize_);
     ASSERT_NE(rs::stringintern::StringPage::InvalidIndex, page2->Add("Lorem ipsum", 11, 1));
     
     rs::stringintern::StringPageCatalog catalog{2, 1};
@@ -161,12 +154,10 @@ TEST_F(StringPageCatalogTests, test4) {
 }
 
 TEST_F(StringPageCatalogTests, test5) {
-    std::vector<char> pageBuffer1(pageSize_);
-    auto page1 = NewPagePtr(0, pageBuffer1.data(), pageEntryCount_, pageEntrySize_);
+    auto page1 = NewPagePtr(0, pageEntryCount_, pageEntrySize_);
     ASSERT_NE(rs::stringintern::StringPage::InvalidIndex, page1->Add("hello world", 11, 0));
     
-    std::vector<char> pageBuffer2(pageSize_);
-    auto page2 = NewPagePtr(1, pageBuffer2.data(), pageEntryCount_, pageEntrySize_);
+    auto page2 = NewPagePtr(1, pageEntryCount_, pageEntrySize_);
     ASSERT_NE(rs::stringintern::StringPage::InvalidIndex, page2->Add("Lorem ipsum", 11, 1));
     
     rs::stringintern::StringPageCatalog catalog{2, 2};
@@ -201,10 +192,7 @@ TEST_F(StringPageCatalogTests, test5) {
 TEST_F(StringPageCatalogTests, test6) {
     rs::stringintern::StringPageCatalog::rowcount_t testRows = 7;
     rs::stringintern::StringPageCatalog::colcount_t testCols = 21;
-    const auto testPages = testRows * testCols;
-    
-    std::vector<std::vector<char>> pageBuffers(testRows * testCols);
-    std::for_each(pageBuffers.begin(), pageBuffers.end(), [&](std::vector<char>& v) { v.reserve(pageSize_); });
+    const auto testPages = testRows * testCols;   
     
     std::vector<std::shared_ptr<rs::stringintern::StringPage>> pages(testPages);
     
@@ -217,7 +205,7 @@ TEST_F(StringPageCatalogTests, test6) {
         for (auto col = 0; col < catalog.Cols(); ++col, ++pageIndex) {
             auto pageText = std::to_string(pageIndex);            
             
-            auto page = rs::stringintern::StringPage::New(pageIndex, pageBuffers[pageIndex].data(), pageEntryCount_, pageEntrySize_);
+            auto page = rs::stringintern::StringPage::New(pageIndex, pageEntryCount_, pageEntrySize_);
             ASSERT_NE(rs::stringintern::StringPage::InvalidIndex, page->Add(pageText.c_str(), pageText.size(), pageIndex));
             
             ASSERT_TRUE(catalog.Add(row, page));
@@ -244,7 +232,7 @@ TEST_F(StringPageCatalogTests, test6) {
     
     pageIndex = catalog.Pages();
     for (auto row = 0; row < catalog.Rows(); ++row, ++pageIndex) {
-        auto page = rs::stringintern::StringPage::New(pageIndex, pageBuffers[pageIndex].data(), pageEntryCount_, pageEntrySize_);
+        auto page = rs::stringintern::StringPage::New(pageIndex, pageEntryCount_, pageEntrySize_);
         
         ASSERT_FALSE(catalog.Add(row, page));
         
@@ -280,7 +268,7 @@ TEST_F(StringPageCatalogTests, test7) {
     std::atomic<rs::stringintern::StringPage::pagenumber_t> pageIndex{0};
     for (auto row = 0; row < catalog.Rows(); ++row) {
         for (auto col = 0; col < catalog.Cols(); ++col, ++pageIndex) {
-            auto page = rs::stringintern::StringPage::New(pageIndex, nullptr, pageEntryCount_, pageEntrySize_);
+            auto page = rs::stringintern::StringPage::New(pageIndex, pageEntryCount_, pageEntrySize_);
             pages.emplace_back(page);
         }
     }
@@ -344,7 +332,7 @@ TEST_F(StringPageCatalogTests, test8) {
     decltype(testPages) pageIndex = 0;
     for (decltype(testRows) row = 0; row < catalog.Rows(); ++row) {
         for (decltype(testCols) col = 0; col < catalog.Cols(); ++col, ++pageIndex) {
-            auto page = rs::stringintern::StringPage::New(pageIndex, nullptr, pageEntryCount_, pageEntrySize_);
+            auto page = rs::stringintern::StringPage::New(pageIndex, pageEntryCount_, pageEntrySize_);
             pages.emplace_back(page);
         }
     }

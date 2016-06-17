@@ -28,6 +28,7 @@
 #include <atomic>
 #include <vector>
 #include <cstddef>
+#include <memory>
 
 #include "string_hash.h"
 #include "string_reference.h"
@@ -45,7 +46,7 @@ public:
     
     const static indexsize_t InvalidIndex;
     
-    static StringPage* New(std::size_t number, char* ptr, entrycount_t entryCount, entrysize_t entrySize);
+    static StringPage* New(std::size_t number, entrycount_t entryCount, entrysize_t entrySize);
 
     StringPage(const StringPage&) = delete;
     StringPage(const StringPage&&) = delete;
@@ -79,9 +80,9 @@ private:
     
     const entrysize_t entrySize_;
     const entrycount_t entryCount_;
+    const std::unique_ptr<char> ptr_;
 
     std::vector<Entry> entries_;
-    char* const ptr_;
     std::atomic<entrycount_t> count_;
 
     // track the number of times we see a zero hash (see below)
