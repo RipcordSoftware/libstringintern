@@ -335,3 +335,11 @@ TEST_F(StringPageTests, test6d) {
         ASSERT_EQ(strings[i], page->GetString(i));
     }
 }
+
+TEST_F(StringPageTests, test7) {
+    const auto pageSize = 2 * 1024 * 1024;
+    const auto pageEntrySize = 256;
+    const auto pageEntries = pageSize / pageEntrySize;
+
+    ASSERT_EQ(nullptr, rs::stringintern::StringPage::New(0, nullptr, pageEntries, pageEntrySize));
+}

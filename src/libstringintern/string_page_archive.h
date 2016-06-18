@@ -43,6 +43,7 @@ public:
     ~StringPageArchive();
     
     StringPage* NewPage(StringPage::entrycount_t entryCount, StringPage::entrysize_t entrySize);
+    StringPage* NewPage(StringPage::bufferptr_t ptr, StringPage::entrycount_t entryCount, StringPage::entrysize_t entrySize);
     
     StringPage* GetPage(std::size_t number) const noexcept;
     

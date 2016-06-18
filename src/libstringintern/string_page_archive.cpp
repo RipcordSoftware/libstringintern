@@ -49,6 +49,20 @@ rs::stringintern::StringPage* rs::stringintern::StringPageArchive::NewPage(Strin
     return page;
 }
 
+rs::stringintern::StringPage* rs::stringintern::StringPageArchive::NewPage(StringPage::bufferptr_t ptr, StringPage::entrycount_t entryCount, StringPage::entrysize_t entrySize) {
+    StringPage* page = nullptr;
+    
+    if (!!ptr) {
+        auto pageNumber = index_.fetch_add(1, std::memory_order_relaxed);
+        if (pageNumber < pages_.size()) {
+            page = StringPage::New(pageNumber, ptr, entryCount, entrySize);
+            pages_[pageNumber].store(page, std::memory_order_relaxed);
+        }
+    }
+    
+    return page;    
+}
+
 rs::stringintern::StringPage* rs::stringintern::StringPageArchive::GetPage(std::size_t number) const noexcept {
     StringPage* page = nullptr;
     

@@ -43,14 +43,18 @@ public:
     using entrycount_t = std::uint32_t;
     using indexsize_t = std::uint32_t;
     using pagenumber_t = std::uint16_t;
+    using buffervalue_t = char;
+    using bufferptr_t = buffervalue_t* const;
     
     const static indexsize_t InvalidIndex;
     
     static StringPage* New(std::size_t number, entrycount_t entryCount, entrysize_t entrySize);
+    static StringPage* New(std::size_t number, bufferptr_t ptr, entrycount_t entryCount, entrysize_t entrySize);
 
     StringPage(const StringPage&) = delete;
     StringPage(const StringPage&&) = delete;
     void operator=(const StringPage&) = delete;
+    ~StringPage();
     
     indexsize_t Add(const char*, std::size_t, StringHash::Hash);
     const char* GetString(StringHash::Hash) const noexcept;
@@ -63,7 +67,7 @@ public:
     entrycount_t Count() const noexcept;
     
 protected:    
-    StringPage(pagenumber_t number, char* ptr, entrycount_t entryCount, entrysize_t entrySize) noexcept;
+    StringPage(pagenumber_t number, char* ptr, entrycount_t entryCount, entrysize_t entrySize, bool freeBuffer = true) noexcept;
 
 private:
     
@@ -80,10 +84,11 @@ private:
     
     const entrysize_t entrySize_;
     const entrycount_t entryCount_;
-    const std::unique_ptr<char> ptr_;
+    const bool freeBuffer_;
 
     std::vector<Entry> entries_;
     std::atomic<entrycount_t> count_;
+    bufferptr_t ptr_;
 
     // track the number of times we see a zero hash (see below)
     std::atomic<std::uint32_t> zeroHashCount_;

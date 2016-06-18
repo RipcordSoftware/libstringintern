@@ -48,9 +48,25 @@ rs::stringintern::StringPage* rs::stringintern::StringPage::New(std::size_t numb
     return page;
 }
 
-rs::stringintern::StringPage::StringPage(pagenumber_t number, char* ptr, entrycount_t entryCount, entrysize_t entrySize) noexcept
-    : number_(number), ptr_(ptr), entrySize_(entrySize), entryCount_(entryCount), entries_(entryCount), zeroHashCount_(0), count_(0) {
+rs::stringintern::StringPage* rs::stringintern::StringPage::New(std::size_t number, bufferptr_t ptr, entrycount_t entryCount, entrysize_t entrySize) {
+    StringPage* page = nullptr;
+
+    if (number < StringReference::MaxNumber() && !!ptr) {
+        page = new StringPage(number, ptr, entryCount, entrySize, false);
+    }
+
+    return page;
+}
+
+rs::stringintern::StringPage::StringPage(pagenumber_t number, bufferptr_t ptr, entrycount_t entryCount, entrysize_t entrySize, bool freeBuffer) noexcept
+    : number_(number), ptr_(ptr), entrySize_(entrySize), entryCount_(entryCount), entries_(entryCount), zeroHashCount_(0), count_(0), freeBuffer_(freeBuffer) {
     
+}
+
+rs::stringintern::StringPage::~StringPage() {
+    if (freeBuffer_) {
+        delete[] ptr_;
+    }
 }
 
 rs::stringintern::StringPage::entrysize_t rs::stringintern::StringPage::EntrySize() const noexcept {
@@ -88,7 +104,7 @@ rs::stringintern::StringPage::indexsize_t rs::stringintern::StringPage::Add(cons
         auto& entry = entries_[index];
         auto entryHash = entry.hash.load(std::memory_order_relaxed);
         if (entryHash == 0 && entry.hash.compare_exchange_strong(entryHash, hash, std::memory_order_relaxed)) {
-            auto ptr = ptr_.get() + (entrySize_ * index);
+            auto ptr = ptr_ + (entrySize_ * index);
             std::memcpy(ptr, str, len + 1);
             std::atomic_thread_fence(std::memory_order_release);
             entry.length.store(len, std::memory_order_relaxed);
@@ -113,7 +129,7 @@ const char* rs::stringintern::StringPage::GetString(StringHash::Hash hash) const
                 std::this_thread::yield();
             }
             std::atomic_thread_fence(std::memory_order_acquire);
-            str = ptr_.get();
+            str = ptr_;
         }
     } else {
         auto index = hash % entryCount_;
@@ -123,7 +139,7 @@ const char* rs::stringintern::StringPage::GetString(StringHash::Hash hash) const
                 std::this_thread::yield();
             }
             std::atomic_thread_fence(std::memory_order_acquire);
-            str = ptr_.get() + (entrySize_ * index);
+            str = ptr_ + (entrySize_ * index);
         }
     }
 
