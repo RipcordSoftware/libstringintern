@@ -46,7 +46,9 @@ public:
     StringPagePtr(StringPagePtr&& rhs) noexcept;
     ~StringPagePtr() noexcept;
     
-    StringPagePtr& operator=(const StringPagePtr& rhs) noexcept;    
+    StringPagePtr& operator=(const StringPagePtr& rhs) noexcept;
+    StringPagePtr& operator=(StringPagePtr&& rhs) noexcept;
+
     bool operator!() const noexcept { return !get(); }
     
     StringPage* operator->() const noexcept { return get(); }

@@ -25,6 +25,7 @@
 #include <gtest/gtest.h>
 
 #include <vector>
+#include <algorithm>
 
 #include "../string_page_ptr.h"
 #include "../string_page.h"
@@ -207,4 +208,24 @@ TEST_F(StringPagePtrTests, test10) {
     ASSERT_EQ(1, pages[0].RefCount());
     ASSERT_TRUE(!page);
     ASSERT_EQ(0, page.RefCount());        
+}
+
+TEST_F(StringPagePtrTests, test11) {
+    auto page1 = NewPagePtr();
+    rs::stringintern::StringPagePtr page2;
+    
+    page2 = std::move(page1);    
+    
+    ASSERT_TRUE(!page1);
+    ASSERT_TRUE(!!page2);
+}
+
+TEST_F(StringPagePtrTests, test12) {
+    auto page1 = NewPagePtr();
+    rs::stringintern::StringPagePtr page2;
+    
+    std::swap(page1, page2);
+    
+    ASSERT_TRUE(!page1);
+    ASSERT_TRUE(!!page2);
 }

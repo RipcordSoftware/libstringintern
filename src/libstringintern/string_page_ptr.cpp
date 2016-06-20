@@ -93,3 +93,9 @@ bool rs::stringintern::StringPagePtr::compare_exchange_strong(StringPagePtr& exp
 std::size_t rs::stringintern::StringPagePtr::RefCount() const noexcept { 
     auto ptr = get(); return !!ptr ? ptr->RefCount() : 0; 
 }
+
+rs::stringintern::StringPagePtr& rs::stringintern::StringPagePtr::operator=(StringPagePtr&& rhs) noexcept {
+    ptr_.store(rhs.get(), std::memory_order_relaxed);
+    rhs.ptr_.store(nullptr, std::memory_order_relaxed);   
+    return *this;    
+}
