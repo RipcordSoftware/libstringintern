@@ -45,22 +45,22 @@ public:
     StringPageNursery(const StringPageNursery&&) = delete;
     void operator=(const StringPageNursery&) = delete;
     
-    StringPage* Next(rowcount_t);
-    StringPage* Current(rowcount_t);
-    StringPage* New(rowcount_t, StringPage*, bool matchPage = false);
-    StringPage* New(rowcount_t, colcount_t, StringPage*, bool matchPage = false);
+    StringPagePtr Next(rowcount_t);
+    StringPagePtr Current(rowcount_t);
+    StringPagePtr New(rowcount_t, StringPagePtr, bool matchPage = false);
+    StringPagePtr New(rowcount_t, colcount_t, StringPagePtr, bool matchPage = false);
     
     inline rowcount_t Rows() const noexcept { return rows_; }
     inline colcount_t Cols() const noexcept { return cols_; }
     
 private:
     
-    StringPage* Get(colcount_t, rowcount_t);
+    StringPagePtr Get(colcount_t, rowcount_t);
     
     std::atomic<StringPage::pagenumber_t> pageCount_;
     
     std::vector<std::atomic<rowcount_t>> counters_;
-    std::vector<std::atomic<StringPage*>> data_;
+    std::vector<StringPagePtr> data_;
     
     const colcount_t cols_;
     const rowcount_t rows_;

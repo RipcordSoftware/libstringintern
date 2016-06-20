@@ -32,6 +32,7 @@
 
 #include "string_hash.h"
 #include "string_reference.h"
+#include "string_page_ptr.h"
 
 namespace rs {
 namespace stringintern {
@@ -45,11 +46,12 @@ public:
     using pagenumber_t = std::uint16_t;
     using buffervalue_t = char;
     using bufferptr_t = buffervalue_t* const;
+    using refcount_t = std::uint32_t;
     
     const static indexsize_t InvalidIndex;
     
-    static StringPage* New(std::size_t number, entrycount_t entryCount, entrysize_t entrySize);
-    static StringPage* New(std::size_t number, bufferptr_t ptr, entrycount_t entryCount, entrysize_t entrySize);
+    static StringPagePtr New(std::size_t number, entrycount_t entryCount, entrysize_t entrySize);
+    static StringPagePtr New(std::size_t number, bufferptr_t ptr, entrycount_t entryCount, entrysize_t entrySize);
 
     StringPage(const StringPage&) = delete;
     StringPage(const StringPage&&) = delete;
@@ -66,11 +68,12 @@ public:
     pagenumber_t Number() const noexcept;
     entrycount_t Count() const noexcept;
     
+    refcount_t RefCount() const noexcept { return refCount_.load(std::memory_order_relaxed); }
+    
 protected:    
-    StringPage(pagenumber_t number, char* ptr, entrycount_t entryCount, entrysize_t entrySize, bool freeBuffer = true) noexcept;
+    StringPage(pagenumber_t number, bufferptr_t ptr, entrycount_t entryCount, entrysize_t entrySize, bool freeBuffer) noexcept;
 
 private:
-    
     struct Entry {
     public:
         Entry() : hash(0), length(0) {
@@ -89,6 +92,17 @@ private:
     std::vector<Entry> entries_;
     std::atomic<entrycount_t> count_;
     bufferptr_t ptr_;
+    
+    friend StringPagePtr;
+    refcount_t AddRef() const noexcept { return refCount_.fetch_add(1, std::memory_order_relaxed) + 1; }
+    refcount_t DecRef() const noexcept { 
+        auto count = refCount_.fetch_sub(1, std::memory_order_relaxed) - 1; 
+        if (count == 0) {
+            delete this;
+        }
+        return count;
+    }
+    mutable std::atomic<refcount_t> refCount_;
 
     // track the number of times we see a zero hash (see below)
     std::atomic<std::uint32_t> zeroHashCount_;

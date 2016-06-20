@@ -26,40 +26,39 @@
 
 #include <cstddef>
 #include <cstring>
-#include <atomic>
 #include <thread>
 
 #include "string_intern_exception.h"
 
 const rs::stringintern::StringPage::indexsize_t rs::stringintern::StringPage::InvalidIndex = -1;
 
-rs::stringintern::StringPage* rs::stringintern::StringPage::New(std::size_t number, entrycount_t entryCount, entrysize_t entrySize) {
-    StringPage* page = nullptr;
+rs::stringintern::StringPagePtr rs::stringintern::StringPage::New(std::size_t number, entrycount_t entryCount, entrysize_t entrySize) {
+    StringPagePtr page;
 
     if (number < StringReference::MaxNumber()) {
         std::uint64_t pageSize = entryCount * entrySize;
         auto ptr = new char[pageSize];
 
         if (ptr != nullptr) {
-            page = new StringPage(number, ptr, entryCount, entrySize);
+            page = StringPagePtr(new StringPage(number, ptr, entryCount, entrySize, true));
         }
     }
 
     return page;
 }
 
-rs::stringintern::StringPage* rs::stringintern::StringPage::New(std::size_t number, bufferptr_t ptr, entrycount_t entryCount, entrysize_t entrySize) {
-    StringPage* page = nullptr;
+rs::stringintern::StringPagePtr rs::stringintern::StringPage::New(std::size_t number, bufferptr_t ptr, entrycount_t entryCount, entrysize_t entrySize) {
+    StringPagePtr page;
 
     if (number < StringReference::MaxNumber() && !!ptr) {
-        page = new StringPage(number, ptr, entryCount, entrySize, false);
+        page = StringPagePtr(new StringPage(number, ptr, entryCount, entrySize, false));
     }
 
     return page;
 }
 
 rs::stringintern::StringPage::StringPage(pagenumber_t number, bufferptr_t ptr, entrycount_t entryCount, entrysize_t entrySize, bool freeBuffer) noexcept
-    : number_(number), ptr_(ptr), entrySize_(entrySize), entryCount_(entryCount), entries_(entryCount), zeroHashCount_(0), count_(0), freeBuffer_(freeBuffer) {
+    : number_(number), ptr_(ptr), entrySize_(entrySize), entryCount_(entryCount), entries_(entryCount), zeroHashCount_(0), count_(0), freeBuffer_(freeBuffer), refCount_(0) {
     
 }
 

@@ -47,7 +47,7 @@ public:
     StringPageCatalog(const StringPageCatalog&&) = delete;
     void operator=(const StringPageCatalog&) = delete;
     
-    bool Add(rowcount_t, StringPage*);
+    bool Add(rowcount_t, StringPagePtr);
     
     StringReference Find(rowcount_t, StringHash::Hash) const noexcept;
     
@@ -56,12 +56,12 @@ public:
     
     inline pagecount_t Pages() const noexcept { return totalPages_.load(std::memory_order_relaxed); }
     
-    std::vector<StringPage*> GetPages(rowcount_t) const;
+    std::vector<StringPagePtr> GetPages(rowcount_t) const;
         
 private:
     
     std::vector<std::atomic<rowcount_t>> counters_;
-    std::vector<std::atomic<StringPage*>> data_;
+    std::vector<StringPagePtr> data_;
 
     const colcount_t cols_;
     const rowcount_t rows_;

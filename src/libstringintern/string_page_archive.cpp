@@ -28,46 +28,39 @@
 
 rs::stringintern::StringPageArchive::StringPageArchive(std::size_t entries) : 
     pages_(entries), index_(0) {
-    
 }
 
-rs::stringintern::StringPageArchive::~StringPageArchive() {
-    for (auto& page : pages_) {
-        delete page.load();
-    }
-}
-
-rs::stringintern::StringPage* rs::stringintern::StringPageArchive::NewPage(StringPage::entrycount_t entryCount, StringPage::entrysize_t entrySize) {
-    StringPage* page = nullptr;    
+rs::stringintern::StringPagePtr rs::stringintern::StringPageArchive::NewPage(StringPage::entrycount_t entryCount, StringPage::entrysize_t entrySize) {
+    StringPagePtr page;    
     
     auto pageNumber = index_.fetch_add(1, std::memory_order_relaxed);
     if (pageNumber < pages_.size()) {
         page = StringPage::New(pageNumber, entryCount, entrySize);
-        pages_[pageNumber].store(page, std::memory_order_relaxed);
+        pages_[pageNumber] = page;
     }
     
     return page;
 }
 
-rs::stringintern::StringPage* rs::stringintern::StringPageArchive::NewPage(StringPage::bufferptr_t ptr, StringPage::entrycount_t entryCount, StringPage::entrysize_t entrySize) {
-    StringPage* page = nullptr;
+rs::stringintern::StringPagePtr rs::stringintern::StringPageArchive::NewPage(StringPage::bufferptr_t ptr, StringPage::entrycount_t entryCount, StringPage::entrysize_t entrySize) {
+    StringPagePtr page;
     
     if (!!ptr) {
         auto pageNumber = index_.fetch_add(1, std::memory_order_relaxed);
         if (pageNumber < pages_.size()) {
             page = StringPage::New(pageNumber, ptr, entryCount, entrySize);
-            pages_[pageNumber].store(page, std::memory_order_relaxed);
+            pages_[pageNumber] = page;
         }
     }
     
     return page;    
 }
 
-rs::stringintern::StringPage* rs::stringintern::StringPageArchive::GetPage(std::size_t number) const noexcept {
-    StringPage* page = nullptr;
+rs::stringintern::StringPagePtr rs::stringintern::StringPageArchive::GetPage(std::size_t number) const noexcept {
+    StringPagePtr page;
     
     if (number < pages_.size() && number < index_.load(std::memory_order_relaxed)) {
-        while ((page = pages_[number].load(std::memory_order_relaxed)) == nullptr) {
+        while (!(page = pages_[number])) {
             std::this_thread::yield();
         }
     }

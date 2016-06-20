@@ -53,14 +53,14 @@ TEST_F(StringPageArchiveTests, test0) {
     ASSERT_EQ(archiveEntries, archive.MaxEntries());
     
     auto newPage = archive.NewPage(pageEntryCount_, pageEntrySize_);
-    ASSERT_NE(nullptr, newPage);
+    ASSERT_TRUE(!!newPage);
     ASSERT_EQ(0, newPage->Number());
     ASSERT_EQ(0, newPage->Count());
     ASSERT_EQ(pageEntryCount_, newPage->EntryCount());
     ASSERT_EQ(pageEntrySize_, newPage->EntrySize());
     
     auto archivePage = archive.GetPage(0);
-    ASSERT_NE(nullptr, archivePage);
+    ASSERT_TRUE(!!archivePage);
     ASSERT_EQ(0, archivePage->Number());
     ASSERT_EQ(0, archivePage->Count());
     ASSERT_EQ(pageEntryCount_, archivePage->EntryCount());
@@ -76,7 +76,7 @@ TEST_F(StringPageArchiveTests, test1) {
     
     for (auto i = 0; i < archiveEntries; ++i) {
         auto page = archive.NewPage(pageEntryCount_, pageEntrySize_);
-        ASSERT_NE(nullptr, page);
+        ASSERT_TRUE(!!page);
         ASSERT_EQ(i, page->Number());
         ASSERT_EQ(0, page->Count());
         ASSERT_EQ(pageEntryCount_, page->EntryCount());

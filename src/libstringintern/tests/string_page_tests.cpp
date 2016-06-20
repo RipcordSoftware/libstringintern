@@ -44,11 +44,11 @@ protected:
     }
     
 public:
-    std::shared_ptr<rs::stringintern::StringPage> NewPagePtr(
+    rs::stringintern::StringPagePtr NewPagePtr(
         std::size_t number,
         rs::stringintern::StringPage::entrycount_t entryCount,
         rs::stringintern::StringPage::entrysize_t entrySize) {
-        return std::shared_ptr<rs::stringintern::StringPage>(rs::stringintern::StringPage::New(number, entryCount, entrySize));
+        return rs::stringintern::StringPage::New(number, entryCount, entrySize);
     }
 };
 

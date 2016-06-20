@@ -40,12 +40,11 @@ public:
     StringPageArchive(const StringPageArchive& orig) = delete;
     StringPageArchive(StringPageArchive&&) = delete;
     void operator=(const StringPageArchive&) = delete;
-    ~StringPageArchive();
     
-    StringPage* NewPage(StringPage::entrycount_t entryCount, StringPage::entrysize_t entrySize);
-    StringPage* NewPage(StringPage::bufferptr_t ptr, StringPage::entrycount_t entryCount, StringPage::entrysize_t entrySize);
+    StringPagePtr NewPage(StringPage::entrycount_t entryCount, StringPage::entrysize_t entrySize);
+    StringPagePtr NewPage(StringPage::bufferptr_t ptr, StringPage::entrycount_t entryCount, StringPage::entrysize_t entrySize);
     
-    StringPage* GetPage(std::size_t number) const noexcept;
+    StringPagePtr GetPage(std::size_t number) const noexcept;
     
     std::size_t Count() const noexcept;
     
@@ -55,7 +54,7 @@ private:
     
     std::atomic<std::size_t> index_;
     
-    std::vector<std::atomic<StringPage*>> pages_;        
+    std::vector<StringPagePtr> pages_;        
 
 };
 
