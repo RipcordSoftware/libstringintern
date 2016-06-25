@@ -31,7 +31,8 @@
 #include <algorithm>
 
 rs::stringintern::StringPages::StringPages() :
-    nursery_(nurseryCols_, StringPageSizes::GetMaxIndex(), stringPageSizeBytes_),
+    archive_(stringPageSizeBytes_),
+    nursery_(nurseryCols_, StringPageSizes::GetMaxIndex(), stringPageSizeBytes_, [&](StringPage::entrycount_t entryCount, StringPage::entrysize_t entrySize) { return archive_.NewPage(entryCount, entrySize); }),
     catalog_(catalogCols_, StringPageSizes::GetMaxIndex()) {   
 }
 
@@ -75,7 +76,7 @@ rs::stringintern::StringReference rs::stringintern::StringPages::Add(const char*
                 if (index == StringPage::InvalidIndex) {
                     page = nursery_.New(row, firstPage, true);
 
-                    if (page == nullptr) {
+                    if (!page) {
                         page = nursery_.Current(row);
                     } else {
                         catalog_.Add(row, firstPage);

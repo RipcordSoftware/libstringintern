@@ -25,14 +25,15 @@
 #ifndef RS_LIBSTRINGINTERN_STRING_PAGES_H
 #define	RS_LIBSTRINGINTERN_STRING_PAGES_H
 
-#include "string_reference.h"
-#include "string_page_nursery.h"
-#include "string_page_catalog.h"
-
 #include <array>
 #include <atomic>
 #include <memory>
 #include <cstddef>
+
+#include "string_reference.h"
+#include "string_page_nursery.h"
+#include "string_page_catalog.h"
+#include "string_page_archive.h"
 
 namespace rs {
 namespace stringintern {
@@ -51,6 +52,7 @@ private:
     static const StringPageNursery::pagesize_t stringPageSizeBytes_ = 4 * 1024 * 1024;
     static const StringPageNursery::colcount_t catalogCols_ = 4096;
 
+    StringPageArchive archive_;
     StringPageNursery nursery_;
     StringPageCatalog catalog_;
 };

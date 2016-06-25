@@ -26,6 +26,7 @@
 #define	RS_LIBSTRINGINTERN_STRING_PAGE_NURSERY_H
 
 #include <atomic>
+#include <functional>
 #include <cstddef>
 
 #include "string_page.h"
@@ -40,7 +41,9 @@ public:
     using rowcount_t = std::uint32_t;
     using colcount_t = std::uint32_t;
     
-    StringPageNursery(colcount_t, rowcount_t, pagesize_t);
+    using NewPageFunc = std::function<StringPagePtr(StringPage::entrycount_t, StringPage::entrysize_t)>;
+
+    StringPageNursery(colcount_t, rowcount_t, pagesize_t, NewPageFunc newPageFunc);
     StringPageNursery(const StringPageNursery&) = delete;
     StringPageNursery(const StringPageNursery&&) = delete;
     void operator=(const StringPageNursery&) = delete;
@@ -57,7 +60,7 @@ private:
     
     StringPagePtr Get(colcount_t, rowcount_t);
     
-    std::atomic<StringPage::pagenumber_t> pageCount_;
+    NewPageFunc newPageFunc_;
     
     std::vector<std::atomic<rowcount_t>> counters_;
     std::vector<StringPagePtr> data_;

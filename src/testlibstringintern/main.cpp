@@ -24,46 +24,17 @@
 
 #include <iostream>
 
-#include <cstdlib>
-#include <cstring>
-#include <vector>
-
-#include "string_intern.h"
-
-#include "string_page.h"
-#include "string_page_sizes.h"
 #include "string_pages.h"
 
-using namespace std;
-
 int main() {
-    
-    /*const auto pageSize = 2 * 1024 * 1024;
-    std::vector<char> pageBuffer(pageSize);
-    const auto pageEntries = 256;
-
-    rs::stringintern::StringPage page(pageBuffer.data(), pageSize / pageEntries, pageEntries);
-    
-    const char* str = "Hello world";
-    const auto len = std::strlen(str);
-    page.Add(str, len, 11234);
-    page.Add(str, len, 11234);
-    page.Add(str, len, 11234 + (pageSize / pageEntries));*/
-    
-    /*std::cout << rs::stringintern::StringPageSizes::GetPageSizeIndex(0) << std::endl;
-    std::cout << rs::stringintern::StringPageSizes::GetPageSizeIndex(256) << std::endl;
-    std::cout << rs::stringintern::StringPageSizes::GetPageSizeIndex(456) << std::endl;
-    std::cout << rs::stringintern::StringPageSizes::GetPageSizeIndex(16365) << std::endl;
-    std::cout << rs::stringintern::StringPageSizes::GetPageSizeIndex(256 * 1024) << std::endl;
-    
-    std::cout << rs::stringintern::StringPageSizes::pageSizesMaxIndex << std::endl;*/
-    
     rs::stringintern::StringPages pages;
     auto ref1 = pages.Add("hello world");
     auto ref2 = pages.Add("hello world");
     auto ref3 = pages.Add("hello world!!");
+    auto ref4 = pages.Add("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ut auctor diam. Proin varius lacinia iaculis.");
     
     std::cout << ref1.Number() << ", " << ref1.Index() << std::endl;
     std::cout << ref2.Number() << ", " << ref2.Index() << std::endl;
     std::cout << ref3.Number() << ", " << ref3.Index() << std::endl;
+    std::cout << ref4.Number() << ", " << ref4.Index() << std::endl;
 }

@@ -27,9 +27,9 @@
 
 #include <algorithm>
 
-rs::stringintern::StringPageNursery::StringPageNursery(colcount_t cols, rowcount_t rows, pagesize_t pageSize) :
-    rows_(rows), cols_(cols), pageSize_(pageSize), pageCount_(0),
-    counters_(rows), data_(rows * cols) {
+rs::stringintern::StringPageNursery::StringPageNursery(colcount_t cols, rowcount_t rows, pagesize_t pageSize, NewPageFunc newPageFunc) :
+    rows_(rows), cols_(cols), pageSize_(pageSize),
+    counters_(rows), data_(rows * cols), newPageFunc_(newPageFunc) {
     
     std::for_each(counters_.begin(), counters_.end(), [&](decltype(counters_[0])& c) { c.store(0, std::memory_order_relaxed); });
 }
@@ -47,10 +47,9 @@ rs::stringintern::StringPagePtr rs::stringintern::StringPageNursery::Current(row
 rs::stringintern::StringPagePtr rs::stringintern::StringPageNursery::New(rowcount_t row, colcount_t col, StringPagePtr oldPage, bool matchPage) {
     auto dataIndex = (rows_ * row) + (col % cols_);
     
-    auto pageNumber = pageCount_.fetch_add(1, std::memory_order_relaxed);
     auto entrySize = StringPageSizes::GetEntrySize(row);
     auto entryCount = pageSize_ / entrySize;
-    auto newPage = StringPage::New(pageNumber, entryCount, entrySize);
+    auto newPage = newPageFunc_(entryCount, entrySize);
     
     if (!data_[dataIndex].compare_exchange_strong(oldPage, newPage, std::memory_order_relaxed)) {
         newPage = matchPage ? nullptr : oldPage;
