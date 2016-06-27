@@ -59,8 +59,9 @@ public:
     ~StringPage();
     
     indexsize_t Add(const char*, std::size_t, StringHash::Hash);
-    const char* GetString(StringHash::Hash) const noexcept;
-    StringReference GetReference(StringHash::Hash) const noexcept;
+    const char* GetString(const StringHash::Hash&) const noexcept;
+    const char* GetString(const StringReference&) const noexcept;
+    StringReference GetReference(const StringHash::Hash&) const noexcept;
     
     entrysize_t EntrySize() const noexcept;
     entrycount_t EntryCount() const noexcept;
@@ -82,6 +83,8 @@ private:
         std::atomic<StringHash::Hash> hash;
         std::atomic<entrysize_t> length;
     };
+    
+    bool WaitForLength(const Entry&) const noexcept;
     
     const pagenumber_t number_;
     

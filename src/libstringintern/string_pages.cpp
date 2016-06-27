@@ -95,3 +95,15 @@ rs::stringintern::StringReference rs::stringintern::StringPages::Add(const char*
     
     return ref;
 }
+
+const char* rs::stringintern::StringPages::GetString(const StringReference& ref) const {
+    const char* str = nullptr;
+    
+    auto pageNumber = ref.Number();
+    auto page = archive_.GetPage(pageNumber);
+    if (!!page) {
+        str = page->GetString(ref);
+    }
+    
+    return str;
+}

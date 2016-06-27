@@ -343,3 +343,28 @@ TEST_F(StringPageTests, test7) {
 
     ASSERT_EQ(nullptr, rs::stringintern::StringPage::New(0, nullptr, pageEntries, pageEntrySize));
 }
+
+TEST_F(StringPageTests, test8) {
+    const auto pageSize = 2 * 1024 * 1024;
+    const auto pageEntrySize = 256;
+    const auto pageEntries = pageSize / pageEntrySize;
+
+    auto page = NewPagePtr(42, pageEntries, pageEntrySize);
+    
+    ASSERT_EQ(42, page->Number());
+    ASSERT_EQ(pageEntries, page->EntryCount());
+    ASSERT_EQ(pageEntrySize, page->EntrySize());
+    
+    const char* str = "Hello world";
+    const auto len = std::strlen(str);
+    ASSERT_EQ(1, page->Add(str, len, 1));
+    
+    rs::stringintern::StringReference ref1{42, 1};    
+    ASSERT_STREQ(str, page->GetString(ref1));
+    
+    rs::stringintern::StringReference ref2{42, 2};    
+    ASSERT_EQ(nullptr, page->GetString(ref2));
+    
+    rs::stringintern::StringReference ref3{1, 1};    
+    ASSERT_EQ(nullptr, page->GetString(ref3));
+}

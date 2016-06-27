@@ -46,6 +46,8 @@ public:
     StringReference Add(const char*);
     StringReference Add(const char*, std::size_t, StringHash::Hash);
     
+    const char* GetString(const StringReference&) const;
+    
 private:
        
     static const StringPageNursery::colcount_t nurseryCols_ = 8;
