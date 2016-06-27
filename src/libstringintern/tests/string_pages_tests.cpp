@@ -22,46 +22,40 @@
  * THE SOFTWARE.
 **/
 
-#ifndef RS_LIBSTRINGINTERN_STRING_PAGES_H
-#define	RS_LIBSTRINGINTERN_STRING_PAGES_H
+#include <gtest/gtest.h>
 
-#include <array>
-#include <atomic>
-#include <memory>
-#include <cstddef>
+#include "../string_pages.h"
 
-#include "string_reference.h"
-#include "string_page_nursery.h"
-#include "string_page_catalog.h"
-#include "string_page_archive.h"
-
-namespace rs {
-namespace stringintern {
-
-class StringPages {
+class StringPagesTests : public ::testing::Test {
+protected:
+    virtual void SetUp() {
+        
+    }
+    
+    virtual void TearDown() {
+        
+    }
     
 public:
-    StringPages();
-    
-    StringReference Add(const char*);
-    StringReference Add(const char*, std::size_t, StringHash::Hash);
-    
-    const char* GetString(const StringReference&) const;
-    
-    std::size_t GetPageCount() const noexcept { return archive_.Count(); }
-    
-private:
-       
-    static const StringPageNursery::colcount_t nurseryCols_ = 8;
-    static const StringPageNursery::pagesize_t stringPageSizeBytes_ = 4 * 1024 * 1024;
-    static const StringPageNursery::colcount_t catalogCols_ = 4096;
 
-    StringPageArchive archive_;
-    StringPageNursery nursery_;
-    StringPageCatalog catalog_;
 };
 
-}}
-
-#endif	/* RS_LIBSTRINGINTERN_STRING_PAGES_H */
-
+TEST_F(StringPagesTests, test0) {
+    rs::stringintern::StringPages pages;
+    ASSERT_EQ(0, pages.GetPageCount());
+    
+    auto str = "hello world";
+    auto ref1 = pages.Add(str);
+    ASSERT_EQ(1, pages.GetPageCount());
+    ASSERT_EQ(0, ref1.Number());
+    
+    ASSERT_STREQ(str, pages.GetString(ref1));
+    
+    auto ref2 = pages.Add(str);
+    ASSERT_EQ(1, pages.GetPageCount());
+    ASSERT_EQ(0, ref2.Number());
+    
+    ASSERT_STREQ(str, pages.GetString(ref2));
+    
+    ASSERT_TRUE(ref1 == ref2);
+}

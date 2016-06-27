@@ -65,6 +65,12 @@
                      kind="TEST">
         <itemPath>tests/string_page_ptr_tests.cpp</itemPath>
       </logicalFolder>
+      <logicalFolder name="f8"
+                     displayName="StringPages Tests"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>tests/string_pages_tests.cpp</itemPath>
+      </logicalFolder>
       <logicalFolder name="f3"
                      displayName="StringPageSizes Tests"
                      projectFiles="true"
@@ -229,6 +235,21 @@
           <output>${TESTDIR}/TestFiles/f7</output>
         </linkerTool>
       </folder>
+      <folder path="TestFiles/f8">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f8</output>
+        </linkerTool>
+      </folder>
       <item path="string_hash.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="string_hash.h" ex="false" tool="3" flavor2="0">
@@ -288,6 +309,8 @@
       <item path="tests/string_page_sizes_tests.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="tests/string_page_tests.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/string_pages_tests.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="tests/string_reference_tests.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -443,6 +466,21 @@
           <output>${TESTDIR}/TestFiles/f7</output>
         </linkerTool>
       </folder>
+      <folder path="TestFiles/f8">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f8</output>
+        </linkerTool>
+      </folder>
       <item path="string_hash.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="string_hash.h" ex="false" tool="3" flavor2="0">
@@ -502,6 +540,8 @@
       <item path="tests/string_page_sizes_tests.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="tests/string_page_tests.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/string_pages_tests.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="tests/string_reference_tests.cpp" ex="false" tool="1" flavor2="0">
       </item>
