@@ -94,3 +94,14 @@ TEST_F(StringReferenceTests, test5) {
     ASSERT_TRUE(ref1 != ref3);
     ASSERT_TRUE(ref2 != ref3);
 }
+
+TEST_F(StringReferenceTests, test6) {
+    rs::stringintern::StringReference ref1{1, 42};
+    rs::stringintern::StringReference ref2{1, 42};
+    rs::stringintern::StringReference ref3{0, 69};
+    ASSERT_FALSE(ref1 < ref2);    
+    ASSERT_FALSE(ref1 < ref3);
+    ASSERT_FALSE(ref2 < ref3);
+    ASSERT_TRUE(ref3 < ref1);
+    ASSERT_TRUE(ref3 < ref2);
+}

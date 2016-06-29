@@ -45,11 +45,11 @@ rs::stringintern::StringPagePtr rs::stringintern::StringPageNursery::Current(row
 }
 
 rs::stringintern::StringPagePtr rs::stringintern::StringPageNursery::New(rowcount_t row, colcount_t col, StringPagePtr oldPage, bool matchPage) {
-    auto dataIndex = (rows_ * row) + (col % cols_);
+    auto dataIndex = (cols_ * row) + (col % cols_);
     
     auto entrySize = StringPageSizes::GetEntrySize(row);
     auto entryCount = pageSize_ / entrySize;
-    auto newPage = newPageFunc_(entryCount, entrySize);
+    auto newPage = newPageFunc_(row, entryCount, entrySize);
     
     if (!data_[dataIndex].compare_exchange_strong(oldPage, newPage, std::memory_order_relaxed)) {
         newPage = matchPage ? nullptr : oldPage;
@@ -64,7 +64,7 @@ rs::stringintern::StringPagePtr rs::stringintern::StringPageNursery::New(rowcoun
 }
 
 rs::stringintern::StringPagePtr rs::stringintern::StringPageNursery::Get(colcount_t col, rowcount_t row) {
-    auto dataIndex = (rows_ * row) + (col % cols_);
+    auto dataIndex = (cols_ * row) + (col % cols_);
     auto page = data_[dataIndex];
     if (!page) {
         page = New(row, col, page);       

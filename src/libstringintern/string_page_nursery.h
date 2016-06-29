@@ -41,7 +41,7 @@ public:
     using rowcount_t = std::uint32_t;
     using colcount_t = std::uint32_t;
     
-    using NewPageFunc = std::function<StringPagePtr(StringPage::entrycount_t, StringPage::entrysize_t)>;
+    using NewPageFunc = std::function<StringPagePtr(rowcount_t, StringPage::entrycount_t, StringPage::entrysize_t)>;
 
     StringPageNursery(colcount_t, rowcount_t, pagesize_t, NewPageFunc newPageFunc);
     StringPageNursery(const StringPageNursery&) = delete;

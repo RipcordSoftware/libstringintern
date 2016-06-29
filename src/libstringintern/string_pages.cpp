@@ -28,11 +28,11 @@
 
 #include <cstring>
 
-#include <algorithm>
+#include <functional>
 
 rs::stringintern::StringPages::StringPages() :
     archive_(stringPageSizeBytes_),
-    nursery_(nurseryCols_, StringPageSizes::GetMaxIndex(), stringPageSizeBytes_, [&](StringPage::entrycount_t entryCount, StringPage::entrysize_t entrySize) { return archive_.NewPage(entryCount, entrySize); }),
+    nursery_(nurseryCols_, StringPageSizes::GetMaxIndex(), stringPageSizeBytes_, std::bind(&StringPages::NewPage, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)),
     catalog_(catalogCols_, StringPageSizes::GetMaxIndex()) {   
 }
 
@@ -79,7 +79,7 @@ rs::stringintern::StringReference rs::stringintern::StringPages::Add(const char*
                     if (!page) {
                         page = nursery_.Current(row);
                     } else {
-                        catalog_.Add(row, firstPage);
+                        catalog_.Add(row, page);
                     }
 
                     index = page->Add(str, len, hash);
@@ -106,4 +106,12 @@ const char* rs::stringintern::StringPages::GetString(const StringReference& ref)
     }
     
     return str;
+}
+
+rs::stringintern::StringPagePtr rs::stringintern::StringPages::NewPage(StringPageNursery::rowcount_t row, StringPage::entrycount_t entryCount, StringPage::entrysize_t entrySize) {    
+    auto page = archive_.NewPage(entryCount, entrySize);
+    if (!!page) {
+        catalog_.Add(row, page);
+    }
+    return page;
 }
