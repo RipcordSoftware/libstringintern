@@ -59,21 +59,20 @@ rs::stringintern::StringReference rs::stringintern::StringPages::Add(const char*
             if (!ref) {
                 auto firstPage = nursery_.Current(row);
 
-                auto index = StringPage::InvalidIndex;
                 auto page = firstPage;
                 auto cols = nursery_.Cols();
 
                 // search for a suitable page
-                while (cols > 0 && index == StringPage::InvalidIndex) {
-                    index = page->Add(str, len, hash);
-                    if (index == StringPage::InvalidIndex) {
+                while (cols > 0 && !ref) {
+                    ref = page->Add(str, len, hash);
+                    if (!ref) {
                         page = nursery_.Next(row);
                         --cols;
                     }
                 }
 
                 // if we didn't find a page then replace the first page and search again
-                if (index == StringPage::InvalidIndex) {
+                if (!ref) {
                     page = nursery_.New(row, firstPage, true);
 
                     if (!page) {
@@ -82,12 +81,7 @@ rs::stringintern::StringReference rs::stringintern::StringPages::Add(const char*
                         catalog_.Add(row, page);
                     }
 
-                    index = page->Add(str, len, hash);
-                }
-
-                // did we find anything?
-                if (index != StringPage::InvalidIndex) {
-                    ref = StringReference(page->Number(), index);
+                    ref = page->Add(str, len, hash);
                 }
             }
         }        

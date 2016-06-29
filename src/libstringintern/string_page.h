@@ -41,14 +41,11 @@ class StringPage {
     
 public:
     using entrysize_t = std::uint32_t;
-    using entrycount_t = std::uint32_t;
-    using indexsize_t = std::uint32_t;
+    using entrycount_t = std::uint32_t;    
     using pagenumber_t = std::uint16_t;
     using buffervalue_t = char;
     using bufferptr_t = buffervalue_t* const;
-    using refcount_t = std::uint32_t;
-    
-    const static indexsize_t InvalidIndex;
+    using refcount_t = std::uint32_t;       
     
     static StringPagePtr New(std::size_t number, entrycount_t entryCount, entrysize_t entrySize);
     static StringPagePtr New(std::size_t number, bufferptr_t ptr, entrycount_t entryCount, entrysize_t entrySize);
@@ -58,7 +55,7 @@ public:
     void operator=(const StringPage&) = delete;
     ~StringPage();
     
-    indexsize_t Add(const char*, std::size_t, StringHash::Hash);
+    StringReference Add(const char*, std::size_t, StringHash::Hash);
     const char* GetString(const StringHash::Hash&) const noexcept;
     const char* GetString(const StringReference&) const noexcept;
     StringReference GetReference(const StringHash::Hash&) const noexcept;
@@ -75,6 +72,9 @@ protected:
     StringPage(pagenumber_t number, bufferptr_t ptr, entrycount_t entryCount, entrysize_t entrySize, bool freeBuffer) noexcept;
 
 private:
+    using indexsize_t = std::uint32_t;    
+    const static indexsize_t InvalidIndex;
+    
     struct Entry {
     public:
         Entry() : hash(0), length(0) {

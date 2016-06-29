@@ -85,7 +85,7 @@ rs::stringintern::StringPage::entrycount_t rs::stringintern::StringPage::Count()
     return count_;
 }
 
-rs::stringintern::StringPage::indexsize_t rs::stringintern::StringPage::Add(const char* str, std::size_t len, StringHash::Hash hash) {
+rs::stringintern::StringReference rs::stringintern::StringPage::Add(const char* str, std::size_t len, StringHash::Hash hash) {
     if (len == 0 || len >= entrySize_) {
         throw StringInternException("Bad string size for page");
     }
@@ -116,7 +116,7 @@ rs::stringintern::StringPage::indexsize_t rs::stringintern::StringPage::Add(cons
         }
     }
     
-    return index;
+    return index != InvalidIndex ? StringReference(number_, index) : StringReference();
 }
 
 const char* rs::stringintern::StringPage::GetString(const StringHash::Hash& hash) const noexcept {

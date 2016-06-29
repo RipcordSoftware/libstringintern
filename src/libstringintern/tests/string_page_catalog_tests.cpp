@@ -105,7 +105,7 @@ TEST_F(StringPageCatalogTests, test2) {
 
 TEST_F(StringPageCatalogTests, test3) {
     auto page = NewPagePtr(42, pageEntryCount_, pageEntrySize_);
-    ASSERT_NE(rs::stringintern::StringPage::InvalidIndex, page->Add("hello world", 11, 0));
+    ASSERT_TRUE(!!page->Add("hello world", 11, 0));
     
     rs::stringintern::StringPageCatalog catalog{1, 1};
     ASSERT_EQ(1, catalog.Rows());
@@ -121,10 +121,10 @@ TEST_F(StringPageCatalogTests, test3) {
 
 TEST_F(StringPageCatalogTests, test4) {
     auto page1 = NewPagePtr(0, pageEntryCount_, pageEntrySize_);
-    ASSERT_NE(rs::stringintern::StringPage::InvalidIndex, page1->Add("hello world", 11, 0));
+    ASSERT_TRUE(!!page1->Add("hello world", 11, 0));
     
     auto page2 = NewPagePtr(1, pageEntryCount_, pageEntrySize_);
-    ASSERT_NE(rs::stringintern::StringPage::InvalidIndex, page2->Add("Lorem ipsum", 11, 1));
+    ASSERT_TRUE(!!page2->Add("Lorem ipsum", 11, 1));
     
     rs::stringintern::StringPageCatalog catalog{2, 1};
     ASSERT_EQ(1, catalog.Rows());
@@ -155,10 +155,10 @@ TEST_F(StringPageCatalogTests, test4) {
 
 TEST_F(StringPageCatalogTests, test5) {
     auto page1 = NewPagePtr(0, pageEntryCount_, pageEntrySize_);
-    ASSERT_NE(rs::stringintern::StringPage::InvalidIndex, page1->Add("hello world", 11, 0));
+    ASSERT_TRUE(!!page1->Add("hello world", 11, 0));
     
     auto page2 = NewPagePtr(1, pageEntryCount_, pageEntrySize_);
-    ASSERT_NE(rs::stringintern::StringPage::InvalidIndex, page2->Add("Lorem ipsum", 11, 1));
+    ASSERT_TRUE(!!page2->Add("Lorem ipsum", 11, 1));
     
     rs::stringintern::StringPageCatalog catalog{2, 2};
     ASSERT_EQ(2, catalog.Rows());
@@ -206,7 +206,7 @@ TEST_F(StringPageCatalogTests, test6) {
             auto pageText = std::to_string(pageIndex);            
             
             auto page = rs::stringintern::StringPage::New(pageIndex, pageEntryCount_, pageEntrySize_);
-            ASSERT_NE(rs::stringintern::StringPage::InvalidIndex, page->Add(pageText.c_str(), pageText.size(), pageIndex));
+            ASSERT_TRUE(!!page->Add(pageText.c_str(), pageText.size(), pageIndex));
             
             ASSERT_TRUE(catalog.Add(row, page));
             

@@ -65,9 +65,9 @@ TEST_F(StringPageTests, test0) {
     
     const char* str = "Hello world";
     const auto len = std::strlen(str);
-    ASSERT_EQ(1, page->Add(str, len, 1));
-    ASSERT_EQ(1, page->Add(str, len, 1));
-    ASSERT_EQ(rs::stringintern::StringPage::InvalidIndex, page->Add(str, len, 1 + pageEntries));
+    ASSERT_EQ(1, page->Add(str, len, 1).Index());
+    ASSERT_EQ(1, page->Add(str, len, 1).Index());
+    ASSERT_FALSE(!!page->Add(str, len, 1 + pageEntries));
 }
 
 TEST_F(StringPageTests, test1) {    
@@ -113,7 +113,7 @@ TEST_F(StringPageTests, test3) {
     
     for (auto i = 0; i < pageEntries; ++i) {
         auto val = std::to_string(i);
-        ASSERT_EQ(i, page->Add(val.c_str(), val.length(), i));
+        ASSERT_EQ(i, page->Add(val.c_str(), val.length(), i).Index());
         ASSERT_EQ(val, page->GetString(i));
     }
     
@@ -121,14 +121,14 @@ TEST_F(StringPageTests, test3) {
     
     for (auto i = pageEntries; i < pageEntries * 2; ++i) {
         auto val = std::to_string(i);
-        ASSERT_EQ(rs::stringintern::StringPage::InvalidIndex, page->Add(val.c_str(), val.length(), i));
+        ASSERT_FALSE(!!page->Add(val.c_str(), val.length(), i));
     }
     
     ASSERT_EQ(pageEntries, page->Count());
     
     for (auto i = 0; i < pageEntries; ++i) {
         auto val = std::to_string(i);
-        ASSERT_EQ(i, page->Add(val.c_str(), val.length(), i));
+        ASSERT_EQ(i, page->Add(val.c_str(), val.length(), i).Index());
         ASSERT_EQ(val, page->GetString(i));
     }
     
@@ -161,7 +161,7 @@ TEST_F(StringPageTests, test5a) {
     const char* str = "I am a placebo";
     auto len = std::strlen(str);
 
-    ASSERT_EQ(0, page->Add(str, len, pageEntries));
+    ASSERT_EQ(0, page->Add(str, len, pageEntries).Index());
     ASSERT_NE(nullptr, page->GetString(pageEntries));
     ASSERT_EQ(nullptr, page->GetString(0));
 }
@@ -176,15 +176,15 @@ TEST_F(StringPageTests, test5b) {
     const char* str = "I am a placebo";
     const auto len = std::strlen(str);
 
-    ASSERT_EQ(0, page->Add(str, len, 0));
+    ASSERT_EQ(0, page->Add(str, len, 0).Index());
     ASSERT_EQ(1, page->Count());
     ASSERT_NE(nullptr, page->GetString(0));
     ASSERT_EQ(nullptr, page->GetString(pageEntries));
     
-    ASSERT_EQ(rs::stringintern::StringPage::InvalidIndex, page->Add(str, len, pageEntries));
+    ASSERT_FALSE(!!page->Add(str, len, pageEntries));
     ASSERT_EQ(1, page->Count());
     
-    ASSERT_EQ(0, page->Add(str, len, 0));
+    ASSERT_EQ(0, page->Add(str, len, 0).Index());
     ASSERT_EQ(1, page->Count());
 }
 
@@ -226,7 +226,7 @@ TEST_F(StringPageTests, test6a) {
 
 TEST_F(StringPageTests, test6b) {    
     const auto pageSize = 4 * 1024 * 1024;
-    const auto pageEntrySize = 8;
+    const auto pageEntrySize = 32;
     const auto pageEntries = pageSize / pageEntrySize;
     
     std::vector<std::string> strings;
@@ -300,7 +300,7 @@ TEST_F(StringPageTests, test6c) {
 
 TEST_F(StringPageTests, test6d) {    
     const auto pageSize = 4 * 1024 * 1024;
-    const auto pageEntrySize = 8;
+    const auto pageEntrySize = 32;
     const auto pageEntries = pageSize / pageEntrySize;
     
     std::vector<std::string> strings;
@@ -357,7 +357,7 @@ TEST_F(StringPageTests, test8) {
     
     const char* str = "Hello world";
     const auto len = std::strlen(str);
-    ASSERT_EQ(1, page->Add(str, len, 1));
+    ASSERT_EQ(1, page->Add(str, len, 1).Index());
     
     rs::stringintern::StringReference ref1{42, 1};    
     ASSERT_STREQ(str, page->GetString(ref1));
