@@ -50,43 +50,34 @@ rs::stringintern::StringReference rs::stringintern::StringPages::Add(const char*
 
 rs::stringintern::StringReference rs::stringintern::StringPages::Add(const char* str, std::size_t len, StringHash::Hash hash) {
     StringReference ref;
-    
+
     if (!!str && len > 0) {
         auto row = StringPageSizes::GetIndex(len);
         if (!!row) {
             ref = catalog_.Find(row, hash);
             
             if (!ref) {
-                auto firstPage = nursery_.Current(row);
-
-                auto page = firstPage;
-                auto cols = nursery_.Cols();
+                auto iter = nursery_.Iter(row);
 
                 // search for a suitable page
-                while (cols > 0 && !ref) {
-                    ref = page->Add(str, len, hash);
-                    if (!ref) {
-                        page = nursery_.Next(row);
-                        --cols;
+                while (!!iter && !ref) {
+                    auto page = nursery_.Next(iter);
+                    if (!!page) {
+                        ref = page->Add(str, len, hash);
                     }
                 }
 
-                // if we didn't find a page then replace the first page and search again
+                // if we didn't find a page then make a new one and try to add it there
                 if (!ref) {
-                    page = nursery_.New(row, firstPage, true);
-
-                    if (!page) {
-                        page = nursery_.Current(row);
-                    } else {
-                        catalog_.Add(row, page);
+                    auto page = nursery_.New(row);
+                    if (!!page) {
+                        ref = page->Add(str, len, hash);
                     }
-
-                    ref = page->Add(str, len, hash);
                 }
             }
         }        
     }
-    
+
     return ref;
 }
 

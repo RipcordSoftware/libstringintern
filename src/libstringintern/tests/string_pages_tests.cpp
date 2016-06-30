@@ -85,7 +85,6 @@ TEST_F(StringPagesTests, test1) {
     ASSERT_TRUE(ref1 != ref2);
 }
 
-
 TEST_F(StringPagesTests, test2) {
     rs::stringintern::StringPages pages;
     ASSERT_EQ(0, pages.GetPageCount());
@@ -99,20 +98,16 @@ TEST_F(StringPagesTests, test2) {
         strings.emplace_back(std::move(val));
     }
     
-    std::sort(refs1.begin(), refs1.end());
-    
-    ASSERT_TRUE(pages.GetPageCount() < 5);
-    
+    ASSERT_EQ(2, pages.GetPageCount());
+
     std::vector<rs::stringintern::StringReference> refs2;
     for (auto i = 0; i < count; ++i) {
         refs2.push_back(pages.Add(strings[i].c_str()));
     }
     
-    ASSERT_TRUE(pages.GetPageCount() < 5);
+    ASSERT_EQ(2, pages.GetPageCount());
     
     ASSERT_EQ(refs1.size(), refs2.size());
-    
-    std::sort(refs2.begin(), refs2.end());
     
     for (auto i = 0; i < count; ++i) {
         ASSERT_EQ(refs1[i].Number(), refs2[i].Number());

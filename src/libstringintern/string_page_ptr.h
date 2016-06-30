@@ -57,6 +57,7 @@ public:
     std::size_t RefCount() const noexcept;
     
     bool compare_exchange_strong(StringPagePtr&, const StringPagePtr&, std::memory_order) noexcept;
+    StringPagePtr exchange(const StringPagePtr&, std::memory_order) noexcept;
     
 private:
     friend bool operator==(const StringPagePtr& lhs, const StringPagePtr& rhs) noexcept;

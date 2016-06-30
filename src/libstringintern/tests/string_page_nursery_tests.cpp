@@ -66,13 +66,14 @@ TEST_F(StringPageNurseryTests, test0) {
     ASSERT_EQ(StringPageNurseryTests::nurseryCols_, nursery.Cols());
     ASSERT_EQ(StringPageNurseryTests::nurseryRows_, nursery.Rows());
     
-    ASSERT_TRUE(!!nursery.Current(0));
-    ASSERT_EQ(0, nursery.Current(0)->Number());
-    ASSERT_EQ(0, nursery.Current(0)->Number());
-    ASSERT_TRUE(!!nursery.Next(0));
-    ASSERT_EQ(1, nursery.Current(0)->Number());
-    ASSERT_TRUE(!!nursery.Next(0));
-    ASSERT_EQ(2, nursery.Current(0)->Number());
+    auto iter = nursery.Iter(0);
+    ASSERT_FALSE(!iter);
+    ASSERT_EQ(0, nursery.Next(iter)->Number());
+    ASSERT_FALSE(!iter);
+    ASSERT_EQ(1, nursery.Next(iter)->Number());
+    ASSERT_FALSE(!iter);
+    ASSERT_EQ(2, nursery.Next(iter)->Number());
+    ASSERT_FALSE(!iter);
 }
 
 TEST_F(StringPageNurseryTests, test2) {
@@ -85,51 +86,15 @@ TEST_F(StringPageNurseryTests, test2) {
     ASSERT_EQ(StringPageNurseryTests::nurseryCols_, nursery.Cols());
     ASSERT_EQ(StringPageNurseryTests::nurseryRows_, nursery.Rows());
     
+    auto iter = nursery.Iter(0);
     const auto cols = nursery.Cols();
     for (auto i = 0; i < cols * 4; ++i) {
-        ASSERT_EQ(i % cols, nursery.Current(0)->Number());
-        ASSERT_EQ((i + 1) % cols, nursery.Next(0)->Number());
-    }
-}
-
-TEST_F(StringPageNurseryTests, test3) {
-    rs::stringintern::StringPageNursery nursery(
-        StringPageNurseryTests::nurseryCols_, 
-        StringPageNurseryTests::nurseryRows_,
-        StringPageNurseryTests::nurseryPageSize_,
-        StringPageNurseryTests::NewPage);
-    
-    ASSERT_EQ(StringPageNurseryTests::nurseryCols_, nursery.Cols());
-    ASSERT_EQ(StringPageNurseryTests::nurseryRows_, nursery.Rows());
-    
-    ASSERT_TRUE(!!nursery.Current(0));
-    ASSERT_EQ(0, nursery.Current(0)->Number());
-    ASSERT_TRUE(!!nursery.Current(1));
-    ASSERT_EQ(1, nursery.Current(1)->Number());
-    ASSERT_TRUE(!!nursery.Next(2));
-    ASSERT_EQ(2, nursery.Current(2)->Number());
-}
-
-TEST_F(StringPageNurseryTests, test4) {
-    rs::stringintern::StringPageNursery nursery(
-        StringPageNurseryTests::nurseryCols_, 
-        StringPageNurseryTests::nurseryRows_,
-        StringPageNurseryTests::nurseryPageSize_,
-        StringPageNurseryTests::NewPage);
-    
-    ASSERT_EQ(StringPageNurseryTests::nurseryCols_, nursery.Cols());
-    ASSERT_EQ(StringPageNurseryTests::nurseryRows_, nursery.Rows());
-    
-    const auto rows = nursery.Rows();
-    const auto cols = nursery.Cols();
-    for (auto i = 0, pageNumber = 0; i < cols; ++i) {        
-        for (auto j = 0; j < rows; ++j, ++pageNumber) {            
-            if (i == 0) {
-                ASSERT_EQ(pageNumber, nursery.Current(j)->Number());
-            } else {
-                ASSERT_EQ(pageNumber - rows, nursery.Current(j)->Number());
-                ASSERT_EQ(pageNumber, nursery.Next(j)->Number());
-            }
+        if (i < cols) {
+            ASSERT_FALSE(!iter);
+            ASSERT_EQ(i, nursery.Next(iter)->Number());            
+        } else {
+            ASSERT_TRUE(!iter);
+            ASSERT_TRUE(!nursery.Next(iter));
         }
     }
 }

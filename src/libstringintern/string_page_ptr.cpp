@@ -90,6 +90,15 @@ bool rs::stringintern::StringPagePtr::compare_exchange_strong(StringPagePtr& exp
     return status;
 }
 
+rs::stringintern::StringPagePtr rs::stringintern::StringPagePtr::exchange(const StringPagePtr& ptr, std::memory_order order) noexcept {
+    !!ptr && ptr->AddRef();
+    auto oldPtr = ptr_.exchange(ptr.get(), order);
+    
+    StringPagePtr temp{oldPtr};
+    !!oldPtr && oldPtr->DecRef();
+    return temp;
+}
+
 std::size_t rs::stringintern::StringPagePtr::RefCount() const noexcept { 
     auto ptr = get(); return !!ptr ? ptr->RefCount() : 0; 
 }

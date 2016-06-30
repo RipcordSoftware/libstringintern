@@ -229,3 +229,35 @@ TEST_F(StringPagePtrTests, test12) {
     ASSERT_TRUE(!page1);
     ASSERT_TRUE(!!page2);
 }
+
+TEST_F(StringPagePtrTests, test13) {
+    auto page = NewPagePtr();
+    auto page1 = page;
+    auto page2 = NewPagePtr();
+    
+    ASSERT_EQ(2, page.RefCount());
+    ASSERT_EQ(2, page1.RefCount());
+    ASSERT_EQ(1, page2.RefCount());
+    
+    page1.exchange(page2, std::memory_order_relaxed);
+    
+    ASSERT_EQ(1, page.RefCount());
+    ASSERT_EQ(2, page1.RefCount());
+    ASSERT_EQ(2, page2.RefCount());
+    
+    ASSERT_TRUE(page != page1);
+    ASSERT_TRUE(page1 == page2);
+}
+
+TEST_F(StringPagePtrTests, test14) {
+    auto page1 = NewPagePtr();
+    auto page2 = rs::stringintern::StringPagePtr();
+    
+    ASSERT_EQ(1, page1.RefCount());
+    ASSERT_EQ(0, page2.RefCount());
+    
+    page1.exchange(page2, std::memory_order_relaxed);
+    
+    ASSERT_EQ(0, page1.RefCount());
+    ASSERT_EQ(0, page2.RefCount());
+}

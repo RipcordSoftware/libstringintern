@@ -41,17 +41,35 @@ public:
     using rowcount_t = std::uint32_t;
     using colcount_t = std::uint32_t;
     
+    class Iterator {
+    public:        
+        Iterator(const Iterator& rhs) noexcept : cols_(rhs.cols_), row_(rhs.row_), start_(rhs.start_), pos_(rhs.pos_) {}
+        Iterator& operator=(const Iterator& rhs) noexcept { cols_ = rhs.cols_; row_ = rhs.row_; start_ = rhs.start_; pos_ = rhs.pos_; }
+        
+        bool operator!() const noexcept { return pos_ >= (start_ + cols_); }
+        
+    private:
+        friend StringPageNursery;
+        
+        Iterator(colcount_t cols, rowcount_t row, colcount_t start) noexcept : cols_(cols), row_(row), start_(start), pos_(start) {}
+        rowcount_t operator++(int) noexcept { return pos_++; }        
+        
+        colcount_t start_;
+        colcount_t pos_;
+        rowcount_t row_;
+        colcount_t cols_;
+    };
+    
     using NewPageFunc = std::function<StringPagePtr(rowcount_t, StringPage::entrycount_t, StringPage::entrysize_t)>;
 
     StringPageNursery(colcount_t, rowcount_t, pagesize_t, NewPageFunc newPageFunc);
     StringPageNursery(const StringPageNursery&) = delete;
     StringPageNursery(const StringPageNursery&&) = delete;
     void operator=(const StringPageNursery&) = delete;
-    
-    StringPagePtr Next(rowcount_t);
-    StringPagePtr Current(rowcount_t);
-    StringPagePtr New(rowcount_t, StringPagePtr, bool matchPage = false);
-    StringPagePtr New(rowcount_t, colcount_t, StringPagePtr, bool matchPage = false);
+
+    Iterator Iter(rowcount_t row) const noexcept;
+    StringPagePtr New(rowcount_t);
+    StringPagePtr Next(Iterator& iter);
     
     inline rowcount_t Rows() const noexcept { return rows_; }
     inline colcount_t Cols() const noexcept { return cols_; }

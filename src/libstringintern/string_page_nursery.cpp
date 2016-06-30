@@ -34,41 +34,39 @@ rs::stringintern::StringPageNursery::StringPageNursery(colcount_t cols, rowcount
     std::for_each(counters_.begin(), counters_.end(), [&](decltype(counters_[0])& c) { c.store(0, std::memory_order_relaxed); });
 }
 
-rs::stringintern::StringPagePtr rs::stringintern::StringPageNursery::Next(rowcount_t row) {
-    auto col = counters_[row].fetch_add(1, std::memory_order_relaxed) + 1;
-    return Get(col, row);
-}
-
-rs::stringintern::StringPagePtr rs::stringintern::StringPageNursery::Current(rowcount_t row) {
-    auto col = counters_[row].load(std::memory_order_relaxed);
-    return Get(col, row);
-}
-
-rs::stringintern::StringPagePtr rs::stringintern::StringPageNursery::New(rowcount_t row, colcount_t col, StringPagePtr oldPage, bool matchPage) {
-    auto dataIndex = (cols_ * row) + (col % cols_);
-    
+rs::stringintern::StringPagePtr rs::stringintern::StringPageNursery::New(rowcount_t row) {    
     auto entrySize = StringPageSizes::GetEntrySize(row);
     auto entryCount = pageSize_ / entrySize;
     auto newPage = newPageFunc_(row, entryCount, entrySize);
     
-    if (!data_[dataIndex].compare_exchange_strong(oldPage, newPage, std::memory_order_relaxed)) {
-        newPage = matchPage ? nullptr : oldPage;
-    }
+    auto col = counters_[row].fetch_add(1, std::memory_order_relaxed);
+    auto dataIndex = (cols_ * row) + (col % cols_);
+    data_[dataIndex].exchange(newPage, std::memory_order_relaxed);
     
     return newPage;
-}
-
-rs::stringintern::StringPagePtr rs::stringintern::StringPageNursery::New(rowcount_t row, StringPagePtr oldPage, bool matchPage) {
-    auto col = counters_[row].load(std::memory_order_relaxed);
-    return New(row, col, oldPage, matchPage);
 }
 
 rs::stringintern::StringPagePtr rs::stringintern::StringPageNursery::Get(colcount_t col, rowcount_t row) {
     auto dataIndex = (cols_ * row) + (col % cols_);
     auto page = data_[dataIndex];
     if (!page) {
-        page = New(row, col, page);       
+        page = New(row);
     }
     
     return page;
+}
+
+rs::stringintern::StringPageNursery::Iterator rs::stringintern::StringPageNursery::Iter(rowcount_t row) const noexcept {
+    auto start = counters_[row].load(std::memory_order_relaxed);
+    start = start > cols_ ? (start % cols_) : 0;
+    return Iterator{cols_, row, start};
+}
+
+rs::stringintern::StringPagePtr rs::stringintern::StringPageNursery::Next(Iterator& iter) {    
+    if (!!iter) {
+        auto col = iter++;
+        return Get(col, iter.row_);
+    } else {
+        return StringPagePtr{};
+    }
 }
