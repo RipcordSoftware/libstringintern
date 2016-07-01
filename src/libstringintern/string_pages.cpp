@@ -31,7 +31,7 @@
 #include <functional>
 
 rs::stringintern::StringPages::StringPages() :
-    archive_(stringPageSizeBytes_),
+    archive_(StringReference::MaxNumber()),
     nursery_(nurseryCols_, StringPageSizes::GetMaxIndex(), stringPageSizeBytes_, std::bind(&StringPages::NewPage, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)),
     catalog_(catalogCols_, StringPageSizes::GetMaxIndex()) {   
 }
