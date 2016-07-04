@@ -93,6 +93,18 @@ const char* rs::stringintern::StringPages::GetString(const StringReference& ref)
     return str;
 }
 
+const char* rs::stringintern::StringPages::GetString(const StringReference& ref, StringPage::entrysize_t& entrySize) const {
+    const char* str = nullptr;
+    
+    auto pageNumber = ref.Number();
+    auto page = archive_.GetPage(pageNumber);
+    if (!!page) {
+        str = page->GetString(ref, entrySize);
+    }
+    
+    return str;
+}
+
 rs::stringintern::StringPagePtr rs::stringintern::StringPages::NewPage(StringPageNursery::rowcount_t row, StringPage::entrycount_t entryCount, StringPage::entrysize_t entrySize) {    
     auto page = archive_.NewPage(entryCount, entrySize);
     if (!!page) {

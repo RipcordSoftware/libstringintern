@@ -53,6 +53,7 @@ TESTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tests
 # Test Files
 TESTFILES= \
 	${TESTDIR}/TestFiles/f2 \
+	${TESTDIR}/TestFiles/f10 \
 	${TESTDIR}/TestFiles/f1 \
 	${TESTDIR}/TestFiles/f6 \
 	${TESTDIR}/TestFiles/f5 \
@@ -152,6 +153,10 @@ ${TESTDIR}/TestFiles/f2: ${TESTDIR}/tests/string_hash_tests.o ${OBJECTFILES:%.o=
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.cc}   -o ${TESTDIR}/TestFiles/f2 $^ ${LDLIBSOPTIONS} ../../externals/installed/lib/libgtest.a ../../externals/installed/lib/libgtest_main.a -lpthread -latomic 
 
+${TESTDIR}/TestFiles/f10: ${TESTDIR}/tests/string_intern_tests.o ${OBJECTFILES:%.o=%_nomain.o}
+	${MKDIR} -p ${TESTDIR}/TestFiles
+	${LINK.cc}   -o ${TESTDIR}/TestFiles/f10 $^ ${LDLIBSOPTIONS} ../../externals/installed/lib/libgtest.a ../../externals/installed/lib/libgtest_main.a -lpthread -latomic 
+
 ${TESTDIR}/TestFiles/f1: ${TESTDIR}/tests/string_page_tests.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.cc}   -o ${TESTDIR}/TestFiles/f1 $^ ${LDLIBSOPTIONS} ../../externals/installed/lib/libgtest.a ../../externals/installed/lib/libgtest_main.a -lpthread -latomic 
@@ -189,6 +194,12 @@ ${TESTDIR}/tests/string_hash_tests.o: tests/string_hash_tests.cpp
 	${MKDIR} -p ${TESTDIR}/tests
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -I../../externals/xxHash -I../../externals/installed/include -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${TESTDIR}/tests/string_hash_tests.o tests/string_hash_tests.cpp
+
+
+${TESTDIR}/tests/string_intern_tests.o: tests/string_intern_tests.cpp 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -I../../externals/xxHash -I../../externals/installed/include -I. -std=c++11 -MMD -MP -MF "$@.d" -o ${TESTDIR}/tests/string_intern_tests.o tests/string_intern_tests.cpp
 
 
 ${TESTDIR}/tests/string_page_tests.o: tests/string_page_tests.cpp 
@@ -387,6 +398,7 @@ ${OBJECTDIR}/string_reference_nomain.o: ${OBJECTDIR}/string_reference.o string_r
 	@if [ "${TEST}" = "" ]; \
 	then  \
 	    ${TESTDIR}/TestFiles/f2 || true; \
+	    ${TESTDIR}/TestFiles/f10 || true; \
 	    ${TESTDIR}/TestFiles/f1 || true; \
 	    ${TESTDIR}/TestFiles/f6 || true; \
 	    ${TESTDIR}/TestFiles/f5 || true; \

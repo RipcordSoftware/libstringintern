@@ -43,8 +43,15 @@ public:
     
     StringReference Add(const char*);
     StringReference Add(const std::string&);
+    StringReference Add(const std::wstring&);
+    StringReference Add(const std::u16string&);
+    StringReference Add(const std::u32string&);
       
     const char* ToString(const StringReference&) const;
+    bool ToString(const StringReference&, std::string&) const;
+    bool ToString(const StringReference&, std::wstring&) const;
+    bool ToString(const StringReference&, std::u16string&) const;
+    bool ToString(const StringReference&, std::u32string&) const;
     
     std::size_t GetPageCount() const noexcept { return pages_.GetPageCount(); }
     std::size_t GetEntryCount() const noexcept { return pages_.GetEntryCount(); }

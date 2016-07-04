@@ -368,3 +368,25 @@ TEST_F(StringPageTests, test8) {
     rs::stringintern::StringReference ref3{1, 1};    
     ASSERT_EQ(nullptr, page->GetString(ref3));
 }
+
+TEST_F(StringPageTests, test9) {
+    const auto pageSize = 65536;
+    const auto pageEntrySize = 32;
+    const auto pageEntries = pageSize / pageEntrySize;
+
+    auto page = NewPagePtr(42, pageEntries, pageEntrySize);
+    
+    ASSERT_EQ(42, page->GetPageNumber());
+    ASSERT_EQ(pageEntries, page->GetMaxEntryCount());
+    ASSERT_EQ(pageEntrySize, page->GetMaxEntrySize());
+    
+    const char* str = "Hello world\0Lorem Ipsum";
+    auto len = std::strlen(str);
+    len += std::strlen(str + len + 1);
+    
+    auto ref = page->Add(str, len, 1);
+    ASSERT_TRUE(!!ref);
+    ASSERT_EQ(1, ref.Index());
+    
+    ASSERT_TRUE(std::memcmp(str, page->GetString(ref), len) == 0);
+}

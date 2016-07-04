@@ -129,6 +129,11 @@ const char* rs::stringintern::StringPage::GetString(const StringHash::Hash& hash
 }
 
 const char* rs::stringintern::StringPage::GetString(const StringReference& ref) const noexcept {
+    entrysize_t entrySize = 0;
+    return GetString(ref, entrySize);
+}
+
+const char* rs::stringintern::StringPage::GetString(const StringReference& ref, entrysize_t& entrySize) const noexcept {
     const char* str = nullptr;
     
     if (number_ == ref.Number()) {
@@ -137,6 +142,7 @@ const char* rs::stringintern::StringPage::GetString(const StringReference& ref) 
         if (WaitForLength(entry)) {
             std::atomic_thread_fence(std::memory_order_acquire);
             str = ptr_ + (maxEntrySize_ * index);
+            entrySize = entry.length.load(std::memory_order_relaxed);
         }
     }
 

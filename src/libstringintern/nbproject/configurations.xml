@@ -41,6 +41,12 @@
                      kind="TEST">
         <itemPath>tests/string_hash_tests.cpp</itemPath>
       </logicalFolder>
+      <logicalFolder name="f10"
+                     displayName="StringIntern Tests"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>tests/string_intern_tests.cpp</itemPath>
+      </logicalFolder>
       <logicalFolder name="f1"
                      displayName="StringPage Tests"
                      projectFiles="true"
@@ -149,6 +155,21 @@
           <output>${TESTDIR}/TestFiles/f1</output>
         </linkerTool>
       </folder>
+      <folder path="TestFiles/f10">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f10</output>
+        </linkerTool>
+      </folder>
       <folder path="TestFiles/f2">
         <cTool>
           <incDir>
@@ -314,6 +335,8 @@
       <item path="string_reference.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="tests/string_hash_tests.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/string_intern_tests.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="tests/string_page_archive_tests.cpp"
             ex="false"
@@ -400,6 +423,21 @@
           <output>${TESTDIR}/TestFiles/f1</output>
         </linkerTool>
       </folder>
+      <folder path="TestFiles/f10">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f10</output>
+        </linkerTool>
+      </folder>
       <folder path="TestFiles/f2">
         <cTool>
           <incDir>
@@ -565,6 +603,8 @@
       <item path="string_reference.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="tests/string_hash_tests.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/string_intern_tests.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="tests/string_page_archive_tests.cpp"
             ex="false"

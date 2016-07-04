@@ -26,6 +26,12 @@
 
 #include "string_hash.h"
 
+#include <type_traits>
+
+template<typename T> static constexpr std::size_t GetBufferValueSizeMultiple() {
+    return sizeof(typename std::remove_reference<T>::type::value_type) / sizeof(rs::stringintern::StringPage::buffervalue_t);
+}
+
 rs::stringintern::StringIntern::StringIntern() {
     
 }
@@ -41,6 +47,73 @@ rs::stringintern::StringReference rs::stringintern::StringIntern::Add(const std:
     return pages_.Add(pStr, len, hash);
 }
 
+rs::stringintern::StringReference rs::stringintern::StringIntern::Add(const std::wstring& str) {
+    auto pStr = reinterpret_cast<StringPage::const_bufferptr_t>(str.c_str());
+    auto len = str.length() * GetBufferValueSizeMultiple<decltype(str)>();
+    auto hash = StringHash::Get(pStr, len);
+    return pages_.Add(pStr, len, hash);
+}
+
+rs::stringintern::StringReference rs::stringintern::StringIntern::Add(const std::u16string& str) {
+    auto pStr = reinterpret_cast<StringPage::const_bufferptr_t>(str.c_str());
+    auto len = str.length() * GetBufferValueSizeMultiple<decltype(str)>();
+    auto hash = StringHash::Get(pStr, len);
+    return pages_.Add(pStr, len, hash);    
+}
+
+rs::stringintern::StringReference rs::stringintern::StringIntern::Add(const std::u32string& str) {
+    auto pStr = reinterpret_cast<StringPage::const_bufferptr_t>(str.c_str());
+    auto len = str.length() * GetBufferValueSizeMultiple<decltype(str)>();
+    auto hash = StringHash::Get(pStr, len);
+    return pages_.Add(pStr, len, hash);    
+}
+
 const char* rs::stringintern::StringIntern::ToString(const StringReference& ref) const {
     return pages_.GetString(ref);
+}
+
+bool rs::stringintern::StringIntern::ToString(const StringReference& ref, std::string& str) const {
+    auto status = false;
+    auto pStr = pages_.GetString(ref);
+    if (!!pStr) {
+        str = std::move(std::string(pStr));
+        status = true;
+    }
+    return status;
+}
+
+bool rs::stringintern::StringIntern::ToString(const StringReference& ref, std::wstring& str) const {
+    auto status = false;
+    StringPage::entrysize_t entrySize;
+    auto pStr = reinterpret_cast<std::remove_reference<decltype(str)>::type::const_pointer>(pages_.GetString(ref, entrySize));
+    if (!!pStr) {
+        entrySize /= GetBufferValueSizeMultiple<decltype(str)>();
+        str = std::move(std::wstring(pStr, entrySize));
+        status = true;
+    }
+    return status;    
+}
+
+bool rs::stringintern::StringIntern::ToString(const StringReference& ref, std::u16string& str) const {
+    auto status = false;
+    StringPage::entrysize_t entrySize;
+    auto pStr = reinterpret_cast<std::remove_reference<decltype(str)>::type::const_pointer>(pages_.GetString(ref, entrySize));
+    if (!!pStr) {
+        entrySize /= GetBufferValueSizeMultiple<decltype(str)>();
+        str = std::move(std::u16string(pStr, entrySize));
+        status = true;
+    }
+    return status;
+}
+
+bool rs::stringintern::StringIntern::ToString(const StringReference& ref, std::u32string& str) const {
+    auto status = false;
+    StringPage::entrysize_t entrySize;
+    auto pStr = reinterpret_cast<std::remove_reference<decltype(str)>::type::const_pointer>(pages_.GetString(ref, entrySize));
+    if (!!pStr) {
+        entrySize /= GetBufferValueSizeMultiple<decltype(str)>();
+        str = std::move(std::u32string(pStr, entrySize));
+        status = true;
+    }
+    return status;
 }

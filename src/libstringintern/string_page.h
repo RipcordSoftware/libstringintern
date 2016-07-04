@@ -45,6 +45,7 @@ public:
     using pagenumber_t = std::uint16_t;
     using buffervalue_t = char;
     using bufferptr_t = buffervalue_t* const;
+    using const_bufferptr_t = const buffervalue_t* const;
     using refcount_t = std::uint32_t;       
     
     static StringPagePtr New(std::size_t number, entrycount_t entryCount, entrysize_t entrySize);
@@ -58,6 +59,7 @@ public:
     StringReference Add(const char*, std::size_t, StringHash::Hash);
     const char* GetString(const StringHash::Hash&) const noexcept;
     const char* GetString(const StringReference&) const noexcept;
+    const char* GetString(const StringReference&, entrysize_t&) const noexcept;
     StringReference GetReference(const StringHash::Hash&) const noexcept;
     
     entrysize_t GetMaxEntrySize() const noexcept { return maxEntrySize_; }
