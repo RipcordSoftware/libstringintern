@@ -71,3 +71,12 @@ rs::stringintern::StringPagePtr rs::stringintern::StringPageArchive::GetPage(std
 std::size_t rs::stringintern::StringPageArchive::Count() const noexcept {
     return std::min(pages_.size(), index_.load(std::memory_order_relaxed));
 }
+
+std::size_t rs::stringintern::StringPageArchive::TotalEntries() const noexcept {
+    auto totalEntries = 0;
+    auto count = Count();
+    for (decltype(count) i = 0; i < count; ++i) {
+        totalEntries += GetPage(i)->Count();
+    }
+    return totalEntries;
+}

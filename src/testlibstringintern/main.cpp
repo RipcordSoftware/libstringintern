@@ -26,25 +26,38 @@
 #include <fstream>
 #include <string>
 #include <cstring>
+#include <vector>
 
 #include "string_intern.h"
 
 int main() {
-    rs::stringintern::StringIntern intern;
-    auto delims = " \t\n,.\"\'()";
+    const auto delims = " \t\r\n\f,.\"\'()[]{}!:;&";
+    std::vector<rs::stringintern::StringReference> refs;
+    
+    rs::stringintern::StringIntern intern;    
 
     std::fstream fs;
     fs.open("rfc2616.txt", std::fstream::in);
     
-    char buffer[2048];
+    char buffer[4096];
     while (fs.getline(buffer, sizeof(buffer) - 1).good()) {
         auto pStr = std::strtok(buffer, delims);
         while (pStr != nullptr) {
-            std::cout << pStr << std::endl;
-            intern.Add(pStr);
+            refs.push_back(intern.Add(pStr));
             pStr = std::strtok(nullptr, delims);
         }
     }
     
     fs.close();
+    
+    for (auto i = 0; i < refs.size(); ++i) {
+        const auto& ref = refs[i];
+        if (i > 0 && (i % 16) == 0) {
+            std::cout << intern.ToString(ref) << std::endl;
+        } else {
+            std::cout << intern.ToString(ref) << ' ';
+        }
+    }
+    
+    std::cout << std::endl << "* pages = " << intern.GetPageCount() << ", entries = " << intern.GetTotalEntries() << std::endl;
 }

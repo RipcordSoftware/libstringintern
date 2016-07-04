@@ -49,6 +49,7 @@ public:
     std::size_t Count() const noexcept;
     
     std::size_t MaxEntries() const noexcept { return pages_.size(); }
+    std::size_t TotalEntries() const noexcept;
     
 private:    
     

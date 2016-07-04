@@ -46,6 +46,9 @@ public:
       
     const char* ToString(const StringReference&) const;
     
+    std::size_t GetPageCount() const noexcept { return pages_.GetPageCount(); }
+    std::size_t GetTotalEntries() const noexcept { return pages_.GetTotalEntries(); }
+    
 private:
     StringPages pages_;
 };

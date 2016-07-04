@@ -49,6 +49,7 @@ public:
     const char* GetString(const StringReference&) const;
     
     std::size_t GetPageCount() const noexcept { return archive_.Count(); }
+    std::size_t GetTotalEntries() const noexcept { return archive_.TotalEntries(); }
     
 private:
     
