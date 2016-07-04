@@ -59,5 +59,5 @@ int main() {
         }
     }
     
-    std::cout << std::endl << "* pages = " << intern.GetPageCount() << ", entries = " << intern.GetTotalEntries() << std::endl;
+    std::cout << std::endl << "* pages = " << intern.GetPageCount() << ", entries = " << intern.GetEntryCount() << std::endl;
 }
