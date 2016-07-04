@@ -60,11 +60,11 @@ public:
     const char* GetString(const StringReference&) const noexcept;
     StringReference GetReference(const StringHash::Hash&) const noexcept;
     
-    entrysize_t EntrySize() const noexcept;
-    entrycount_t EntryCount() const noexcept;
+    entrysize_t GetMaxEntrySize() const noexcept { return maxEntrySize_; }
+    entrycount_t GetMaxEntryCount() const noexcept {return maxEntryCount_; }
     
-    pagenumber_t Number() const noexcept;
-    entrycount_t Count() const noexcept;
+    pagenumber_t GetPageNumber() const noexcept { return number_; }
+    entrycount_t GetEntryCount() const noexcept { return count_; }
     
     refcount_t RefCount() const noexcept { return refCount_.load(std::memory_order_relaxed); }
     
@@ -88,8 +88,8 @@ private:
     
     const pagenumber_t number_;
     
-    const entrysize_t entrySize_;
-    const entrycount_t entryCount_;
+    const entrysize_t maxEntrySize_;
+    const entrycount_t maxEntryCount_;
     const bool freeBuffer_;
 
     std::vector<Entry> entries_;

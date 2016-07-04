@@ -59,9 +59,9 @@ TEST_F(StringPageTests, test0) {
 
     auto page = NewPagePtr(42, pageEntries, pageEntrySize);
     
-    ASSERT_EQ(42, page->Number());
-    ASSERT_EQ(pageEntries, page->EntryCount());
-    ASSERT_EQ(pageEntrySize, page->EntrySize());
+    ASSERT_EQ(42, page->GetPageNumber());
+    ASSERT_EQ(pageEntries, page->GetMaxEntryCount());
+    ASSERT_EQ(pageEntrySize, page->GetMaxEntrySize());
     
     const char* str = "Hello world";
     const auto len = std::strlen(str);
@@ -107,9 +107,9 @@ TEST_F(StringPageTests, test3) {
     
     auto page = NewPagePtr(42, pageEntries, pageEntrySize);
 
-    ASSERT_EQ(42, page->Number());
-    ASSERT_EQ(pageEntries, page->EntryCount());
-    ASSERT_EQ(pageEntrySize, page->EntrySize());
+    ASSERT_EQ(42, page->GetPageNumber());
+    ASSERT_EQ(pageEntries, page->GetMaxEntryCount());
+    ASSERT_EQ(pageEntrySize, page->GetMaxEntrySize());
     
     for (auto i = 0; i < pageEntries; ++i) {
         auto val = std::to_string(i);
@@ -117,14 +117,14 @@ TEST_F(StringPageTests, test3) {
         ASSERT_EQ(val, page->GetString(i));
     }
     
-    ASSERT_EQ(pageEntries, page->Count());
+    ASSERT_EQ(pageEntries, page->GetEntryCount());
     
     for (auto i = pageEntries; i < pageEntries * 2; ++i) {
         auto val = std::to_string(i);
         ASSERT_FALSE(!!page->Add(val.c_str(), val.length(), i));
     }
     
-    ASSERT_EQ(pageEntries, page->Count());
+    ASSERT_EQ(pageEntries, page->GetEntryCount());
     
     for (auto i = 0; i < pageEntries; ++i) {
         auto val = std::to_string(i);
@@ -177,15 +177,15 @@ TEST_F(StringPageTests, test5b) {
     const auto len = std::strlen(str);
 
     ASSERT_EQ(0, page->Add(str, len, 0).Index());
-    ASSERT_EQ(1, page->Count());
+    ASSERT_EQ(1, page->GetEntryCount());
     ASSERT_NE(nullptr, page->GetString(0));
     ASSERT_EQ(nullptr, page->GetString(pageEntries));
     
     ASSERT_FALSE(!!page->Add(str, len, pageEntries));
-    ASSERT_EQ(1, page->Count());
+    ASSERT_EQ(1, page->GetEntryCount());
     
     ASSERT_EQ(0, page->Add(str, len, 0).Index());
-    ASSERT_EQ(1, page->Count());
+    ASSERT_EQ(1, page->GetEntryCount());
 }
 
 TEST_F(StringPageTests, test6a) {    
@@ -200,8 +200,8 @@ TEST_F(StringPageTests, test6a) {
     }
 
     auto page = NewPagePtr(0, pageEntries, pageEntrySize);
-    ASSERT_EQ(pageEntries, page->EntryCount());
-    ASSERT_EQ(pageEntrySize, page->EntrySize());
+    ASSERT_EQ(pageEntries, page->GetMaxEntryCount());
+    ASSERT_EQ(pageEntrySize, page->GetMaxEntrySize());
 
     std::atomic<rs::stringintern::StringPage::entrycount_t> pageIndex{0};
     
@@ -217,7 +217,7 @@ TEST_F(StringPageTests, test6a) {
     t1.join();
     t2.join();
     
-    ASSERT_EQ(pageEntries, page->Count());
+    ASSERT_EQ(pageEntries, page->GetEntryCount());
     
     for (auto i = 0; i < pageEntries; ++i) {
         ASSERT_EQ(strings[i], page->GetString(i));
@@ -236,8 +236,8 @@ TEST_F(StringPageTests, test6b) {
     }
 
     auto page = NewPagePtr(0, pageEntries, pageEntrySize);
-    ASSERT_EQ(pageEntries, page->EntryCount());
-    ASSERT_EQ(pageEntrySize, page->EntrySize());
+    ASSERT_EQ(pageEntries, page->GetMaxEntryCount());
+    ASSERT_EQ(pageEntrySize, page->GetMaxEntrySize());
 
     std::atomic<rs::stringintern::StringPage::entrycount_t> pageIndex{0};
     
@@ -257,7 +257,7 @@ TEST_F(StringPageTests, test6b) {
     t3.join();
     t4.join();
     
-    ASSERT_EQ(pageEntries, page->Count());
+    ASSERT_EQ(pageEntries, page->GetEntryCount());
     
     for (auto i = 0; i < pageEntries; ++i) {
         ASSERT_EQ(strings[i], page->GetString(i));
@@ -276,8 +276,8 @@ TEST_F(StringPageTests, test6c) {
     }
 
     auto page = NewPagePtr(0, pageEntries, pageEntrySize);
-    ASSERT_EQ(pageEntries, page->EntryCount());
-    ASSERT_EQ(pageEntrySize, page->EntrySize());
+    ASSERT_EQ(pageEntries, page->GetMaxEntryCount());
+    ASSERT_EQ(pageEntrySize, page->GetMaxEntrySize());
     
     auto func = [&]() {
         for (auto i = 0; i < pageEntries; ++i) {
@@ -291,7 +291,7 @@ TEST_F(StringPageTests, test6c) {
     t1.join();
     t2.join();
     
-    ASSERT_EQ(pageEntries, page->Count());
+    ASSERT_EQ(pageEntries, page->GetEntryCount());
     
     for (auto i = 0; i < pageEntries; ++i) {
         ASSERT_EQ(strings[i], page->GetString(i));
@@ -310,8 +310,8 @@ TEST_F(StringPageTests, test6d) {
     }
 
     auto page = NewPagePtr(0, pageEntries, pageEntrySize);
-    ASSERT_EQ(pageEntries, page->EntryCount());
-    ASSERT_EQ(pageEntrySize, page->EntrySize());
+    ASSERT_EQ(pageEntries, page->GetMaxEntryCount());
+    ASSERT_EQ(pageEntrySize, page->GetMaxEntrySize());
     
     auto func = [&]() {
         for (auto i = 0; i < pageEntries; ++i) {
@@ -329,7 +329,7 @@ TEST_F(StringPageTests, test6d) {
     t3.join();
     t4.join();
     
-    ASSERT_EQ(pageEntries, page->Count());
+    ASSERT_EQ(pageEntries, page->GetEntryCount());
     
     for (auto i = 0; i < pageEntries; ++i) {
         ASSERT_EQ(strings[i], page->GetString(i));
@@ -351,9 +351,9 @@ TEST_F(StringPageTests, test8) {
 
     auto page = NewPagePtr(42, pageEntries, pageEntrySize);
     
-    ASSERT_EQ(42, page->Number());
-    ASSERT_EQ(pageEntries, page->EntryCount());
-    ASSERT_EQ(pageEntrySize, page->EntrySize());
+    ASSERT_EQ(42, page->GetPageNumber());
+    ASSERT_EQ(pageEntries, page->GetMaxEntryCount());
+    ASSERT_EQ(pageEntrySize, page->GetMaxEntrySize());
     
     const char* str = "Hello world";
     const auto len = std::strlen(str);

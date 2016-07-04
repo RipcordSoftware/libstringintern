@@ -68,15 +68,15 @@ TEST_F(StringPageNurseryTests, test0) {
     
     auto iter = nursery.Iter(0);
     ASSERT_FALSE(!iter);
-    ASSERT_EQ(0, nursery.Next(iter)->Number());
+    ASSERT_EQ(0, nursery.Next(iter)->GetPageNumber());
     ASSERT_FALSE(!iter);
-    ASSERT_EQ(1, nursery.Next(iter)->Number());
+    ASSERT_EQ(1, nursery.Next(iter)->GetPageNumber());
     ASSERT_FALSE(!iter);
-    ASSERT_EQ(2, nursery.Next(iter)->Number());
+    ASSERT_EQ(2, nursery.Next(iter)->GetPageNumber());
     ASSERT_FALSE(!iter);
 }
 
-TEST_F(StringPageNurseryTests, test2) {
+TEST_F(StringPageNurseryTests, test1) {
     rs::stringintern::StringPageNursery nursery(
         StringPageNurseryTests::nurseryCols_, 
         StringPageNurseryTests::nurseryRows_,
@@ -91,7 +91,7 @@ TEST_F(StringPageNurseryTests, test2) {
     for (auto i = 0; i < cols * 4; ++i) {
         if (i < cols) {
             ASSERT_FALSE(!iter);
-            ASSERT_EQ(i, nursery.Next(iter)->Number());            
+            ASSERT_EQ(i, nursery.Next(iter)->GetPageNumber());            
         } else {
             ASSERT_TRUE(!iter);
             ASSERT_TRUE(!nursery.Next(iter));

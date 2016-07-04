@@ -100,7 +100,7 @@ TEST_F(StringPageCatalogTests, test2) {
     
     auto pages = catalog.GetPages(0);
     ASSERT_EQ(1, pages.size());
-    ASSERT_EQ(page->Number(), pages[0]->Number());
+    ASSERT_EQ(page->GetPageNumber(), pages[0]->GetPageNumber());
 }
 
 TEST_F(StringPageCatalogTests, test3) {
@@ -149,8 +149,8 @@ TEST_F(StringPageCatalogTests, test4) {
     
     auto pages = catalog.GetPages(0);
     ASSERT_EQ(2, pages.size());
-    ASSERT_EQ(page1->Number(), pages[0]->Number());
-    ASSERT_EQ(page2->Number(), pages[1]->Number());
+    ASSERT_EQ(page1->GetPageNumber(), pages[0]->GetPageNumber());
+    ASSERT_EQ(page2->GetPageNumber(), pages[1]->GetPageNumber());
 }
 
 TEST_F(StringPageCatalogTests, test5) {
@@ -185,8 +185,8 @@ TEST_F(StringPageCatalogTests, test5) {
     
     auto pages = catalog.GetPages(1);
     ASSERT_EQ(2, pages.size());
-    ASSERT_EQ(page1->Number(), pages[0]->Number());
-    ASSERT_EQ(page2->Number(), pages[1]->Number());
+    ASSERT_EQ(page1->GetPageNumber(), pages[0]->GetPageNumber());
+    ASSERT_EQ(page2->GetPageNumber(), pages[1]->GetPageNumber());
 }
 
 TEST_F(StringPageCatalogTests, test6) {
@@ -247,7 +247,7 @@ TEST_F(StringPageCatalogTests, test6) {
         ASSERT_EQ(testCols, catalogPages.size());
         
         for (auto col = 0; col < catalog.Cols(); ++col, ++pageIndex) {
-            ASSERT_EQ(pageIndex, catalogPages[col]->Number());
+            ASSERT_EQ(pageIndex, catalogPages[col]->GetPageNumber());
         }
     }
 }
@@ -311,7 +311,7 @@ TEST_F(StringPageCatalogTests, test7) {
         ASSERT_EQ(catalog.Cols(), rowPages.size());
     
         std::vector<bool> pagesFound(catalog.Cols());
-        std::for_each(rowPages.begin(), rowPages.end(), [&](rs::stringintern::StringPagePtr p) { pagesFound[p->Number()] = true; });        
+        std::for_each(rowPages.begin(), rowPages.end(), [&](rs::stringintern::StringPagePtr p) { pagesFound[p->GetPageNumber()] = true; });        
         ASSERT_EQ(catalog.Cols(), std::count(pagesFound.begin(), pagesFound.end(), true));
     }
 }
@@ -372,7 +372,7 @@ TEST_F(StringPageCatalogTests, test8) {
         
         std::vector<bool> pagesFound(catalog.Cols());
         const auto pagesFoundOffset = (row * catalog.Cols());
-        std::for_each(rowPages.begin(), rowPages.end(), [&](rs::stringintern::StringPagePtr p) { pagesFound[p->Number() - pagesFoundOffset] = true; });        
+        std::for_each(rowPages.begin(), rowPages.end(), [&](rs::stringintern::StringPagePtr p) { pagesFound[p->GetPageNumber() - pagesFoundOffset] = true; });        
         ASSERT_EQ(catalog.Cols(), std::count(pagesFound.begin(), pagesFound.end(), true));
     }
 }

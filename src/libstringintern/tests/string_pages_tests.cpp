@@ -52,12 +52,14 @@ TEST_F(StringPagesTests, test0) {
     auto ref1 = pages.Add(str);
     ASSERT_EQ(1, pages.GetPageCount());
     ASSERT_EQ(0, ref1.Number());
+    ASSERT_EQ(1, pages.GetEntryCount());
     
     ASSERT_STREQ(str, pages.GetString(ref1));
     
     auto ref2 = pages.Add(str);
     ASSERT_EQ(1, pages.GetPageCount());
     ASSERT_EQ(0, ref2.Number());
+    ASSERT_EQ(1, pages.GetEntryCount());
     
     ASSERT_STREQ(str, pages.GetString(ref2));
     
@@ -72,6 +74,7 @@ TEST_F(StringPagesTests, test1) {
     auto ref1 = pages.Add(str1);
     ASSERT_EQ(1, pages.GetPageCount());
     ASSERT_EQ(0, ref1.Number());
+    ASSERT_EQ(1, pages.GetEntryCount());
     
     ASSERT_STREQ(str1, pages.GetString(ref1));
     
@@ -79,6 +82,7 @@ TEST_F(StringPagesTests, test1) {
     auto ref2 = pages.Add(str2);
     ASSERT_EQ(1, pages.GetPageCount());
     ASSERT_EQ(0, ref2.Number());
+    ASSERT_EQ(2, pages.GetEntryCount());
     
     ASSERT_STREQ(str2, pages.GetString(ref2));
     
@@ -99,6 +103,7 @@ TEST_F(StringPagesTests, test2) {
     }
     
     ASSERT_EQ(2, pages.GetPageCount());
+    ASSERT_EQ(count, pages.GetEntryCount());
 
     std::vector<rs::stringintern::StringReference> refs2;
     for (auto i = 0; i < count; ++i) {
@@ -106,6 +111,7 @@ TEST_F(StringPagesTests, test2) {
     }
     
     ASSERT_EQ(2, pages.GetPageCount());
+    ASSERT_EQ(count, pages.GetEntryCount());
     
     ASSERT_EQ(refs1.size(), refs2.size());
     

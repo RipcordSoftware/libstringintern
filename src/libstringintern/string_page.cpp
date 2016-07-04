@@ -59,7 +59,7 @@ rs::stringintern::StringPagePtr rs::stringintern::StringPage::New(std::size_t nu
 }
 
 rs::stringintern::StringPage::StringPage(pagenumber_t number, bufferptr_t ptr, entrycount_t entryCount, entrysize_t entrySize, bool freeBuffer) noexcept
-    : number_(number), ptr_(ptr), entrySize_(entrySize), entryCount_(entryCount), entries_(entryCount), zeroHashCount_(0), count_(0), freeBuffer_(freeBuffer), refCount_(0) {
+    : number_(number), ptr_(ptr), maxEntrySize_(entrySize), maxEntryCount_(entryCount), entries_(entryCount), zeroHashCount_(0), count_(0), freeBuffer_(freeBuffer), refCount_(0) {
     
 }
 
@@ -69,28 +69,12 @@ rs::stringintern::StringPage::~StringPage() {
     }
 }
 
-rs::stringintern::StringPage::entrysize_t rs::stringintern::StringPage::EntrySize() const noexcept {
-    return entrySize_;
-}
-
-rs::stringintern::StringPage::entrycount_t rs::stringintern::StringPage::EntryCount() const noexcept {
-    return entryCount_;
-}
-
-rs::stringintern::StringPage::pagenumber_t rs::stringintern::StringPage::Number() const noexcept {
-    return number_;
-}
-
-rs::stringintern::StringPage::entrycount_t rs::stringintern::StringPage::Count() const noexcept {
-    return count_;
-}
-
 rs::stringintern::StringReference rs::stringintern::StringPage::Add(const char* str, std::size_t len, StringHash::Hash hash) {
-    if (len == 0 || len >= entrySize_) {
+    if (len == 0 || len >= maxEntrySize_) {
         throw StringInternException("Bad string size for page");
     }
     
-    auto index = hash % entryCount_;
+    auto index = hash % maxEntryCount_;
 
     if (index == 0 && zeroHashCount_.load(std::memory_order_relaxed) > 0) {
         index = hash == 0 ? 0 : InvalidIndex;
@@ -104,7 +88,7 @@ rs::stringintern::StringReference rs::stringintern::StringPage::Add(const char* 
         auto& entry = entries_[index];
         auto entryHash = entry.hash.load(std::memory_order_relaxed);
         if (entryHash == 0 && entry.hash.compare_exchange_strong(entryHash, hash, std::memory_order_relaxed)) {
-            auto ptr = ptr_ + (entrySize_ * index);
+            auto ptr = ptr_ + (maxEntrySize_ * index);
             std::memcpy(ptr, str, len + 1);
             std::atomic_thread_fence(std::memory_order_release);
             entry.length.store(len, std::memory_order_relaxed);
@@ -131,12 +115,12 @@ const char* rs::stringintern::StringPage::GetString(const StringHash::Hash& hash
             }
         }
     } else {
-        auto index = hash % entryCount_;
+        auto index = hash % maxEntryCount_;
         auto& entry = entries_[index];
         if (entry.hash.load(std::memory_order_relaxed) == hash) {
             if (WaitForLength(entry)) {
                 std::atomic_thread_fence(std::memory_order_acquire);
-                str = ptr_ + (entrySize_ * index);
+                str = ptr_ + (maxEntrySize_ * index);
             }
         }
     }
@@ -152,7 +136,7 @@ const char* rs::stringintern::StringPage::GetString(const StringReference& ref) 
         auto& entry = entries_[index];
         if (WaitForLength(entry)) {
             std::atomic_thread_fence(std::memory_order_acquire);
-            str = ptr_ + (entrySize_ * index);
+            str = ptr_ + (maxEntrySize_ * index);
         }
     }
 
@@ -170,7 +154,7 @@ rs::stringintern::StringReference rs::stringintern::StringPage::GetReference(con
             }
         }
     } else {
-        auto index = hash % entryCount_;
+        auto index = hash % maxEntryCount_;
         auto& entry = entries_[index];
         if (entry.hash.load(std::memory_order_relaxed) == hash) {
             if (WaitForLength(entry)) {

@@ -46,10 +46,10 @@ public:
     
     StringPagePtr GetPage(std::size_t number) const noexcept;
     
-    std::size_t Count() const noexcept;
+    std::size_t GetPageCount() const noexcept;
+    std::size_t GetEntryCount() const noexcept;
     
-    std::size_t MaxEntries() const noexcept { return pages_.size(); }
-    std::size_t TotalEntries() const noexcept;
+    std::size_t GetMaxPages() const noexcept { return pages_.size(); }
     
 private:    
     

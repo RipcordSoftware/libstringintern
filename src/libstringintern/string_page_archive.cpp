@@ -68,15 +68,15 @@ rs::stringintern::StringPagePtr rs::stringintern::StringPageArchive::GetPage(std
     return page;
 }
 
-std::size_t rs::stringintern::StringPageArchive::Count() const noexcept {
+std::size_t rs::stringintern::StringPageArchive::GetPageCount() const noexcept {
     return std::min(pages_.size(), index_.load(std::memory_order_relaxed));
 }
 
-std::size_t rs::stringintern::StringPageArchive::TotalEntries() const noexcept {
-    auto totalEntries = 0;
-    auto count = Count();
+std::size_t rs::stringintern::StringPageArchive::GetEntryCount() const noexcept {
+    auto entries = 0;
+    auto count = GetPageCount();
     for (decltype(count) i = 0; i < count; ++i) {
-        totalEntries += GetPage(i)->Count();
+        entries += GetPage(i)->GetEntryCount();
     }
-    return totalEntries;
+    return entries;
 }
