@@ -24,8 +24,6 @@
 
 #include "string_intern.h"
 
-#include <cstring>
-
 #include "string_hash.h"
 
 rs::stringintern::StringIntern::StringIntern() {
@@ -33,10 +31,16 @@ rs::stringintern::StringIntern::StringIntern() {
 }
 
 rs::stringintern::StringReference rs::stringintern::StringIntern::Add(const char* str) {
-    auto len = std::strlen(str);
-    auto hash = StringHash::Get(str, len);
+    return pages_.Add(str);
+}
+
+rs::stringintern::StringReference rs::stringintern::StringIntern::Add(const std::string& str) {
+    auto pStr = str.c_str();
+    auto len = str.length();
+    auto hash = StringHash::Get(pStr, len);
+    return pages_.Add(pStr, len, hash);
 }
 
 const char* rs::stringintern::StringIntern::ToString(const StringReference& ref) const {
-    
+    return pages_.GetString(ref);
 }

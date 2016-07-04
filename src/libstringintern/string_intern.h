@@ -25,19 +25,24 @@
 #ifndef RS_LIBSTRINGINTERN_STRING_INTERN_H
 #define	RS_LIBSTRINGINTERN_STRING_INTERN_H
 
+#include <string>
+
 #include "string_reference.h"
 #include "string_pages.h"
 
 namespace rs {
 namespace stringintern {
 
-class StringIntern {
+class StringIntern final {
 
 public:
     StringIntern();
     StringIntern(const StringIntern&) = delete;
+    StringIntern(StringIntern&&) = delete;
+    void operator=(const StringIntern&) = delete;
     
     StringReference Add(const char*);
+    StringReference Add(const std::string&);
       
     const char* ToString(const StringReference&) const;
     

@@ -23,18 +23,28 @@
 **/
 
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <cstring>
 
-#include "string_pages.h"
+#include "string_intern.h"
 
 int main() {
-    rs::stringintern::StringPages pages;
-    auto ref1 = pages.Add("hello world");
-    auto ref2 = pages.Add("hello world");
-    auto ref3 = pages.Add("hello world!!");
-    auto ref4 = pages.Add("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ut auctor diam. Proin varius lacinia iaculis.");
+    rs::stringintern::StringIntern intern;
+    auto delims = " \t\n,.\"\'()";
+
+    std::fstream fs;
+    fs.open("rfc2616.txt", std::fstream::in);
     
-    std::cout << ref1.Number() << ", " << ref1.Index() << std::endl;
-    std::cout << ref2.Number() << ", " << ref2.Index() << std::endl;
-    std::cout << ref3.Number() << ", " << ref3.Index() << std::endl;
-    std::cout << ref4.Number() << ", " << ref4.Index() << std::endl;
+    char buffer[2048];
+    while (fs.getline(buffer, sizeof(buffer) - 1).good()) {
+        auto pStr = std::strtok(buffer, delims);
+        while (pStr != nullptr) {
+            std::cout << pStr << std::endl;
+            intern.Add(pStr);
+            pStr = std::strtok(nullptr, delims);
+        }
+    }
+    
+    fs.close();
 }
