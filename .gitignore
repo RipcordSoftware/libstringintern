@@ -43,3 +43,6 @@ externals/installed
 # ignore the coverage output files
 *coverage.info
 coverage/*
+
+# ignore valgrind/cachegrind/etc
+cachegrind.out.*
