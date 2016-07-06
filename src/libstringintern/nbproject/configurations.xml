@@ -54,7 +54,7 @@
         <itemPath>tests/string_page_tests.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f6"
-                     displayName="StringPageArchiveTests"
+                     displayName="StringPageArchive Tests"
                      projectFiles="true"
                      kind="TEST">
         <itemPath>tests/string_page_archive_tests.cpp</itemPath>

@@ -51,6 +51,9 @@ public:
 TEST_F(StringInternTests, test0) {
     rs::stringintern::StringIntern intern;
     
+    ASSERT_EQ(0, intern.GetPageCount());
+    ASSERT_EQ(0, intern.GetEntryCount());
+    
     auto str1 = "hello world";
     auto ref1 = intern.Add(str1);
     ASSERT_TRUE(!!ref1);
@@ -179,4 +182,42 @@ TEST_F(StringInternTests, test5) {
     
     ASSERT_EQ(1, intern.GetPageCount());
     ASSERT_EQ(2, intern.GetEntryCount());
+}
+
+TEST_F(StringInternTests, test6) {
+    rs::stringintern::StringIntern intern;
+    ASSERT_EQ(0, intern.GetPageCount());
+    ASSERT_EQ(0, intern.GetEntryCount());
+    
+    rs::stringintern::StringReference ref1;
+    ASSERT_EQ(nullptr, intern.ToString(ref1));
+    
+    std::string str;
+    ASSERT_FALSE(intern.ToString(ref1, str));
+    ASSERT_EQ(0, str.size());
+    
+    std::wstring wstr;
+    ASSERT_FALSE(intern.ToString(ref1, wstr));
+    ASSERT_EQ(0, wstr.size());
+    
+    std::u16string u16str;
+    ASSERT_FALSE(intern.ToString(ref1, u16str));
+    ASSERT_EQ(0, u16str.size());
+    
+    std::u32string u32str;
+    ASSERT_FALSE(intern.ToString(ref1, u32str));
+    ASSERT_EQ(0, u32str.size());
+}
+
+TEST_F(StringInternTests, test7) {
+    rs::stringintern::StringIntern intern;
+    
+    ASSERT_TRUE(!intern.Add(nullptr));
+    ASSERT_TRUE(!intern.Add(std::string()));
+    ASSERT_TRUE(!intern.Add(std::wstring()));
+    ASSERT_TRUE(!intern.Add(std::u16string()));
+    ASSERT_TRUE(!intern.Add(std::u32string()));
+    
+    ASSERT_EQ(0, intern.GetPageCount());
+    ASSERT_EQ(0, intern.GetEntryCount());
 }

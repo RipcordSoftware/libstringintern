@@ -120,3 +120,29 @@ TEST_F(StringPagesTests, test2) {
         ASSERT_EQ(refs1[i].Index(), refs2[i].Index());
     }
 }
+
+TEST_F(StringPagesTests, test3) {
+    rs::stringintern::StringPages pages;
+    ASSERT_EQ(0, pages.GetPageCount());
+    
+    rs::stringintern::StringReference ref1;
+    ASSERT_EQ(nullptr, pages.GetString(ref1));
+    
+    rs::stringintern::StringPage::entrysize_t size = -1;
+    ASSERT_EQ(nullptr, pages.GetString(ref1, size));
+    ASSERT_EQ(-1, size);
+    
+    rs::stringintern::StringReference ref2{-1u, 0};
+    ASSERT_EQ(nullptr, pages.GetString(ref2));
+    ASSERT_EQ(nullptr, pages.GetString(ref2, size));
+    ASSERT_EQ(-1, size);
+}
+
+TEST_F(StringPagesTests, test4) {
+    rs::stringintern::StringPages pages;
+    ASSERT_EQ(0, pages.GetPageCount());
+    
+    ASSERT_TRUE(!pages.Add(nullptr));        
+    ASSERT_TRUE(!pages.Add(nullptr, 8, 0));
+    ASSERT_TRUE(!pages.Add("testtest", 32 * 1024 * 1024, 0));
+}
