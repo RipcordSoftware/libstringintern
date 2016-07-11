@@ -34,7 +34,7 @@
 namespace rs {
 namespace stringintern {
     
-class StringPageArchive {
+class StringPageArchive final {
 public:
     StringPageArchive(std::size_t entries);
     StringPageArchive(const StringPageArchive& orig) = delete;

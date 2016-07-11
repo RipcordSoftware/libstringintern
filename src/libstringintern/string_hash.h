@@ -31,11 +31,11 @@
 namespace rs {
 namespace stringintern {
 
-class StringHash {
+class StringHash final {
 public:
     
     using Hash = std::uint64_t;
-    static const int seed_ = 42;
+    constexpr static int seed_ = 42;
     
     StringHash() = delete;
     StringHash(const StringHash&) = delete;

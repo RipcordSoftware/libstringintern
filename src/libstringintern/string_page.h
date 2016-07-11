@@ -37,7 +37,7 @@
 namespace rs {
 namespace stringintern {
 
-class StringPage {
+class StringPage final {
     
 public:
     using entrysize_t = std::uint32_t;

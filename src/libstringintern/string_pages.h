@@ -38,7 +38,7 @@
 namespace rs {
 namespace stringintern {
 
-class StringPages {
+class StringPages final {
     
 public:
     StringPages();
@@ -56,9 +56,9 @@ private:
     
     StringPagePtr NewPage(StringPageNursery::rowcount_t, StringPage::entrycount_t, StringPage::entrysize_t);
        
-    static const StringPageNursery::colcount_t nurseryCols_ = 8;
-    static const StringPageNursery::pagesize_t stringPageSizeBytes_ = 2 * 1024 * 1024;
-    static const StringPageNursery::colcount_t catalogCols_ = 4096;
+    constexpr static StringPageNursery::colcount_t nurseryCols_ = 8;
+    constexpr static StringPageNursery::pagesize_t stringPageSizeBytes_ = 2 * 1024 * 1024;
+    constexpr static StringPageNursery::colcount_t catalogCols_ = 4096;
 
     StringPageArchive archive_;
     StringPageNursery nursery_;

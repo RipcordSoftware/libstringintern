@@ -30,7 +30,7 @@
 namespace rs {
 namespace stringintern {
 
-class StringReference {
+class StringReference final {
 public:            
     using reference_t = std::uint32_t;
     

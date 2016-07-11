@@ -35,7 +35,7 @@
 namespace rs {
 namespace stringintern {
 
-class StringPageCatalog {
+class StringPageCatalog final {
 public:
     
     using rowcount_t = std::uint32_t;

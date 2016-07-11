@@ -32,7 +32,7 @@
 namespace rs {
 namespace stringintern {
 
-class StringPageSizes {
+class StringPageSizes final {
 public:
     class Index {
     public:

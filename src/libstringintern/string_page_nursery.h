@@ -34,7 +34,7 @@
 namespace rs {
 namespace stringintern {
 
-class StringPageNursery {
+class StringPageNursery final {
 public:
     
     using pagesize_t = std::uint32_t;
