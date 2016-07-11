@@ -74,6 +74,9 @@ public:
     inline rowcount_t Rows() const noexcept { return rows_; }
     inline colcount_t Cols() const noexcept { return cols_; }
     
+    std::vector<StringPagePtr> GetPages(rowcount_t);
+    std::vector<StringPage::entrycount_t> GetPageEntryCounts(rowcount_t);
+    
 private:
     
     StringPagePtr Get(colcount_t, rowcount_t);

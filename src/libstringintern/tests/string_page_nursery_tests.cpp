@@ -98,3 +98,35 @@ TEST_F(StringPageNurseryTests, test1) {
         }
     }
 }
+
+TEST_F(StringPageNurseryTests, test2) {
+    rs::stringintern::StringPageNursery nursery(
+        StringPageNurseryTests::nurseryCols_, 
+        1,
+        StringPageNurseryTests::nurseryPageSize_,
+        StringPageNurseryTests::NewPage);
+        
+    ASSERT_EQ(0, nursery.GetPages(0).size());    
+    ASSERT_EQ(0, nursery.GetPageEntryCounts(0).size());    
+    
+    auto iter = nursery.Iter(0);
+    const auto cols = nursery.Cols();
+    for (auto i = 0; i < cols; ++i) {
+        ASSERT_FALSE(!iter);
+        ASSERT_EQ(i, nursery.Next(iter)->GetPageNumber());
+        ASSERT_EQ(i + 1, nursery.GetPages(0).size());
+        ASSERT_EQ(i + 1, nursery.GetPageEntryCounts(0).size());
+    }
+    
+    auto pages = nursery.GetPages(0);
+    ASSERT_EQ(cols, pages.size());
+    for (auto i = 0; i < cols; ++i) {
+        ASSERT_EQ(i, pages[i]->GetPageNumber());
+    }
+    
+    auto entries = nursery.GetPageEntryCounts(0);
+    ASSERT_EQ(cols, entries.size());
+    for (auto i = 0; i < cols; ++i) {
+        ASSERT_EQ(0, entries[i]);
+    }
+}

@@ -70,3 +70,28 @@ rs::stringintern::StringPagePtr rs::stringintern::StringPageNursery::Next(Iterat
         return StringPagePtr{};
     }
 }
+
+std::vector<rs::stringintern::StringPagePtr> rs::stringintern::StringPageNursery::GetPages(rowcount_t row) {
+    std::vector<StringPagePtr> pages;
+    
+    auto cols = counters_[row].load(std::memory_order_relaxed);
+    cols = cols > cols_ ? cols_ : cols;
+    for (decltype(cols) i = 0; i < cols; ++i) {
+        auto page = Get(i, row);
+        pages.emplace_back(std::move(page));
+    }
+    
+    return pages;
+}
+
+std::vector<rs::stringintern::StringPage::entrycount_t> rs::stringintern::StringPageNursery::GetPageEntryCounts(rowcount_t row) {
+    std::vector<StringPage::entrycount_t> entries;
+    
+    auto pages = GetPages(row);
+    for (auto page : pages) {
+        auto count = page->GetEntryCount();
+        entries.push_back(count);
+    }
+    
+    return entries;
+}
