@@ -56,6 +56,12 @@ rs::stringintern::StringPagePtr rs::stringintern::StringPageNursery::Get(colcoun
     return page;
 }
 
+rs::stringintern::StringPagePtr rs::stringintern::StringPageNursery::Get(colcount_t col, rowcount_t row) const {
+    auto dataIndex = (cols_ * row) + (col % cols_);
+    auto page = data_[dataIndex];
+    return page;
+}
+
 rs::stringintern::StringPageNursery::Iterator rs::stringintern::StringPageNursery::Iter(rowcount_t row) const noexcept {
     auto start = counters_[row].load(std::memory_order_relaxed);
     start = start > cols_ ? (start % cols_) : 0;
@@ -71,26 +77,30 @@ rs::stringintern::StringPagePtr rs::stringintern::StringPageNursery::Next(Iterat
     }
 }
 
-std::vector<rs::stringintern::StringPagePtr> rs::stringintern::StringPageNursery::GetPages(rowcount_t row) {
+std::vector<rs::stringintern::StringPagePtr> rs::stringintern::StringPageNursery::GetPages(rowcount_t row) const {
     std::vector<StringPagePtr> pages;
     
     auto cols = counters_[row].load(std::memory_order_relaxed);
     cols = cols > cols_ ? cols_ : cols;
     for (decltype(cols) i = 0; i < cols; ++i) {
         auto page = Get(i, row);
-        pages.emplace_back(std::move(page));
+        if (!!page) {
+            pages.emplace_back(std::move(page));
+        }
     }
     
     return pages;
 }
 
-std::vector<rs::stringintern::StringPage::entrycount_t> rs::stringintern::StringPageNursery::GetPageEntryCounts(rowcount_t row) {
+std::vector<rs::stringintern::StringPage::entrycount_t> rs::stringintern::StringPageNursery::GetPageEntryCounts(rowcount_t row) const {
     std::vector<StringPage::entrycount_t> entries;
     
     auto pages = GetPages(row);
     for (auto page : pages) {
-        auto count = page->GetEntryCount();
-        entries.push_back(count);
+        if (!!page) {
+            auto count = page->GetEntryCount();
+            entries.push_back(count);
+        }
     }
     
     return entries;
