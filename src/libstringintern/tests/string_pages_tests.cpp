@@ -156,7 +156,7 @@ TEST_F(StringPagesTests, test5) {
     
     auto cols = pages.GetNurseryCols();
     for (decltype(cols) i = 0; i < cols; ++i) {
-        ASSERT_TRUE(!!pages.Add(str, len, (1ul << 32) * i));
+        ASSERT_TRUE(!!pages.Add(str, len, (1ul << 28) * i));
         ASSERT_EQ(i + 1, pages.GetPageCount());
         
         auto nurseryPages = pages.GetNursery().GetPages(0);
@@ -175,7 +175,7 @@ TEST_F(StringPagesTests, test5) {
     }
     
     for (decltype(cols) i = 0; i < cols; ++i) {
-        ASSERT_TRUE(!!pages.Add(str, len, (1ul << 32) * (cols + i)));
+        ASSERT_TRUE(!!pages.Add(str, len, (1ul << 28) * (cols + i)));
         ASSERT_EQ(cols + i + 1, pages.GetPageCount());
         
         auto nurseryPages = pages.GetNursery().GetPages(0);
@@ -194,7 +194,7 @@ TEST_F(StringPagesTests, test5) {
     }
     
     for (decltype(cols) i = 0; i < cols * 2; ++i) {
-        auto ref = pages.Add(str, len, (1ul << 32) * i);        
+        auto ref = pages.Add(str, len, (1ul << 28) * i);        
         ASSERT_TRUE(!!ref);
         ASSERT_EQ(i, ref.Number());       
     }   
@@ -210,7 +210,7 @@ TEST_F(StringPagesTests, test6) {
     
     auto cols = pages.GetNurseryCols();
     for (decltype(cols) i = 0; i < cols; ++i) {
-        ASSERT_TRUE(!!pages.Add(str, len, (1ul << 32) * i));
+        ASSERT_TRUE(!!pages.Add(str, len, (1ul << 28) * i));
     }
     
     ASSERT_EQ(cols, pages.GetPageCount());
@@ -219,7 +219,7 @@ TEST_F(StringPagesTests, test6) {
     ASSERT_EQ(cols, pages.GetNursery().GetPages(0).size());
     
     for (decltype(cols) i = 0; i < cols; ++i) {
-        ASSERT_TRUE(!!pages.Add(str, len, (1ul << 32) + i + 1));
+        ASSERT_TRUE(!!pages.Add(str, len, (1ul << 28) + i + 1));
     }
     
     ASSERT_EQ(cols, pages.GetPageCount());
