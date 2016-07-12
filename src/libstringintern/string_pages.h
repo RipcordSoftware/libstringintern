@@ -25,9 +25,7 @@
 #ifndef RS_LIBSTRINGINTERN_STRING_PAGES_H
 #define	RS_LIBSTRINGINTERN_STRING_PAGES_H
 
-#include <array>
 #include <atomic>
-#include <memory>
 #include <cstddef>
 
 #include "string_reference.h"
@@ -51,6 +49,14 @@ public:
     
     std::size_t GetPageCount() const noexcept { return archive_.GetPageCount(); }
     std::size_t GetEntryCount() const noexcept { return archive_.GetEntryCount(); }
+    
+#ifdef RS_LIBSTRINGINTERN_STRINGPAGES_INTERNALSTATE
+    const StringPageArchive& GetArchive() const { return archive_; }
+    const StringPageNursery& GetNursery() const { return nursery_; }
+    const StringPageCatalog& GetCatalog() const { return catalog_; }
+    StringPageNursery::colcount_t GetNurseryCols() const { return nurseryCols_; }
+    
+#endif
     
 private:
     

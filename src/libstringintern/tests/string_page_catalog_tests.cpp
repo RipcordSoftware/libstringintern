@@ -31,7 +31,6 @@
 #include <algorithm>
 #include <thread>
 #include <atomic>
-#include <mutex>
 
 #include "../string_page_catalog.h"
 
@@ -63,7 +62,7 @@ TEST_F(StringPageCatalogTests, test0) {
     rs::stringintern::StringPageCatalog catalog{1, 1};
     ASSERT_EQ(1, catalog.Rows());
     ASSERT_EQ(1, catalog.Cols());
-    ASSERT_EQ(0, catalog.Pages());
+    ASSERT_EQ(0, catalog.GetPageCount());
     
     ASSERT_FALSE(!!catalog.Find(0, 0));
 }
@@ -76,7 +75,7 @@ TEST_F(StringPageCatalogTests, test1) {
     ASSERT_EQ(1, catalog.Cols());
     
     ASSERT_TRUE(catalog.Add(0, page));
-    ASSERT_EQ(1, catalog.Pages());
+    ASSERT_EQ(1, catalog.GetPageCount());
     
     ASSERT_FALSE(!!catalog.Find(0, 0));
 }
@@ -89,14 +88,14 @@ TEST_F(StringPageCatalogTests, test2) {
     ASSERT_EQ(1, catalog.Cols());
     
     ASSERT_FALSE(catalog.Add(1, page));
-    ASSERT_EQ(0, catalog.Pages());    
+    ASSERT_EQ(0, catalog.GetPageCount());    
     ASSERT_FALSE(!!catalog.Find(1, 0));
     
     ASSERT_TRUE(catalog.Add(0, page));
-    ASSERT_EQ(1, catalog.Pages());    
+    ASSERT_EQ(1, catalog.GetPageCount());    
     
     ASSERT_FALSE(catalog.Add(0, page));
-    ASSERT_EQ(1, catalog.Pages());    
+    ASSERT_EQ(1, catalog.GetPageCount());    
     
     auto pages = catalog.GetPages(0);
     ASSERT_EQ(1, pages.size());
@@ -113,7 +112,7 @@ TEST_F(StringPageCatalogTests, test3) {
     
     ASSERT_TRUE(catalog.Add(0, page));
         
-    ASSERT_EQ(1, catalog.Pages());
+    ASSERT_EQ(1, catalog.GetPageCount());
     
     ASSERT_TRUE(!!catalog.Find(0, 0));
     ASSERT_FALSE(!!catalog.Find(0, 1));
@@ -133,7 +132,7 @@ TEST_F(StringPageCatalogTests, test4) {
     ASSERT_TRUE(catalog.Add(0, page1));
     ASSERT_TRUE(catalog.Add(0, page2));
         
-    ASSERT_EQ(2, catalog.Pages());
+    ASSERT_EQ(2, catalog.GetPageCount());
     
     auto ref1 = catalog.Find(0, 0);
     ASSERT_TRUE(!!ref1);
@@ -167,7 +166,7 @@ TEST_F(StringPageCatalogTests, test5) {
     ASSERT_TRUE(catalog.Add(1, page1));
     ASSERT_TRUE(catalog.Add(1, page2));
         
-    ASSERT_EQ(2, catalog.Pages());
+    ASSERT_EQ(2, catalog.GetPageCount());
     
     auto ref1 = catalog.Find(1, 0);
     ASSERT_TRUE(!!ref1);
@@ -214,7 +213,7 @@ TEST_F(StringPageCatalogTests, test6) {
         }
     }
     
-    ASSERT_EQ(pageIndex, catalog.Pages());
+    ASSERT_EQ(pageIndex, catalog.GetPageCount());
     
     pageIndex = 0;
     for (auto row = 0; row < catalog.Rows(); ++row) {
@@ -230,7 +229,7 @@ TEST_F(StringPageCatalogTests, test6) {
         }
     }
     
-    pageIndex = catalog.Pages();
+    pageIndex = catalog.GetPageCount();
     for (auto row = 0; row < catalog.Rows(); ++row, ++pageIndex) {
         auto page = rs::stringintern::StringPage::New(pageIndex, pageEntryCount_, pageEntrySize_);
         
@@ -239,7 +238,7 @@ TEST_F(StringPageCatalogTests, test6) {
         pages.emplace_back(page);
     }
     
-    ASSERT_EQ(testPages, catalog.Pages());        
+    ASSERT_EQ(testPages, catalog.GetPageCount());        
     
     pageIndex = 0;
     for (auto row = 0; row < catalog.Rows(); ++row) {
@@ -303,7 +302,7 @@ TEST_F(StringPageCatalogTests, test7) {
     thread_wait = false;        
     std::for_each(threads.begin(), threads.end(), [](std::thread& t) { t.join(); });
     
-    ASSERT_EQ(testPages, catalog.Pages());
+    ASSERT_EQ(testPages, catalog.GetPageCount());
         
     for (auto row = 0; row < catalog.Rows(); ++row) {
         auto rowPages = catalog.GetPages(row);
@@ -363,7 +362,7 @@ TEST_F(StringPageCatalogTests, test8) {
     thread_wait = false;
     std::for_each(threads.begin(), threads.end(), [](std::thread& t) { t.join(); });
 
-    ASSERT_EQ(testPages, catalog.Pages());
+    ASSERT_EQ(testPages, catalog.GetPageCount());
         
     for (auto row = 0; row < catalog.Rows(); ++row) {
         auto rowPages = catalog.GetPages(row);

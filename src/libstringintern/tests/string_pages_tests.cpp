@@ -25,9 +25,11 @@
 #include <gtest/gtest.h>
 
 #include <string>
+#include <cstring>
 #include <vector>
 #include <algorithm>
 
+#define RS_LIBSTRINGINTERN_STRINGPAGES_INTERNALSTATE 1
 #include "../string_pages.h"
 
 class StringPagesTests : public ::testing::Test {
@@ -145,4 +147,96 @@ TEST_F(StringPagesTests, test4) {
     ASSERT_TRUE(!pages.Add(nullptr));        
     ASSERT_TRUE(!pages.Add(nullptr, 8, 0));
     ASSERT_TRUE(!pages.Add("testtest", 32 * 1024 * 1024, 0));
+}
+
+TEST_F(StringPagesTests, test5) {
+    auto str = "hello world";
+    const auto len = std::strlen(str);
+    rs::stringintern::StringPages pages;
+    
+    auto cols = pages.GetNurseryCols();
+    for (decltype(cols) i = 0; i < cols; ++i) {
+        ASSERT_TRUE(!!pages.Add(str, len, (1ul << 32) * i));
+        ASSERT_EQ(i + 1, pages.GetPageCount());
+        
+        auto nurseryPages = pages.GetNursery().GetPages(0);
+        ASSERT_EQ(i + 1, nurseryPages.size());
+        ASSERT_EQ(i, nurseryPages[i]->GetPageNumber());
+    }
+    
+    ASSERT_EQ(cols, pages.GetCatalog().GetPageCount());
+    ASSERT_EQ(cols, pages.GetArchive().GetPageCount());
+    
+    if (true) {
+        auto nurseryPages = pages.GetNursery().GetPages(0);
+        for (decltype(cols) i = 0; i < cols; ++i) {
+            ASSERT_EQ(i, nurseryPages[i]->GetPageNumber());
+        }
+    }
+    
+    for (decltype(cols) i = 0; i < cols; ++i) {
+        ASSERT_TRUE(!!pages.Add(str, len, (1ul << 32) * (cols + i)));
+        ASSERT_EQ(cols + i + 1, pages.GetPageCount());
+        
+        auto nurseryPages = pages.GetNursery().GetPages(0);
+        ASSERT_EQ(cols, nurseryPages.size());
+        ASSERT_EQ(cols + i, nurseryPages[i]->GetPageNumber());
+    }
+    
+    ASSERT_EQ(cols * 2, pages.GetCatalog().GetPageCount());
+    ASSERT_EQ(cols * 2, pages.GetArchive().GetPageCount());
+    
+    if (true) {
+        auto nurseryPages = pages.GetNursery().GetPages(0);
+        for (decltype(cols) i = 0; i < cols; ++i) {
+            ASSERT_EQ(cols + i, nurseryPages[i]->GetPageNumber());
+        }
+    }
+    
+    for (decltype(cols) i = 0; i < cols * 2; ++i) {
+        auto ref = pages.Add(str, len, (1ul << 32) * i);        
+        ASSERT_TRUE(!!ref);
+        ASSERT_EQ(i, ref.Number());       
+    }   
+    
+    ASSERT_EQ(cols * 2, pages.GetCatalog().GetPageCount());
+    ASSERT_EQ(cols * 2, pages.GetArchive().GetPageCount());
+}
+
+TEST_F(StringPagesTests, test6) {
+    auto str = "hello world";
+    const auto len = std::strlen(str);
+    rs::stringintern::StringPages pages;
+    
+    auto cols = pages.GetNurseryCols();
+    for (decltype(cols) i = 0; i < cols; ++i) {
+        ASSERT_TRUE(!!pages.Add(str, len, (1ul << 32) * i));
+    }
+    
+    ASSERT_EQ(cols, pages.GetPageCount());
+    ASSERT_EQ(cols, pages.GetCatalog().GetPageCount());
+    ASSERT_EQ(cols, pages.GetArchive().GetPageCount());
+    ASSERT_EQ(cols, pages.GetNursery().GetPages(0).size());
+    
+    for (decltype(cols) i = 0; i < cols; ++i) {
+        ASSERT_TRUE(!!pages.Add(str, len, (1ul << 32) + i + 1));
+    }
+    
+    ASSERT_EQ(cols, pages.GetPageCount());
+    ASSERT_EQ(cols, pages.GetCatalog().GetPageCount());
+    ASSERT_EQ(cols, pages.GetArchive().GetPageCount());        
+    ASSERT_EQ(cols, pages.GetNursery().GetPages(0).size());
+}
+
+TEST_F(StringPagesTests, test7) {
+    auto str = "hello world";
+    const auto len = std::strlen(str);
+    rs::stringintern::StringPages pages;
+    
+    auto cols = pages.GetNurseryCols();
+    for (decltype(cols) i = 0; i < cols; ++i) {
+        ASSERT_TRUE(!!pages.Add(str, len, i));               
+    }
+    
+    ASSERT_EQ(1, pages.GetPageCount());
 }

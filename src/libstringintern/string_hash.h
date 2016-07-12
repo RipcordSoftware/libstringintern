@@ -32,10 +32,9 @@ namespace rs {
 namespace stringintern {
 
 class StringHash final {
-public:
     
-    using Hash = std::uint64_t;
-    constexpr static int seed_ = 42;
+public:
+    using Hash = std::uint64_t;    
     
     StringHash() = delete;
     StringHash(const StringHash&) = delete;
@@ -44,6 +43,7 @@ public:
     static Hash Get(const char*, std::size_t len);
 
 private:
+    constexpr static int seed_ = 42;
 
 };
 
