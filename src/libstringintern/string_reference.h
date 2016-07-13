@@ -34,9 +34,10 @@ class StringReference final {
 public:            
     using reference_t = std::uint32_t;
     
-    StringReference() noexcept;
-    StringReference(reference_t, reference_t);
+    StringReference() noexcept;    
     StringReference(const StringReference&) noexcept;
+    
+    static StringReference New(reference_t, reference_t) noexcept;
     
     bool operator!() const noexcept { return reference_ == invalid_; }
     
@@ -52,6 +53,8 @@ public:
     constexpr static reference_t MaxIndex() { return maxIndex_; }
 
 private:
+    
+    StringReference(reference_t, reference_t) noexcept;
     
     using pagenumber_t = std::uint16_t;
     using pageindex_t = std::uint32_t;

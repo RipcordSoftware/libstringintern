@@ -134,7 +134,7 @@ TEST_F(StringPagesTests, test3) {
     ASSERT_EQ(nullptr, pages.GetString(ref1, size));
     ASSERT_EQ(-1, size);
     
-    rs::stringintern::StringReference ref2{-1u, 0};
+    auto ref2 = rs::stringintern::StringReference::New(-1u, 0);
     ASSERT_EQ(nullptr, pages.GetString(ref2));
     ASSERT_EQ(nullptr, pages.GetString(ref2, size));
     ASSERT_EQ(-1, size);

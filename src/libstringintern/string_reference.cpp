@@ -23,17 +23,12 @@
 **/
 
 #include "string_reference.h"
-#include "string_intern_exception.h"
 
 rs::stringintern::StringReference::StringReference() noexcept : reference_(invalid_) {
     
 }
 
-rs::stringintern::StringReference::StringReference(reference_t number, reference_t index) {
-    if (index > indexMask_) {
-        throw StringInternException("StringReference index out of range");
-    }
-
+rs::stringintern::StringReference::StringReference(reference_t number, reference_t index) noexcept {
     reference_ = number;
     reference_ <<= indexBits_;
     reference_ |= index;
@@ -41,6 +36,10 @@ rs::stringintern::StringReference::StringReference(reference_t number, reference
 
 rs::stringintern::StringReference::StringReference(const StringReference& rhs) noexcept : reference_(rhs.reference_) { 
 
+}
+
+rs::stringintern::StringReference rs::stringintern::StringReference::New(reference_t number, reference_t index) noexcept {
+    return index < indexMask_ ? StringReference(number, index) : StringReference();
 }
 
 rs::stringintern::StringReference::reference_t rs::stringintern::StringReference::Number() const noexcept {

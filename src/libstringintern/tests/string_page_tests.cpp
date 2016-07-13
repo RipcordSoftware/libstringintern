@@ -31,7 +31,6 @@
 #include <thread>
 
 #include "../string_page.h"
-#include "../string_intern_exception.h"
 
 class StringPageTests : public ::testing::Test {
 protected:
@@ -71,33 +70,29 @@ TEST_F(StringPageTests, test0) {
 }
 
 TEST_F(StringPageTests, test1) {    
-    ASSERT_THROW({
-        const auto pageSize = 2 * 1024 * 1024;
-        const auto pageEntrySize = 256;
-        const auto pageEntries = pageSize / pageEntrySize;        
+    const auto pageSize = 2 * 1024 * 1024;
+    const auto pageEntrySize = 256;
+    const auto pageEntries = pageSize / pageEntrySize;        
 
-        auto page = NewPagePtr(42, pageEntries, pageEntrySize);
+    auto page = NewPagePtr(42, pageEntries, pageEntrySize);
 
-        const char* str = "I am a placebo";
-        const auto len = 0;
-        
-        page->Add(str, len, 1);
-    }, rs::stringintern::StringInternException);
+    const char* str = "I am a placebo";
+    const auto len = 0;
+
+    ASSERT_TRUE(!page->Add(str, len, 1));
 }
 
 TEST_F(StringPageTests, test2) {    
-    ASSERT_THROW({
-        const auto pageSize = 2 * 1024 * 1024;
-        const auto pageEntrySize = 256;
-        const auto pageEntries = pageSize / pageEntrySize;        
+    const auto pageSize = 2 * 1024 * 1024;
+    const auto pageEntrySize = 256;
+    const auto pageEntries = pageSize / pageEntrySize;        
 
-        auto page = NewPagePtr(42, pageEntries, pageEntrySize);
+    auto page = NewPagePtr(42, pageEntries, pageEntrySize);
 
-        const char* str = "I am a placebo";
-        const auto len = 1024;
-        
-        page->Add(str, len, 1);
-    }, rs::stringintern::StringInternException);
+    const char* str = "I am a placebo";
+    const auto len = 1024;
+
+    ASSERT_TRUE(!page->Add(str, len, 1));
 }
 
 TEST_F(StringPageTests, test3) {
@@ -359,13 +354,13 @@ TEST_F(StringPageTests, test8) {
     const auto len = std::strlen(str);
     ASSERT_EQ(1, page->Add(str, len, 1).Index());
     
-    rs::stringintern::StringReference ref1{42, 1};    
+    auto ref1 = rs::stringintern::StringReference::New(42, 1);    
     ASSERT_STREQ(str, page->GetString(ref1));
     
-    rs::stringintern::StringReference ref2{42, 2};    
+    auto ref2 = rs::stringintern::StringReference::New(42, 2);    
     ASSERT_EQ(nullptr, page->GetString(ref2));
     
-    rs::stringintern::StringReference ref3{1, 1};    
+    auto ref3 = rs::stringintern::StringReference::New(1, 1);
     ASSERT_EQ(nullptr, page->GetString(ref3));
 }
 

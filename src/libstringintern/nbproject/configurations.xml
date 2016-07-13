@@ -6,7 +6,6 @@
                    projectFiles="true">
       <itemPath>string_hash.h</itemPath>
       <itemPath>string_intern.h</itemPath>
-      <itemPath>string_intern_exception.h</itemPath>
       <itemPath>string_page.h</itemPath>
       <itemPath>string_page_archive.h</itemPath>
       <itemPath>string_page_catalog.h</itemPath>
@@ -300,8 +299,6 @@
       </item>
       <item path="string_intern.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="string_intern_exception.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="string_page.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="string_page.h" ex="false" tool="3" flavor2="0">
@@ -567,8 +564,6 @@
       <item path="string_intern.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="string_intern.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="string_intern_exception.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="string_page.cpp" ex="false" tool="1" flavor2="0">
       </item>

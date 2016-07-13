@@ -29,7 +29,6 @@
 #include <limits>
 
 #include "../string_reference.h"
-#include "../string_intern_exception.h"
 
 class StringReferenceTests : public ::testing::Test {
 protected:
@@ -49,7 +48,7 @@ TEST_F(StringReferenceTests, test0) {
 }
 
 TEST_F(StringReferenceTests, test1) {
-    rs::stringintern::StringReference ref{1, 42};
+    auto ref = rs::stringintern::StringReference::New(1, 42);
     ASSERT_TRUE(!!ref);
     ASSERT_FALSE(!ref);
     ASSERT_EQ(1, ref.Number());
@@ -57,7 +56,7 @@ TEST_F(StringReferenceTests, test1) {
 }
 
 TEST_F(StringReferenceTests, test2) {
-    rs::stringintern::StringReference ref1{1, 42};
+    auto ref1 = rs::stringintern::StringReference::New(1, 42);
     rs::stringintern::StringReference ref2{ref1};
     ASSERT_TRUE(!!ref1);
     ASSERT_FALSE(!ref1);
@@ -81,24 +80,22 @@ TEST_F(StringReferenceTests, test3) {
 }
 
 TEST_F(StringReferenceTests, test4) {
-    ASSERT_THROW({
-        rs::stringintern::StringReference ref(0, rs::stringintern::StringReference::MaxIndex());
-    }, rs::stringintern::StringInternException);
+    ASSERT_TRUE(!rs::stringintern::StringReference::New(0, rs::stringintern::StringReference::MaxIndex()));
 }
 
 TEST_F(StringReferenceTests, test5) {
-    rs::stringintern::StringReference ref1{1, 42};
-    rs::stringintern::StringReference ref2{1, 42};
-    rs::stringintern::StringReference ref3{0, 69};
+    auto ref1 = rs::stringintern::StringReference::New(1, 42);
+    auto ref2 = rs::stringintern::StringReference::New(1, 42);
+    auto ref3 = rs::stringintern::StringReference::New(0, 69);
     ASSERT_TRUE(ref1 == ref2);    
     ASSERT_TRUE(ref1 != ref3);
     ASSERT_TRUE(ref2 != ref3);
 }
 
 TEST_F(StringReferenceTests, test6) {
-    rs::stringintern::StringReference ref1{1, 42};
-    rs::stringintern::StringReference ref2{1, 42};
-    rs::stringintern::StringReference ref3{0, 69};
+    auto ref1 = rs::stringintern::StringReference::New(1, 42);
+    auto ref2 = rs::stringintern::StringReference::New(1, 42);
+    auto ref3 = rs::stringintern::StringReference::New(0, 69);
     ASSERT_FALSE(ref1 < ref2);    
     ASSERT_FALSE(ref1 < ref3);
     ASSERT_FALSE(ref2 < ref3);

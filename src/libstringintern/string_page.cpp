@@ -29,8 +29,6 @@
 #include <thread>
 #include <chrono>
 
-#include "string_intern_exception.h"
-
 const rs::stringintern::StringPage::indexsize_t rs::stringintern::StringPage::InvalidIndex = -1;
 
 rs::stringintern::StringPagePtr rs::stringintern::StringPage::New(std::size_t number, entrycount_t entryCount, entrysize_t entrySize) {
@@ -70,37 +68,41 @@ rs::stringintern::StringPage::~StringPage() {
 }
 
 rs::stringintern::StringReference rs::stringintern::StringPage::Add(const char* str, std::size_t len, StringHash::Hash hash) {
-    if (len == 0 || len >= maxEntrySize_) {
-        throw StringInternException("Bad string size for page");
+    StringReference ref;
+    
+    if (len > 0 && len < maxEntrySize_) {
+        auto index = hash % maxEntryCount_;
+
+        if (index == 0 && zeroHashCount_.load(std::memory_order_relaxed) > 0) {
+            index = hash == 0 ? 0 : InvalidIndex;
+        } else {
+            decltype(zeroHashCount_.operator++()) zeroHashState = 0;
+            if (hash == 0) {
+                // the state is 0 on first zero hash occurrence and 1 otherwise
+                zeroHashState = zeroHashCount_.fetch_add(1, std::memory_order_relaxed) > 0 ? 1 : 0;
+            }
+
+            auto& entry = entries_[index];
+            auto entryHash = entry.hash.load(std::memory_order_relaxed);
+            if (entryHash == 0 && entry.hash.compare_exchange_strong(entryHash, hash, std::memory_order_relaxed)) {
+                auto ptr = ptr_ + (maxEntrySize_ * index);
+                std::memcpy(ptr, str, len + 1);
+                std::atomic_thread_fence(std::memory_order_release);
+                entry.length.store(len, std::memory_order_relaxed);
+
+                // increase the entry count, taking into account the zero hash state
+                count_.fetch_add(1 - zeroHashState, std::memory_order_relaxed);
+            } else if (entryHash != hash) {
+                index = InvalidIndex;
+            }
+        }
+        
+        if (index != InvalidIndex) {
+            ref = StringReference::New(number_, index);
+        }
     }
     
-    auto index = hash % maxEntryCount_;
-
-    if (index == 0 && zeroHashCount_.load(std::memory_order_relaxed) > 0) {
-        index = hash == 0 ? 0 : InvalidIndex;
-    } else {
-        decltype(zeroHashCount_.operator++()) zeroHashState = 0;
-        if (hash == 0) {
-            // the state is 0 on first zero hash occurrence and 1 otherwise
-            zeroHashState = zeroHashCount_.fetch_add(1, std::memory_order_relaxed) > 0 ? 1 : 0;
-        }
-
-        auto& entry = entries_[index];
-        auto entryHash = entry.hash.load(std::memory_order_relaxed);
-        if (entryHash == 0 && entry.hash.compare_exchange_strong(entryHash, hash, std::memory_order_relaxed)) {
-            auto ptr = ptr_ + (maxEntrySize_ * index);
-            std::memcpy(ptr, str, len + 1);
-            std::atomic_thread_fence(std::memory_order_release);
-            entry.length.store(len, std::memory_order_relaxed);
-
-            // increase the entry count, taking into account the zero hash state
-            count_.fetch_add(1 - zeroHashState, std::memory_order_relaxed);
-        } else if (entryHash != hash) {
-            index = InvalidIndex;
-        }
-    }
-    
-    return index != InvalidIndex ? StringReference(number_, index) : StringReference();
+    return ref;
 }
 
 const char* rs::stringintern::StringPage::GetString(const StringHash::Hash& hash) const noexcept {
@@ -156,7 +158,7 @@ rs::stringintern::StringReference rs::stringintern::StringPage::GetReference(con
         if (zeroHashCount_.load(std::memory_order_relaxed) > 0) {
             auto& entry = entries_[0];
             if (WaitForLength(entry)) {
-                ref = StringReference(number_, 0);
+                ref = StringReference::New(number_, 0);
             }
         }
     } else {
@@ -164,7 +166,7 @@ rs::stringintern::StringReference rs::stringintern::StringPage::GetReference(con
         auto& entry = entries_[index];
         if (entry.hash.load(std::memory_order_relaxed) == hash) {
             if (WaitForLength(entry)) {
-                ref = StringReference(number_, index);
+                ref = StringReference::New(number_, index);
             }
         }
     }

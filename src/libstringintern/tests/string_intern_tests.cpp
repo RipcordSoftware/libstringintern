@@ -31,8 +31,7 @@
 #include <thread>
 
 #include "../string_page.h"
-#include "../string_intern_exception.h"
-#include "string_intern.h"
+#include "../string_intern.h"
 
 class StringInternTests : public ::testing::Test {
 protected:
