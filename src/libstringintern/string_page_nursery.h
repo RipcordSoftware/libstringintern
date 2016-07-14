@@ -41,7 +41,7 @@ public:
     using rowcount_t = std::uint32_t;
     using colcount_t = std::uint32_t;
     
-    class Iterator {
+    class Iterator final {
     public:        
         Iterator(const Iterator& rhs) noexcept : cols_(rhs.cols_), row_(rhs.row_), start_(rhs.start_), pos_(rhs.pos_) {}
         Iterator& operator=(const Iterator& rhs) noexcept { cols_ = rhs.cols_; row_ = rhs.row_; start_ = rhs.start_; pos_ = rhs.pos_; }
@@ -51,6 +51,7 @@ public:
     private:
         friend StringPageNursery;
         
+        Iterator() noexcept : Iterator(0, 0, 0) {}
         Iterator(colcount_t cols, rowcount_t row, colcount_t start) noexcept : cols_(cols), row_(row), start_(start), pos_(start) {}
         rowcount_t operator++(int) noexcept { return pos_++; }        
         

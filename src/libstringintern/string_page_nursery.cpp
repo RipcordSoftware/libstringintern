@@ -63,9 +63,15 @@ rs::stringintern::StringPagePtr rs::stringintern::StringPageNursery::Get(colcoun
 }
 
 rs::stringintern::StringPageNursery::Iterator rs::stringintern::StringPageNursery::Iter(rowcount_t row) const noexcept {
-    auto start = counters_[row].load(std::memory_order_relaxed);
-    start = start > cols_ ? (start % cols_) : 0;
-    return Iterator{cols_, row, start};
+    Iterator iter;
+
+    if (row < rows_) {
+        auto start = counters_[row].load(std::memory_order_relaxed);
+        start = start > cols_ ? (start % cols_) : 0;
+        iter = Iterator{cols_, row, start};
+    }
+
+    return iter;
 }
 
 rs::stringintern::StringPagePtr rs::stringintern::StringPageNursery::Next(Iterator& iter) {    
