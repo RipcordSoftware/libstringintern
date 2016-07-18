@@ -3,20 +3,19 @@
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
 
 # libstringintern
-A C++ library for [interning][string-interning] strings to save heap space. Smaller heaps generally mean faster applications due to cache locality and less swapping to disk. The other upside is you can store more stuff in RAM.
-
-> libstringintern is a work-in-progress. Almost everything can change so don't believe a thing written here until Travis passes the units.
+A thread safe lock free C++ library for [interning][string-interning] strings to save heap space. Smaller heaps generally mean faster applications due to cache locality and less swapping to disk. The other upside is you can store more stuff in RAM.
 
 ## Use case
 You have an in-memory database with 100 million customer records with associated address details. You therefore have 100 million state and country strings associated with those records. That will use a lot of memory. 
 
 When strings are interned you only ever have one instance of the string plus a reference instance per record which is 4 bytes in size.
 
-### Let's do the maths
-* 100m * 'Mississippi\0' = **1144MB**
-* 1 * 'Mississippi\0' = 12B, 100m * 4B = **381MB**
+### Let's do the math(s)
+* 32bit: 100m * 'Mississippi\0' = 1144MB, 100m * 4B = 462MB, total = **1525MB**
+* 64bit: 100m * 'Mississippi\0' = 1144MB, 100m * 8B = 462MB, total = **1907MB**
+* Interned: 1 * 'Mississippi\0' = 12B, 100m * 4B = **381MB**
 
-This example is for a fairly short string, but the saving is still valuable. Larger strings have a much bigger pay-off.
+This example is for a fairly short string, but the saving is still valuable. Larger strings have an even bigger pay-off.
 
 ## How it works
 * Interned strings are stored in pages, grouped by string size, a bit like [tcmalloc][tcmalloc]
@@ -29,14 +28,14 @@ This example is for a fairly short string, but the saving is still valuable. Lar
 * References are 32bit values made up from PAGE(16):INDEX(16). On 64bit systems these use half the storage space of a pointer.
 * Interned strings are immutable
 
-## Made up code example
-There is no code **yet**, but here is an example anyway:
+## Code example
 ```c++
-  auto strRef1 = StringIntern::Add("Mississippi");
-  std::cout << StringIntern::String(strRef1) << std::endl;
+  StringIntern intern;
+  auto ref1 = intern.Add("Mississippi");
+  std::cout << intern.ToString(ref1) << std::endl;
   
-  auto strRef2 = StringIntern::Add("Mississippi");
-  std::cout << strRef1 == strRef2 ? "Match" : "Doesn't match" << std::endl;
+  auto ref2 = intern.Add("Mississippi");
+  std::cout << ref1 == ref2 ? "Match" : "Doesn't match" << std::endl;
 ```
 
 [string-interning]: https://en.wikipedia.org/wiki/String_interning
