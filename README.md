@@ -11,8 +11,8 @@ You have an in-memory database with 100 million customer records with associated
 When strings are interned you only ever have one instance of the string plus a reference instance per record which is 4 bytes in size.
 
 ### Let's do the math(s)
-* 32bit: 100m * 'Mississippi\0' = 1144MB, 100m * 4B = 462MB, total = **1525MB**
-* 64bit: 100m * 'Mississippi\0' = 1144MB, 100m * 8B = 462MB, total = **1907MB**
+* 32bit: 100m * 'Mississippi\0' = 1144MB, 100m * 4B = 381MB, total = **1525MB**
+* 64bit: 100m * 'Mississippi\0' = 1144MB, 100m * 8B = 762MB, total = **1907MB**
 * Interned: 1 * 'Mississippi\0' = 12B, 100m * 4B = **381MB**
 
 This example is for a fairly short string, but the saving is still valuable. Larger strings have an even bigger pay-off.
@@ -37,6 +37,9 @@ This example is for a fairly short string, but the saving is still valuable. Lar
   auto ref2 = intern.Add("Mississippi");
   std::cout << ref1 == ref2 ? "Match" : "Doesn't match" << std::endl;
 ```
+
+## Testing
+We have tested extensively on Intel, PPC and ARMv7. If you have another system you'd like us to test with please let us know.
 
 [string-interning]: https://en.wikipedia.org/wiki/String_interning
 [tcmalloc]: http://goog-perftools.sourceforge.net/doc/tcmalloc.html
