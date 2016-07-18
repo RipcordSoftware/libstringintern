@@ -385,3 +385,44 @@ TEST_F(StringPageTests, test9) {
     
     ASSERT_TRUE(std::memcmp(str, page->GetString(ref), len) == 0);
 }
+
+TEST_F(StringPageTests, test10) {
+    const auto pageSize = 2 * 1024 * 1024;
+    const auto pageEntrySize = 256;
+    const auto pageEntries = pageSize / pageEntrySize;
+
+    auto page = NewPagePtr(42, pageEntries, pageEntrySize);
+    
+    ASSERT_EQ(42, page->GetPageNumber());
+    ASSERT_EQ(pageEntries, page->GetMaxEntryCount());
+    ASSERT_EQ(pageEntrySize, page->GetMaxEntrySize());
+    
+    const char* str1 = "hello world";
+    const auto len1 = std::strlen(str1);
+    auto addHash1 = 1;
+    auto ref1 = page->Add(str1, len1, addHash1);
+    auto hash1 = page->GetHash(ref1);
+    
+    auto str2 = str1;
+    auto len2 = len1;
+    auto addHash2 = addHash1;
+    auto ref2 = page->Add(str2, len2, addHash2);
+    auto hash2 = page->GetHash(ref2);
+    
+    const char* str3 = "HELLO WORLD";
+    const auto len3 = std::strlen(str3);
+    auto addHash3 = 3;
+    auto ref3 = page->Add(str3, len3, addHash3);
+    auto hash3 = page->GetHash(ref3);
+    
+    ASSERT_TRUE(hash1 != 0);
+    ASSERT_TRUE(hash2 != 0);
+    ASSERT_TRUE(hash3 != 0);
+    
+    ASSERT_EQ(hash1, hash2);
+    ASSERT_NE(hash1, hash3);
+    ASSERT_NE(hash2, hash3);
+    
+    auto ref4 = rs::stringintern::StringReference::New(99, 0);
+    ASSERT_EQ(0, page->GetHash(ref4));
+}

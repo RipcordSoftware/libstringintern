@@ -46,6 +46,10 @@ public:
     
     const char* GetString(const StringReference&) const;
     const char* GetString(const StringReference&, StringPage::entrysize_t&) const;
+
+    StringHash::Hash GetHash(const StringReference&) const;
+    
+    bool Compare(const StringReference&, const StringReference&) const noexcept;
     
     std::size_t GetPageCount() const noexcept { return archive_.GetPageCount(); }
     std::size_t GetEntryCount() const noexcept { return archive_.GetEntryCount(); }

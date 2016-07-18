@@ -53,6 +53,10 @@ public:
     bool ToString(const StringReference&, std::u16string&) const;
     bool ToString(const StringReference&, std::u32string&) const;
     
+    StringHash::Hash GetHash(const StringReference&) const noexcept;
+    
+    bool Compare(const StringReference&, const StringReference&) const noexcept;
+    
     std::size_t GetPageCount() const noexcept { return pages_.GetPageCount(); }
     std::size_t GetEntryCount() const noexcept { return pages_.GetEntryCount(); }
     

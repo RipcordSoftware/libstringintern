@@ -60,7 +60,10 @@ public:
     const char* GetString(const StringHash::Hash&) const noexcept;
     const char* GetString(const StringReference&) const noexcept;
     const char* GetString(const StringReference&, entrysize_t&) const noexcept;
+
     StringReference GetReference(const StringHash::Hash&) const noexcept;
+    StringHash::Hash GetHash(const StringReference&) const noexcept;
+
     
     entrysize_t GetMaxEntrySize() const noexcept { return maxEntrySize_; }
     entrycount_t GetMaxEntryCount() const noexcept {return maxEntryCount_; }

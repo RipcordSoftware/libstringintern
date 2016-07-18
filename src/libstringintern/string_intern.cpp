@@ -117,3 +117,11 @@ bool rs::stringintern::StringIntern::ToString(const StringReference& ref, std::u
     }
     return status;
 }
+
+rs::stringintern::StringHash::Hash rs::stringintern::StringIntern::GetHash(const StringReference& ref) const noexcept {
+    return pages_.GetHash(ref);
+}
+
+bool rs::stringintern::StringIntern::Compare(const StringReference& lhs, const StringReference& rhs) const noexcept {
+    return pages_.Compare(lhs, rhs);
+}

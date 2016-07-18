@@ -220,3 +220,40 @@ TEST_F(StringInternTests, test7) {
     ASSERT_EQ(0, intern.GetPageCount());
     ASSERT_EQ(0, intern.GetEntryCount());
 }
+
+TEST_F(StringInternTests, test8) {
+    rs::stringintern::StringIntern intern;   
+    
+    auto str1 = "hello world";
+    auto ref1 = intern.Add(str1);
+    ASSERT_TRUE(!!ref1);
+    
+    auto ref2 = intern.Add(str1);
+    ASSERT_TRUE(!!ref2);
+    
+    ASSERT_TRUE(intern.Compare(ref1, ref2));
+    
+    auto str3 = "hello world!!";
+    auto ref3 = intern.Add(str3);
+    ASSERT_TRUE(!intern.Compare(ref1, ref3));
+    ASSERT_TRUE(!intern.Compare(ref2, ref3));
+}
+
+TEST_F(StringInternTests, test9) {
+    rs::stringintern::StringIntern intern;   
+    
+    auto str1 = "hello world";
+    auto ref1 = intern.Add(str1);
+    auto hash1 = intern.GetHash(ref1);
+    
+    auto ref2 = intern.Add(str1);
+    auto hash2 = intern.GetHash(ref2);
+    
+    ASSERT_EQ(hash1, hash2);
+    
+    auto str3 = "hello world!!";
+    auto ref3 = intern.Add(str3);
+    auto hash3 = intern.GetHash(ref3);
+    ASSERT_NE(hash1, hash3);
+    ASSERT_NE(hash2, hash3);
+}

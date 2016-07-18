@@ -174,6 +174,18 @@ rs::stringintern::StringReference rs::stringintern::StringPage::GetReference(con
     return ref;
 }
 
+rs::stringintern::StringHash::Hash rs::stringintern::StringPage::GetHash(const StringReference& ref) const noexcept {
+    StringHash::Hash hash = 0;
+    
+    if (ref.Number() == number_) {
+        auto index = ref.Index();
+        auto& entry = entries_[index];
+        hash = entry.hash.load(std::memory_order_relaxed);
+    }
+    
+    return hash;    
+}
+
 bool rs::stringintern::StringPage::WaitForLength(const Entry& entry) const noexcept {
     auto status = false;
     auto count = 1000;

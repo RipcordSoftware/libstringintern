@@ -112,3 +112,19 @@ rs::stringintern::StringPagePtr rs::stringintern::StringPages::NewPage(StringPag
     }
     return page;
 }
+
+rs::stringintern::StringHash::Hash rs::stringintern::StringPages::GetHash(const StringReference& ref) const {
+    StringHash::Hash hash = 0;
+    
+    auto pageNumber = ref.Number();
+    auto page = archive_.GetPage(pageNumber);
+    if (!!page) {
+        hash = page->GetHash(ref);
+    }
+    
+    return hash;
+}
+
+bool rs::stringintern::StringPages::Compare(const StringReference& lhs, const StringReference& rhs) const noexcept {
+    return GetHash(lhs) == GetHash(rhs);
+}
