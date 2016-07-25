@@ -55,11 +55,10 @@ public:
     std::size_t GetEntryCount() const noexcept { return archive_.GetEntryCount(); }
     
 #ifdef RS_LIBSTRINGINTERN_STRINGPAGES_INTERNALSTATE
-    const StringPageArchive& GetArchive() const { return archive_; }
-    const StringPageNursery& GetNursery() const { return nursery_; }
-    const StringPageCatalog& GetCatalog() const { return catalog_; }
-    StringPageNursery::colcount_t GetNurseryCols() const { return nurseryCols_; }
-    
+    const StringPageArchive& GetArchive() const noexcept { return archive_; }
+    const StringPageNursery& GetNursery() const noexcept { return nursery_; }
+    const StringPageCatalog& GetCatalog() const noexcept { return catalog_; }
+    StringPageNursery::colcount_t GetNurseryCols() const noexcept { return nurseryCols_; }
 #endif
     
 private:

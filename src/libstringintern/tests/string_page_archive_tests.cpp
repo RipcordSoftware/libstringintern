@@ -164,3 +164,17 @@ TEST_F(StringPageArchiveTests, test5) {
     newPage->Add(testStr2, std::strlen(testStr2), 1);
     ASSERT_EQ(2, archive.GetEntryCount());
 }
+
+TEST_F(StringPageArchiveTests, test6) {
+    const auto archiveEntries = 8;
+    rs::stringintern::StringPageArchive archive{archiveEntries};
+    ASSERT_EQ(archiveEntries, archive.GetMaxPages());
+    
+    for (auto i = 0; i < archiveEntries; i++) {
+        ASSERT_TRUE(!!archive.NewPage(pageEntryCount_, pageEntrySize_));
+    }
+    
+    for (auto i = 0; i < archiveEntries; i++) {
+        ASSERT_FALSE(!!archive.NewPage(pageEntryCount_, pageEntrySize_));
+    }
+}
