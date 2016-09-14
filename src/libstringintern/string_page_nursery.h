@@ -44,7 +44,7 @@ public:
     class Iterator final {
     public:        
         Iterator(const Iterator& rhs) noexcept : cols_(rhs.cols_), row_(rhs.row_), start_(rhs.start_), pos_(rhs.pos_) {}
-        Iterator& operator=(const Iterator& rhs) noexcept { cols_ = rhs.cols_; row_ = rhs.row_; start_ = rhs.start_; pos_ = rhs.pos_; }
+        Iterator& operator=(const Iterator& rhs) noexcept { cols_ = rhs.cols_; row_ = rhs.row_; start_ = rhs.start_; pos_ = rhs.pos_; return *this; }
         
         bool operator!() const noexcept { return pos_ >= (start_ + cols_); }
         

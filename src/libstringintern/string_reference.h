@@ -41,7 +41,7 @@ public:
     
     bool operator!() const noexcept { return reference_ == invalid_; }
     
-    StringReference& operator=(const StringReference& other) noexcept { reference_ = other.reference_; }
+    StringReference& operator=(const StringReference& other) noexcept { reference_ = other.reference_; return *this; }
     bool operator==(const StringReference& other) const noexcept { return reference_ == other.reference_; }
     bool operator!=(const StringReference& other) const noexcept { return reference_ != other.reference_; }
     bool operator<(const StringReference& other) const noexcept { return reference_ < other.reference_; }
