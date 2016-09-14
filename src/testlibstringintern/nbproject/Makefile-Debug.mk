@@ -52,7 +52,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=../libstringintern/dist/Debug/GNU-Linux-x86/libstringintern.a -lpthread -latomic
+LDLIBSOPTIONS=../libstringintern/dist/Debug/GNU-Linux-x86/libstringintern.a -lpthread $(LDLIBS)
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}

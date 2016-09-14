@@ -135,7 +135,7 @@
             <linkerLibFileItem>../../externals/installed/lib/libgtest.a</linkerLibFileItem>
             <linkerLibFileItem>../../externals/installed/lib/libgtest_main.a</linkerLibFileItem>
             <linkerLibStdlibItem>PosixThreads</linkerLibStdlibItem>
-            <linkerLibLibItem>atomic</linkerLibLibItem>
+            <linkerOptionItem>$(LDLIBS)</linkerOptionItem>
           </linkerLibItems>
         </linkerTool>
       </folder>
@@ -401,7 +401,7 @@
             <linkerLibFileItem>../../externals/installed/lib/libgtest.a</linkerLibFileItem>
             <linkerLibFileItem>../../externals/installed/lib/libgtest_main.a</linkerLibFileItem>
             <linkerLibStdlibItem>PosixThreads</linkerLibStdlibItem>
-            <linkerLibLibItem>atomic</linkerLibLibItem>
+            <linkerOptionItem>$(LDLIBS)</linkerOptionItem>
           </linkerLibItems>
         </linkerTool>
       </folder>

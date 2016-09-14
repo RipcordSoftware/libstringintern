@@ -52,7 +52,7 @@
               </makeArtifact>
             </linkerLibProjectItem>
             <linkerLibStdlibItem>PosixThreads</linkerLibStdlibItem>
-            <linkerLibLibItem>atomic</linkerLibLibItem>
+            <linkerOptionItem>$(LDLIBS)</linkerOptionItem>
           </linkerLibItems>
           <commandLine>--coverage</commandLine>
         </linkerTool>
@@ -98,7 +98,7 @@
               </makeArtifact>
             </linkerLibProjectItem>
             <linkerLibStdlibItem>PosixThreads</linkerLibStdlibItem>
-            <linkerLibLibItem>atomic</linkerLibLibItem>
+            <linkerOptionItem>$(LDLIBS)</linkerOptionItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>
