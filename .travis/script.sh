@@ -1,6 +1,6 @@
 if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-    make CC=${CC} CXX=${CXX} all && make CC=${CC} CXX=${CXX} test && ./coverage.sh gcov-4.9
+    make CC=${_CC} CXX=${_CXX} all && make CC=${_CC} CXX=${_CXX} test && ./coverage.sh gcov-4.9
 elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-    make CC=${CC} CXX=${CXX} all && make CC=${CC} CXX=${CXX} test
+    make CC=${_CC} CXX=${_CXX} all && make CC=${_CC} CXX=${_CXX} test
 fi
 
