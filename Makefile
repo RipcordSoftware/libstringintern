@@ -11,7 +11,7 @@ test : .googletest
 	cd src/libstringintern && $(MAKE) $@
 
 .googletest:
-	if [ "${CI}" = "true" ]; then \
+	if [[ "${CI}" = "true" && "${TRAVIS_OS_NAME}" == "linux" ]]; then \
 		curl ftp://ftp.ripcordsoftware.com/pub/gtest-${GTEST_VER}-travis-ci-externals-installed.tar.xz -O && \
 		tar xfJ gtest-*; \
 	elif [ ! -d externals/gtest-${GTEST_VER}/lib/.libs ]; then \
