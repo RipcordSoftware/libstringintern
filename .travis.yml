@@ -1,7 +1,10 @@
-sudo: false
-
 language: cpp
-compiler: gcc
+
+matrix:
+  include:
+    - os: linux
+      sudo: false
+      compiler: gcc
 
 addons:
   apt:
