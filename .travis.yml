@@ -1,8 +1,6 @@
 language: cpp
 
 matrix:
-  allow_failures:
-    - os: osx
   include:
     - os: linux
       sudo: false
