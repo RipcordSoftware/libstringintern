@@ -1,10 +1,10 @@
 if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-    export CC=gcc-4.9
-    export CXX=g++-4.9
-    make all && make test && ./coverage.sh gcov-4.9
+    CC=gcc-4.9
+    CXX=g++-4.9
+    make CC=${CC} CXX=${CXX} all && make CC=${CC} CXX=${CXX} test && ./coverage.sh gcov-4.9
 elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-    export CC=clang
-    export CXX=clang++
-    make all && make test
+    CC=clang
+    CXX=clang++
+    make  CC=${CC} CXX=${CXX} all && make CC=${CC} CXX=${CXX} test
 fi
 
