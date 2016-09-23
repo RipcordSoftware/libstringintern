@@ -11,8 +11,7 @@ if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
     pip install --user json_tools u-msgpack-python
     export PATH=~/.local/bin:$PATH
 elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-    brew update
-    brew install make
+    brew update    
 fi
 
 popd
