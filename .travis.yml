@@ -5,9 +5,15 @@ matrix:
     - os: linux
       sudo: false
       compiler: gcc
+      env: CC=gcc-4.9 CXX=g++-4.9
+    - os: linux
+      sudo: false
+      compiler: clang
+      env: CC=clang CXX=clang++
     - os: osx
       compiler: clang
       osx_image: xcode6.4
+      env: CC=clang CXX=clang++
 
 addons:
   apt:
