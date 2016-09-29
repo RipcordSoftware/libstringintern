@@ -5,7 +5,7 @@ matrix:
     - os: linux
       sudo: false
       compiler: gcc
-      env: _CC=gcc-4.9 _CXX=g++-4.9
+      env: _CC=gcc-4.9 _CXX=g++-4.9 _COV=gcov-4.9
     - os: linux
       sudo: false
       compiler: clang
